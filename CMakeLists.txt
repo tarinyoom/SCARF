@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
-project(compressor C)
+project(compressor CXX)
 
 find_package(ZLIB REQUIRED)
 
-add_executable(${PROJECT_NAME} src/main.c)
+add_executable(${PROJECT_NAME} src/main.cpp)
 target_link_libraries(${PROJECT_NAME} ZLIB::ZLIB)
