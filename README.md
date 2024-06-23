@@ -34,3 +34,5 @@ cd ..
 ```
 
 This will generate a .mov file to your root directory.
+
+The build steps described here are also implemented in the `.github/workflows/windows-test.yml` folder.

@@ -1,0 +1,41 @@
+name: Windows Conan Build
+
+on:
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "*" ]
+
+env:
+  BUILD_TYPE: Release
+  PKG_CONFIG_PATH: ${{github.workspace}}\build
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install PkgConfig
+      run: choco install pkgconfiglite --version=0.28
+
+    - name: Set PkgConfig Path
+      run: $env:PKG_CONFIG_PATH = "${{env.PKG_CONFIG_PATH}}"
+
+    - name: Install Conan
+      run: pip install "conan==2.4.1"
+
+    - name: Detect Conan Profile
+      run: conan profile detect --force
+
+    - name: Install Conan Packages
+      run: conan install . --output-folder=build --build=missing
+
+    - name: Generate Build Scripts
+      working-directory: ./build
+      run: cmake "${{github.workspace}}"
+
+    - name: Build Project
+      working-directory: ./build
+      run: cmake --build "${{env.PKG_CONFIG_PATH}}" --config ${{env.BUILD_TYPE}}
