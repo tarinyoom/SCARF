@@ -1,4 +1,4 @@
-# Soundie
+# Loopie
 This is a test of the FFMPEG library in generating .mov files.
 
 # Building and Running
@@ -30,9 +30,9 @@ cmake --build . --config Release
 Finally, navigate back to the root and run the program!
 ```
 cd ..
-./build/Release/Soundie.exe
+./build/Release/Loopie.exe
 ```
 
 This will generate a .mov file to your root directory.
 
-The build steps described here are also implemented in the `.github/workflows/windows-test.yml` folder.
+The build steps described here are also implemented in the `.github/workflows/` folder.
