@@ -9,17 +9,12 @@
 #include <iostream>
 
 #include "state.h"
+#include "pixel.h"
 
 const int width = 640;
 const int height = 480;
 const int fps = 30;
 const int duration = 5; // seconds
-
-struct Pixel {
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-};
 
 auto step_state(State&& s) -> State {
     return State{

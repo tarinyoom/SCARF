@@ -24,6 +24,7 @@ message(STATUS "FFmpeg ldflags: ${FFMPEG_LDFLAGS_OTHER}")
 
 add_executable(${PROJECT_NAME}
     src/state.h
+    src/pixel.h
     src/main.cpp
 )
 
