@@ -1,4 +1,7 @@
-﻿#include "state.h"
+﻿#include <cmath>
+#include <numbers>
+
+#include "state.h"
 #include "pixel.h"
 #include "mov.h"
 
@@ -15,11 +18,19 @@ auto step_state(State&& s) -> State {
 }
 
 auto get_pixel(const State& s, int row, int col) -> Pixel {
-    return Pixel {
-        .r = static_cast<uint8_t>(row % 256),
-        .g = static_cast<uint8_t>(col % 256),
-        .b = static_cast<uint8_t>(s.i % 256)
-    };
+    if (row < 260 || row >= 380 || col < 180 || col >= 300) {
+        return Pixel {
+            .r = 0,
+            .g = 0,
+            .b = 0
+        };
+    } else {
+        return Pixel {
+            .r = static_cast<uint8_t>(127.5 + 127.5 * std::sin(static_cast<double>(s.i) * std::numbers::pi / 150.0 + 2.0 * std::numbers::pi / 3.0)),
+            .g = static_cast<uint8_t>(127.5 + 127.5 * std::sin(static_cast<double>(s.i) * std::numbers::pi / 150.0 + 1.0 * std::numbers::pi / 3.0)),
+            .b = static_cast<uint8_t>(127.5 + 127.5 * std::sin(static_cast<double>(s.i) * std::numbers::pi / 150.0))
+        };
+    }
 }
 
 int main() {
