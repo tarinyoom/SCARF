@@ -26,6 +26,8 @@ add_executable(${PROJECT_NAME}
     src/state.h
     src/pixel.h
     src/main.cpp
+    src/mov.h
+    src/mov.cpp
 )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
