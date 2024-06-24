@@ -23,6 +23,7 @@ message(STATUS "FFmpeg cflags: ${FFMPEG_CFLAGS_OTHER}")
 message(STATUS "FFmpeg ldflags: ${FFMPEG_LDFLAGS_OTHER}")
 
 add_executable(${PROJECT_NAME}
+    src/state.h
     src/main.cpp
 )
 

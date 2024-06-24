@@ -8,6 +8,8 @@
 
 #include <iostream>
 
+#include "state.h"
+
 const int width = 640;
 const int height = 480;
 const int fps = 30;
@@ -17,10 +19,6 @@ struct Pixel {
     uint8_t r;
     uint8_t g;
     uint8_t b;
-};
-
-struct State {
-    int i;
 };
 
 auto step_state(State&& s) -> State {
