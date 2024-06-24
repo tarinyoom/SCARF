@@ -13,12 +13,32 @@ const int height = 480;
 const int fps = 30;
 const int duration = 5; // seconds
 
+struct Pixel {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+};
+
+struct State {
+    int i;
+};
+
+auto get_pixel(const State& s, int row, int col) -> Pixel {
+    return Pixel {
+        .r = static_cast<uint8_t>(row % 256),
+        .g = static_cast<uint8_t>(col % 256),
+        .b = static_cast<uint8_t>(s.i % 256)
+    };
+}
+
 void fill_gradient(uint8_t *data, int linesize, int frame_index) {
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            data[y * linesize + x * 3] = x % 256;       // Red
-            data[y * linesize + x * 3 + 1] = y % 256;   // Green
-            data[y * linesize + x * 3 + 2] = frame_index % 256; // Blue
+            State s{.i = frame_index};
+            auto px = get_pixel(s, x, y);
+            data[y * linesize + x * 3] = px.r;       // Red
+            data[y * linesize + x * 3 + 1] = px.g;   // Green
+            data[y * linesize + x * 3 + 2] = px.b; // Blue
         }
     }
 }
