@@ -23,6 +23,12 @@ struct State {
     int i;
 };
 
+auto step_state(State&& s) -> State {
+    return State{
+        .i = s.i + 1
+    };
+}
+
 auto get_pixel(const State& s, int row, int col) -> Pixel {
     return Pixel {
         .r = static_cast<uint8_t>(row % 256),
@@ -31,10 +37,9 @@ auto get_pixel(const State& s, int row, int col) -> Pixel {
     };
 }
 
-void fill_gradient(uint8_t *data, int linesize, int frame_index) {
+void fill_gradient(uint8_t *data, int linesize, const State& s) {
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            State s{.i = frame_index};
             auto px = get_pixel(s, x, y);
             data[y * linesize + x * 3] = px.r;       // Red
             data[y * linesize + x * 3 + 1] = px.g;   // Green
@@ -132,6 +137,7 @@ int main() {
                                                     width, height, codec_context->pix_fmt,
                                                     SWS_BICUBIC, nullptr, nullptr, nullptr);
 
+    State s{.i = 0};
     for (int i = 0; i < fps * duration; ++i) {
         if (av_frame_make_writable(frame) < 0) {
             std::cerr << "Frame not writable" << std::endl;
@@ -140,7 +146,8 @@ int main() {
 
         uint8_t *rgb_data[1] = {new uint8_t[width * height * 3]};
         int rgb_linesize[1] = {3 * width};
-        fill_gradient(rgb_data[0], rgb_linesize[0], i);
+        fill_gradient(rgb_data[0], rgb_linesize[0], s);
+        s = step_state(std::move(s));
 
         sws_scale(sws_context, rgb_data, rgb_linesize, 0, height, frame->data, frame->linesize);
 
