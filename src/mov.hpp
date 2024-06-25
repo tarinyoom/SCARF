@@ -2,8 +2,8 @@
 
 #include <functional>
 
-#include "state.hpp"
 #include "pixel.hpp"
+#include "blackbox.hpp"
 
 const int width = 640;
 const int height = 480;

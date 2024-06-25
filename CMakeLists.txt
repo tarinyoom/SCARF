@@ -23,11 +23,14 @@ message(STATUS "FFmpeg cflags: ${FFMPEG_CFLAGS_OTHER}")
 message(STATUS "FFmpeg ldflags: ${FFMPEG_LDFLAGS_OTHER}")
 
 add_executable(${PROJECT_NAME}
-    src/state.hpp
     src/pixel.hpp
     src/main.cpp
     src/mov.hpp
     src/mov.cpp
+    src/animation.hpp
+    src/blackbox.cpp
+    src/blackbox.hpp
+    src/state.hpp
 )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
