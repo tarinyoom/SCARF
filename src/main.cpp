@@ -1,9 +1,9 @@
 ﻿#include <cmath>
 #include <numbers>
 
-#include "state.h"
-#include "pixel.h"
-#include "mov.h"
+#include "state.hpp"
+#include "pixel.hpp"
+#include "mov.hpp"
 
 auto initialize_state() -> State {
     return State{
