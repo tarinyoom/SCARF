@@ -3,8 +3,8 @@
 #include <functional>
 
 #include "pixel.hpp"
-#include "state.hpp"
 
+template <typename State>
 struct Animation {
 	std::function<State()> init;
 	std::function<State(State&&)> step;

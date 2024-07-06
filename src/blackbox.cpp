@@ -3,22 +3,21 @@
 #include <cmath>
 #include <numbers>
 
-#include "state.hpp"
 #include "pixel.hpp"
 
-auto init() -> State {
-    return State{
+auto init() -> BlackboxState {
+    return BlackboxState{
         .i = 0
     };
 }
 
-auto step(State&& s) -> State {
-    return State{
+auto step(BlackboxState&& s) -> BlackboxState {
+    return BlackboxState{
         .i = s.i + 1
     };
 }
 
-auto render(const State& s, int row, int col) -> Pixel {
+auto render(const BlackboxState& s, int row, int col) -> Pixel {
     if (row < 260 || row >= 380 || col < 180 || col >= 300) {
         return Pixel {
             .r = 0,
@@ -34,7 +33,7 @@ auto render(const State& s, int row, int col) -> Pixel {
     }
 }
 
-Animation black_box = {
+Animation<BlackboxState> black_box = {
     .init = init,
     .step = step,
     .render = render

@@ -2,5 +2,9 @@
 
 #include "animation.hpp"
 
-extern Animation black_box;
+struct BlackboxState {
+    int i;
+};
+
+extern Animation<BlackboxState> black_box;
 
