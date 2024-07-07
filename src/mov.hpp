@@ -2,6 +2,7 @@
 
 #include <functional>
 
+#include "animation.hpp"
 #include "pixel.hpp"
 
 const int width = 640;
@@ -32,7 +33,7 @@ void fill_gradient(uint8_t *data, int linesize, const State& s, std::function<Pi
 }
 
 template <typename State>
-auto make_mov(std::function<State()> init, std::function<State(State&&)> step, std::function<Pixel(const State&, int, int)> render) -> int {
+auto make_mov(Animation<State> anim) -> int {
 	AVFormatContext *format_context = nullptr;
     AVStream *video_stream = nullptr;
     AVCodecContext *codec_context = nullptr;
@@ -121,7 +122,7 @@ auto make_mov(std::function<State()> init, std::function<State(State&&)> step, s
                                                     width, height, codec_context->pix_fmt,
                                                     SWS_BICUBIC, nullptr, nullptr, nullptr);
 
-    auto s = init();
+    auto s = anim.init();
     for (int i = 0; i < fps * duration; ++i) {
         if (av_frame_make_writable(frame) < 0) {
             std::cerr << "Frame not writable" << std::endl;
@@ -130,8 +131,8 @@ auto make_mov(std::function<State()> init, std::function<State(State&&)> step, s
 
         uint8_t *rgb_data[1] = {new uint8_t[width * height * 3]};
         int rgb_linesize[1] = {3 * width};
-        fill_gradient(rgb_data[0], rgb_linesize[0], s, render);
-        s = step(std::move(s));
+        fill_gradient(rgb_data[0], rgb_linesize[0], s, anim.render);
+        s = anim.step(std::move(s));
 
         sws_scale(sws_context, rgb_data, rgb_linesize, 0, height, frame->data, frame->linesize);
 
