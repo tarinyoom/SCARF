@@ -1,6 +1,15 @@
-﻿#include "mov.hpp"
+﻿#include <string>
+#include <vector>
+#include <ostream>
+
+#include "cli.hpp"
+#include "mov.hpp"
 #include "blackbox.hpp"
 
-int main() {
-    return make_mov(black_box);
+auto main(int argc, char* argv[]) -> int {
+    std::vector<std::string> args;
+    for (int i = 1; i < argc; i++) {
+        args.push_back(std::string(argv[i]));
+    }
+    run_cli(std::cout, args);
 }

@@ -2,8 +2,13 @@ cmake_minimum_required(VERSION 3.17)
 
 project(Loopie CXX)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 find_package(PkgConfig REQUIRED)
 
+message(STATUS "C++ Standard: ${CMAKE_CXX_STANDARD}")
 message(STATUS "PKG_CONFIG_PATH is set to: $ENV{PKG_CONFIG_PATH}")
 
 pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
@@ -26,6 +31,8 @@ add_executable(${PROJECT_NAME}
     src/pixel.hpp
     src/main.cpp
     src/mov.hpp
+    src/cli.hpp
+    src/cli.cpp
     src/animation.hpp
     src/blackbox.cpp
     src/blackbox.hpp
