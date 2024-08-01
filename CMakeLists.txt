@@ -34,8 +34,8 @@ add_executable(${PROJECT_NAME}
     src/cli.hpp
     src/cli.cpp
     src/animation.hpp
-    src/blackbox.cpp
-    src/blackbox.hpp
+    src/black_box.cpp
+    src/black_box.hpp
 )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)

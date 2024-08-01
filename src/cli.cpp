@@ -3,7 +3,7 @@
 #include <span>
 #include <functional>
 
-#include "blackbox.hpp"
+#include "black_box.hpp"
 #include "mov.hpp"
 
 auto run_cli(std::ostream& out, std::vector<std::string>& args) -> int {

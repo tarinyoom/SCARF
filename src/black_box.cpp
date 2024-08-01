@@ -1,4 +1,4 @@
-#include "blackbox.hpp"
+#include "black_box.hpp"
 
 #include <cmath>
 #include <numbers>

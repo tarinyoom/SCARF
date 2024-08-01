@@ -1,10 +1,8 @@
 ﻿#include <string>
 #include <vector>
-#include <ostream>
+#include <iostream>
 
 #include "cli.hpp"
-#include "mov.hpp"
-#include "blackbox.hpp"
 
 auto main(int argc, char* argv[]) -> int {
     std::vector<std::string> args;
