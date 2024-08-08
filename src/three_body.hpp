@@ -2,14 +2,18 @@
 
 #include <array>
 
+#include <vector>
+
 #include "animation.hpp"
+#include "vector.hpp"
 
 struct Body {
-    std::array<double, 2> position;
-    std::array<double, 2> velocity;
+    Vector<2> position;
+    Vector<2> velocity;
 };
 
 struct ThreeBodyState {
+    ThreeBodyState(std::vector<Body>&&);
     std::vector<Body> bodies;
     double radius;
 };

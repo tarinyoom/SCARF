@@ -38,6 +38,7 @@ add_executable(${PROJECT_NAME}
     src/black_box.hpp
     src/three_body.cpp
     src/three_body.hpp
+    src/vector.hpp
 )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
@@ -46,7 +47,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${FFMPEG_INCLUDE_DIRS})
 
 # Debug: Print the target include directories
 get_target_property(target_include_dirs ${PROJECT_NAME} INCLUDE_DIRECTORIES)
-message(STATUS "Target include directories: ${target_include_dirs}")
+# message(STATUS "Target include directories: ${target_include_dirs}")
 
 # Link FFmpeg libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE PkgConfig::FFMPEG)
