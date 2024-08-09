@@ -12,21 +12,21 @@
 
 ThreeBodyState::ThreeBodyState(std::vector<Body>&& bs) {
     bodies = std::move(bs);
-    radius = 0.5;
+    radius = 0.3;
 }
 
 auto init() -> ThreeBodyState {
     return ThreeBodyState({
-        Body {{1.1, 1.0}, {0.0, -1.1}},
+        Body {{1.1, 1.0}, {-0.4, -1.1}},
         Body {{-1.1, 0.0}, {1.1, 0.0}},
-        Body {{0.0, -2.2}, {0.0, 1.1}}
+        Body {{0.0, -2.2}, {0.0, 0.1}}
     });
 }
 
 auto step_body(Body&& pre) -> Body {
     return {
         pre.position + pre.velocity * 0.1,
-        pre.position
+        pre.velocity
     };
 }
 
