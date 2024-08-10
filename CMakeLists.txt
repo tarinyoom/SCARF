@@ -34,8 +34,6 @@ add_executable(${PROJECT_NAME}
     src/cli.hpp
     src/cli.cpp
     src/animation.hpp
-    src/black_box.cpp
-    src/black_box.hpp
     src/three_body.cpp
     src/three_body.hpp
     src/vector.hpp
