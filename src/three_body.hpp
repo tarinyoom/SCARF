@@ -13,7 +13,6 @@ struct Body {
 };
 
 struct ThreeBodyState {
-    ThreeBodyState(std::vector<Body>&&);
     std::vector<Body> bodies;
     double radius;
 };
