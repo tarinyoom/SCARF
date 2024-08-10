@@ -41,20 +41,60 @@ auto step(ThreeBodyState&& pre) -> ThreeBodyState {
     return post;
 }
 
-auto screen_to_world(int row, int col) -> Vector<2> {
-    return {
-        (static_cast<double>(row) - 320.0) / 10.0,
-        (static_cast<double>(col) - 240.0) / 10.0};
+auto screen_to_world(int row, int col) -> std::vector<Vector<2>> {
+    std::vector<Vector<2>> pts;
+    pts.reserve(25); // for each point in MSAA grid
+    for (int i = -2; i <= 2; i++) {
+        for (int j = -2; j <= 2; j++) {
+            Vector<2> pt = {
+                (static_cast<double>(row) - 320.0) * 0.1 + i * 0.02,
+                (static_cast<double>(col) - 240.0) * 0.1 + j * 0.02
+            };
+            pts.push_back(std::move(pt));
+        }
+    }
+    return pts;
 }
 
-auto render(const ThreeBodyState& s, int row, int col) -> Pixel {
-    auto p = screen_to_world(row, col);
+auto mean(const std::vector<Pixel>& pxs) -> Pixel {
+    double r = 0.0;
+    double g = 0.0;
+    double b = 0.0;
+
+    for (auto& px: pxs) {
+        r += static_cast<double>(px.r);
+        g += static_cast<double>(px.g);
+        b += static_cast<double>(px.b);
+    }
+
+    auto n = static_cast<double>(pxs.size());
+    r /= n;
+    g /= n;
+    b /= n;
+
+    return {
+        static_cast<std::uint8_t>(r),
+        static_cast<std::uint8_t>(g),
+        static_cast<std::uint8_t>(b)
+    };
+}
+
+auto render_v(const ThreeBodyState& s, const Vector<2>& v) -> Pixel {
     for (auto& b : s.bodies) {
-        if (norm2(p, b.position) < s.radius * s.radius){
+        if (norm2(v, b.position) < s.radius * s.radius){
             return Pixel {127, 127, 255};
         }
     }
     return Pixel {0, 0, 0};
+}
+
+auto render(const ThreeBodyState& s, int row, int col) -> Pixel {
+    auto pts = screen_to_world(row, col);
+    std::vector<Pixel> pxs;
+    std::transform(pts.cbegin(), pts.cend(), std::back_inserter(pxs), [&](auto pt) {
+        return render_v(s, pt);
+    });
+    return mean(pxs);
 }
 
 Animation<ThreeBodyState> three_body = {
