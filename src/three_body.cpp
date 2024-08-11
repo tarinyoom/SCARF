@@ -88,13 +88,25 @@ auto render_v(const ThreeBodyState& s, const Vector<2>& v) -> Pixel {
     return Pixel {0, 0, 0};
 }
 
-auto render(const ThreeBodyState& s, int row, int col) -> Pixel {
+auto render_pixel(const ThreeBodyState& s, int row, int col) -> Pixel {
     auto pts = screen_to_world(row, col);
     std::vector<Pixel> pxs;
     std::transform(pts.cbegin(), pts.cend(), std::back_inserter(pxs), [&](auto pt) {
         return render_v(s, pt);
     });
     return mean(pxs);
+}
+
+auto render(const ThreeBodyState& s) -> std::vector<std::vector<Pixel>> {
+    std::vector<std::vector<Pixel>> rendering;
+    for (int i = 0; i < 640; i++) {
+        std::vector<Pixel> row;
+        for (int j = 0; j < 480; j++) {
+            row.push_back(render_pixel(s, i, j));
+        }
+        rendering.push_back(std::move(row));
+    }
+    return rendering;
 }
 
 Animation<ThreeBodyState> three_body = {
