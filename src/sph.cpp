@@ -13,13 +13,24 @@
 auto init() -> SPHState {
 	std::array<Vector<2>, N_PARTICLES> positions;
 	for (int i = 0; i < N_PARTICLES; i++) {
-		positions[i] = {i * 5.0, i * i * 2.5};
+		positions[i] = {3.0 + i * 2.5, 3.0 + i * 2.5};
 	}
 	return {positions};
 }
 
+auto step_vector(Vector<2>&& pre) -> Vector<2> {
+	auto rotation_velocity = 0.05;
+	auto s = std::sin(rotation_velocity);
+	auto c = std::cos(rotation_velocity);
+	return { c * pre.data_[0] - s * pre.data_[1], s * pre.data_[0] + c * pre.data_[1] };
+}
+
 auto step(SPHState&& pre) -> SPHState {
-	return pre;
+	SPHState post;
+	for (int i = 0; i < N_PARTICLES; i++) {
+		post.positions[i] = step_vector(std::move(pre.positions[i]));
+	}
+	return post;
 }
 
 auto initialize_empty_buffer() -> std::vector<std::vector<Pixel>> {
