@@ -31,8 +31,6 @@ add_executable(${PROJECT_NAME}
     src/pixel.hpp
     src/main.cpp
     src/mov.hpp
-    src/cli.hpp
-    src/cli.cpp
     src/animation.hpp
     src/sph.cpp
     src/sph.hpp
