@@ -34,8 +34,6 @@ add_executable(${PROJECT_NAME}
     src/animation.hpp
     src/sph.cpp
     src/sph.hpp
-    src/three_body.cpp
-    src/three_body.hpp
     src/vector.hpp
 )
 
