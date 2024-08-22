@@ -86,8 +86,8 @@ auto circle_interior(const Vector<2>& center, double radius) -> std::vector<std:
 	return pts;
 }
 
-auto render(const SPHState& s) -> Grid {
-	Grid buffer = { initialize_empty_buffer() };
+auto render(const SPHState& s) -> Grid<Pixel> {
+	Grid<Pixel> buffer = { initialize_empty_buffer() };
 	for (auto& p : s.positions) {
 		auto interior = circle_interior(p, 0.3);
 		for (auto& px : interior) {

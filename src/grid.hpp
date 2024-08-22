@@ -2,8 +2,7 @@
 
 #include <vector>
 
-#include "pixel.hpp"
-
+template <typename T>
 struct Grid {
-	std::vector<std::vector<Pixel>> data_;
+	std::vector<std::vector<T>> data_;
 };

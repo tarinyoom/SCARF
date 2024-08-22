@@ -22,7 +22,7 @@ extern "C" {
 }
 
 template <typename State>
-void fill_gradient(uint8_t *data, int linesize, const State& s, std::function<Grid(const State&)> f) {
+void fill_gradient(uint8_t *data, int linesize, const State& s, std::function<Grid<Pixel>(const State&)> f) {
     auto rendering = f(s);
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {

@@ -9,5 +9,5 @@ template <typename State>
 struct Animation {
 	std::function<State()> init;
 	std::function<State(State&&)> step;
-	std::function<Grid(const State&)> render;
+	std::function<Grid<Pixel>(const State&)> render;
 };
