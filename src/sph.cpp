@@ -34,18 +34,6 @@ auto step(SPHState&& pre) -> SPHState {
 	return post;
 }
 
-auto initialize_empty_buffer(std::vector<std::vector<Pixel>>& buffer) -> void {
-	buffer.reserve(640);
-	for (int i = 0; i < 640; i++) {
-		std::vector<Pixel> row;
-		row.reserve(480);
-		for (int j = 0; j < 480; j++) {
-			row.push_back({0, 0, 0});
-		}
-		buffer.push_back(std::move(row));
-	}
-}
-
 auto world_to_screen(const Vector<2>& v) -> std::pair<int, int> {
 	return {
 		static_cast<int>(std::round(v.data_[0] * pixels_per_unit) + 320.0),
@@ -85,8 +73,7 @@ auto circle_interior(const Vector<2>& center, double radius) -> std::vector<std:
 }
 
 auto render(const SPHState& s) -> Grid<Pixel> {
-	Grid<Pixel> buffer;
-	initialize_empty_buffer(buffer.data_);
+	Grid<Pixel> buffer(640, 480, Black);
 	for (auto& p : s.positions) {
 		auto interior = circle_interior(p, 0.3);
 		for (auto& px : interior) {
