@@ -28,6 +28,7 @@ message(STATUS "FFmpeg cflags: ${FFMPEG_CFLAGS_OTHER}")
 message(STATUS "FFmpeg ldflags: ${FFMPEG_LDFLAGS_OTHER}")
 
 add_executable(${PROJECT_NAME}
+    src/grid.hpp
     src/pixel.hpp
     src/main.cpp
     src/mov.hpp

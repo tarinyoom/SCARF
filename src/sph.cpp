@@ -8,6 +8,7 @@
 #include <numbers>
 #include <memory>
 
+#include "grid.hpp"
 #include "pixel.hpp"
 
 auto init() -> SPHState {
@@ -85,12 +86,12 @@ auto circle_interior(const Vector<2>& center, double radius) -> std::vector<std:
 	return pts;
 }
 
-auto render(const SPHState& s) -> std::vector<std::vector<Pixel>> {
-	auto buffer = initialize_empty_buffer();
+auto render(const SPHState& s) -> Grid {
+	Grid buffer = { initialize_empty_buffer() };
 	for (auto& p : s.positions) {
 		auto interior = circle_interior(p, 0.3);
 		for (auto& px : interior) {
-			buffer[px.first][px.second] = Pixel {127, 127, 255};
+			buffer.data_[px.first][px.second] = Pixel {127, 127, 255};
 		}
 	}
 	return buffer;
