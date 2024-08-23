@@ -28,6 +28,7 @@ message(STATUS "FFmpeg cflags: ${FFMPEG_CFLAGS_OTHER}")
 message(STATUS "FFmpeg ldflags: ${FFMPEG_LDFLAGS_OTHER}")
 
 add_executable(${PROJECT_NAME}
+    src/array.hpp
     src/grid.hpp
     src/pixel.hpp
     src/main.cpp
@@ -35,7 +36,6 @@ add_executable(${PROJECT_NAME}
     src/animation.hpp
     src/sph.cpp
     src/sph.hpp
-    src/vector.hpp
 )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)

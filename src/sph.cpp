@@ -11,6 +11,9 @@
 #include "grid.hpp"
 #include "pixel.hpp"
 
+template <std::size_t N>
+using Vector = std::array<double, N>;
+
 auto init() -> SPHState {
   std::array<Vector<2>, N_PARTICLES> positions;
   for (int i = 0; i < N_PARTICLES; i++) {
@@ -23,8 +26,7 @@ auto step_vector(Vector<2>&& pre) -> Vector<2> {
   auto rotation_velocity = 0.05;
   auto s = std::sin(rotation_velocity);
   auto c = std::cos(rotation_velocity);
-  return {c * pre.data_[0] - s * pre.data_[1],
-          s * pre.data_[0] + c * pre.data_[1]};
+  return {c * pre[0] - s * pre[1], s * pre[0] + c * pre[1]};
 }
 
 auto step(SPHState&& pre) -> SPHState {
@@ -36,8 +38,8 @@ auto step(SPHState&& pre) -> SPHState {
 }
 
 auto world_to_screen(const Vector<2>& v) -> std::pair<int, int> {
-  return {static_cast<int>(std::round(v.data_[0] * pixels_per_unit) + 320.0),
-          static_cast<int>(std::round(v.data_[1] * pixels_per_unit) + 240.0)};
+  return {static_cast<int>(std::round(v[0] * pixels_per_unit) + 320.0),
+          static_cast<int>(std::round(v[1] * pixels_per_unit) + 240.0)};
 }
 
 auto screen_to_world(const std::pair<int, int>& v) -> Vector<2> {
