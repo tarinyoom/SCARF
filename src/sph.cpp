@@ -17,7 +17,7 @@ using Vector = std::array<double, N>;
 auto init() -> SPHState {
   std::array<Vector<2>, N_PARTICLES> positions;
   for (int i = 0; i < N_PARTICLES; i++) {
-    positions[i] = {3.0 + i * 2.5, 3.0 + i * 2.5};
+    positions[i] = {3.0 + i * 1.0, 3.0 + i * 1.0};
   }
   return {positions};
 }
@@ -76,7 +76,7 @@ auto circle_interior(const Vector<2>& center,
 auto render(const SPHState& s) -> Grid<Pixel> {
   Grid<Pixel> buffer(640, 480, Black);
   for (auto& p : s.positions) {
-    auto interior = circle_interior(p, 0.3);
+    auto interior = circle_interior(p, 2.0);
     for (auto& [i, j] : interior) {
       buffer[i][j] = Blue;
     }
