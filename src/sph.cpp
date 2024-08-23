@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <memory>
 
+#include "array.tpp"
 #include "bbox.hpp"
 #include "grid.hpp"
 #include "matrix.hpp"

@@ -29,7 +29,7 @@ message(STATUS "FFmpeg ldflags: ${FFMPEG_LDFLAGS_OTHER}")
 
 add_executable(${PROJECT_NAME}
     src/animation.hpp
-    src/array.hpp
+    src/array.tpp
     src/bbox.hpp
     src/grid.hpp
     src/main.cpp

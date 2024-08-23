@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "animation.hpp"
-#include "array.hpp"
 
 constexpr std::size_t N_PARTICLES = 10;
 
