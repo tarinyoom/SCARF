@@ -9,3 +9,4 @@ struct Pixel {
 };
 
 static const Pixel Black = {0, 0, 0};
+static const Pixel Blue = {127, 127, 255};

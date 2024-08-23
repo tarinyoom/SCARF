@@ -75,8 +75,8 @@ auto render(const SPHState& s) -> Grid<Pixel> {
   Grid<Pixel> buffer(640, 480, Black);
   for (auto& p : s.positions) {
     auto interior = circle_interior(p, 0.3);
-    for (auto& px : interior) {
-      buffer.data_[px.first][px.second] = Pixel{127, 127, 255};
+    for (auto& [i, j] : interior) {
+      buffer[i][j] = Blue;
     }
   }
   return buffer;

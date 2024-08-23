@@ -27,7 +27,7 @@ void fill_gradient(uint8_t* data, int linesize, const State& s,
   auto rendering = f(s);
   for (int y = 0; y < height; ++y) {
     for (int x = 0; x < width; ++x) {
-      auto px = rendering.data_[x][y];
+      auto px = rendering[x][y];
       data[y * linesize + x * 3] = px.r;      // Red
       data[y * linesize + x * 3 + 1] = px.g;  // Green
       data[y * linesize + x * 3 + 2] = px.b;  // Blue
