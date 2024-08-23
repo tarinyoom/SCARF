@@ -12,7 +12,7 @@ struct Matrix {
     std::array<T, M> result;
     for (auto i = 0; i < M; i++) {
       result[i] = data_[i][0] * v[0];
-      for (auto j = 0; j < N; j++) {
+      for (auto j = 1; j < N; j++) {
         result[i] += data_[i][j] * v[j];
       }
     }

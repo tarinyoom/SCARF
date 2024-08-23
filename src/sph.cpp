@@ -39,18 +39,19 @@ auto step(SPHState&& pre) -> SPHState {
 }
 
 static Matrix<double, 3, 3> world_to_screen{
-    {{{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}}}};
+    {{{10.0, 0.0, 320.0}, {0.0, 10.0, 240.0}, {0.0, 0.0, 1.0}}}};
 
 static Matrix<double, 3, 3> screen_to_world{
-    {{{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}}}};
+    {{{0.1, 0.0, -32.0}, {0.0, 0.1, -24.0}, {0.0, 0.0, 1.0}}}};
 
 auto render_circle(const Vector<2>& center, const Bbox<int, 2>& bounds,
                    Grid<Pixel>& buffer) {
   for (auto i = bounds.min[0]; i < bounds.max[0]; i++) {
     for (auto j = bounds.min[1]; j < bounds.max[1]; j++) {
-      auto p = cast_double(std::array{i, j});
-      auto diff = p - center;
-      if (diff * diff < 0.5) {
+      auto p_screen = homogenize(cast_double(std::array<int, 2>{i, j}));
+      auto p_world = screen_to_world * p_screen;
+      auto diff = center - dehomogenize(p_world);
+      if (diff * diff < r2) {
         buffer[i][j] = Blue;
       }
     }
@@ -64,9 +65,10 @@ auto render(const SPHState& s) -> Grid<Pixel> {
   // For each position, render a circle
   for (auto& pos : s.positions) {
     // Find bounding box in world space
-    auto pos_w = homogenize(pos);
-    Vector<3> radius_offset = {0.5, 0.5, 1.0};
-    Bbox<double, 3> bounds_w = {pos_w - radius_offset, pos_w + radius_offset};
+    auto pos_w = pos;
+    Vector<2> radius_offset = {r, r};
+    Bbox<double, 3> bounds_w = {homogenize(pos_w - radius_offset),
+                                homogenize(pos_w + radius_offset)};
 
     // Convert bounding box to pixel space
     auto bounds_s = bounds_w.transform(world_to_screen);
