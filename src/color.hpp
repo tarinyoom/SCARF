@@ -15,5 +15,5 @@ struct Color {
 };
 
 static const Color Black = {0.0, 0.0, 0.0};
-static const Color Red = {1.0, 0.0, 0.0};
+static const Color Blue = {0.2, 0.4, 0.8};
 static const Color White = {1.0, 1.0, 1.0};

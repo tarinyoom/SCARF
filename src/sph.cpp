@@ -66,7 +66,7 @@ auto render_circle(const Vector<2>& center, const Bbox<int, 2>& bounds,
       auto p_screen = homogenize(cast_double(std::array<int, 2>{i, j}));
       auto p_world = screen_to_world * p_screen;
       auto dehom = dehomogenize(p_world);
-      buffer[i][j] += (Red * kernel(center, dehom, OUTER_R));
+      buffer[i][j] += (Blue * kernel(center, dehom, OUTER_R));
       buffer[i][j] += (White * kernel(center, dehom, INNER_R));
     }
   }
