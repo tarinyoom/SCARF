@@ -18,11 +18,11 @@ template <std::size_t N>
 using Vector = std::array<double, N>;
 
 auto init() -> SPHState {
-  std::array<Vector<2>, N_PARTICLES> positions;
-  for (int i = 0; i < N_PARTICLES; i++) {
-    positions[i] = {3.0 + i * 1.0, 3.0 + i * 1.0};
+  SPHState state;
+  for (auto i = 0; i < state.positions.size(); i++) {
+    state.positions[i] = {3.0 + i * 1.0, 3.0 + i * 1.0};
   }
-  return {positions};
+  return state;
 }
 
 auto step_vector(Vector<2>&& pre) -> Vector<2> {
@@ -34,7 +34,7 @@ auto step_vector(Vector<2>&& pre) -> Vector<2> {
 
 auto step(SPHState&& pre) -> SPHState {
   SPHState post;
-  for (int i = 0; i < N_PARTICLES; i++) {
+  for (int i = 0; i < pre.positions.size(); i++) {
     post.positions[i] = step_vector(std::move(pre.positions[i]));
   }
   return post;
