@@ -53,7 +53,7 @@ auto render_circle(const Vector<2>& center, const Bbox<int, 2>& bounds,
       auto p_world = screen_to_world * p_screen;
       auto diff = center - dehomogenize(p_world);
       if (diff * diff < r2) {
-        buffer[i][j] = Blue;
+        buffer[i][j] += Blue;
       }
     }
   }
