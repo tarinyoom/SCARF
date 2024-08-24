@@ -23,23 +23,25 @@ auto init() -> SPHState {
   state.boundary = {{-30.0, -22.0}, {30.0, 22.0}};
 
   std::mt19937 gen(0);
-  std::uniform_real_distribution<> x_dis(state.boundary.min[0],
-                                         state.boundary.max[0]);
-  std::uniform_real_distribution<> y_dis(state.boundary.min[1],
-                                         state.boundary.max[1]);
+  std::uniform_real_distribution<> p_x(state.boundary.min[0],
+                                       state.boundary.max[0]);
+  std::uniform_real_distribution<> p_y(state.boundary.min[1],
+                                       state.boundary.max[1]);
+  std::uniform_real_distribution<> v_x(-1.0, 1.0);
+  std::uniform_real_distribution<> v_y(-1.0, 1.0);
 
   for (auto i = 0; i < state.positions.size(); i++) {
-    state.positions[i] = {x_dis(gen), y_dis(gen)};
+    state.positions[i] = {p_x(gen), p_y(gen)};
+    state.velocities[i] = {v_x(gen), v_y(gen)};
   }
   return state;
 }
 
-auto step_vector(Vector<2>&& pre) -> Vector<2> { return pre; }
-
 auto step(SPHState&& pre) -> SPHState {
   SPHState post;
   for (int i = 0; i < pre.positions.size(); i++) {
-    post.positions[i] = step_vector(std::move(pre.positions[i]));
+    post.positions[i] = pre.positions[i] + 0.1 * pre.velocities[i];
+    post.velocities[i] = pre.velocities[i];
   }
   return post;
 }

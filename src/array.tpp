@@ -36,9 +36,14 @@ template <typename T, std::size_t N>
 auto operator*(const std::array<T, N>& v, const T& f) -> std::array<T, N> {
   std::array<T, N> result;
   for (auto i = 0; i < N; i++) {
-    result += v[i] * f;
+    result[i] = v[i] * f;
   }
   return result;
+}
+
+template <typename T, std::size_t N>
+auto operator*(const T& f, const std::array<T, N>& v) -> std::array<T, N> {
+  return v * f;
 }
 
 template <typename T, std::size_t N>
