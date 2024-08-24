@@ -27,8 +27,8 @@ auto init() -> SPHState {
                                        state.boundary.max[0]);
   std::uniform_real_distribution<> p_y(state.boundary.min[1],
                                        state.boundary.max[1]);
-  std::uniform_real_distribution<> v_x(-10.0, 10.0);
-  std::uniform_real_distribution<> v_y(-10.0, 10.0);
+  std::uniform_real_distribution<> v_x(-30.0, 30.0);
+  std::uniform_real_distribution<> v_y(-30.0, 30.0);
 
   for (auto i = 0; i < state.positions.size(); i++) {
     state.positions[i] = {p_x(gen), p_y(gen)};
@@ -37,10 +37,10 @@ auto init() -> SPHState {
   return state;
 }
 
-auto step(SPHState&& pre) -> SPHState {
+auto step(SPHState&& pre, double h) -> SPHState {
   SPHState post;
   for (auto i = 0; i < pre.positions.size(); i++) {
-    post.positions[i] = std::move(pre.positions[i]) + 0.1 * pre.velocities[i];
+    post.positions[i] = std::move(pre.positions[i]) + h * pre.velocities[i];
     post.velocities[i] = std::move(pre.velocities[i]);
     post.boundary = std::move(pre.boundary);
 

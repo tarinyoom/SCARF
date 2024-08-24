@@ -13,8 +13,8 @@ constexpr auto INNER_R = 0.1;
 constexpr auto INNER_R2 = INNER_R * INNER_R;
 
 struct SPHState {
-  std::array<std::array<double, 2>, 8> positions;
-  std::array<std::array<double, 2>, 8> velocities;
+  std::array<std::array<double, 2>, 32> positions;
+  std::array<std::array<double, 2>, 32> velocities;
   Bbox<double, 2> boundary;
 };
 

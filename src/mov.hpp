@@ -8,8 +8,9 @@
 
 const int width = 640;
 const int height = 480;
-const int fps = 30;
-const int duration = 10;  // seconds
+const int fps = 60;
+const int duration = 5;  // seconds
+constexpr auto h = 1.0 / static_cast<double>(fps);
 
 #include <iostream>
 
@@ -140,7 +141,7 @@ auto make_mov(Animation<State> anim) -> int {
     static int frame_number = 1;
     std::cout << "Generating frame " << frame_number++ << " of "
               << duration * fps << std::endl;
-    s = anim.step(std::move(s));
+    s = anim.step(std::move(s), h);
 
     sws_scale(sws_context, rgb_data, rgb_linesize, 0, height, frame->data,
               frame->linesize);
