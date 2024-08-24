@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <memory>
 #include <numbers>
+#include <random>
 
 #include "array.tpp"
 #include "bbox.hpp"
@@ -19,18 +20,21 @@ using Vector = std::array<double, N>;
 
 auto init() -> SPHState {
   SPHState state;
+  state.boundary = {{-30.0, -22.0}, {30.0, 22.0}};
+
+  std::mt19937 gen(0);
+  std::uniform_real_distribution<> x_dis(state.boundary.min[0],
+                                         state.boundary.max[0]);
+  std::uniform_real_distribution<> y_dis(state.boundary.min[1],
+                                         state.boundary.max[1]);
+
   for (auto i = 0; i < state.positions.size(); i++) {
-    state.positions[i] = {3.0 + i * 1.0, 3.0 + i * 1.0};
+    state.positions[i] = {x_dis(gen), y_dis(gen)};
   }
   return state;
 }
 
-auto step_vector(Vector<2>&& pre) -> Vector<2> {
-  auto rotation_velocity = 0.05;
-  auto s = std::sin(rotation_velocity);
-  auto c = std::cos(rotation_velocity);
-  return {c * pre[0] - s * pre[1], s * pre[0] + c * pre[1]};
-}
+auto step_vector(Vector<2>&& pre) -> Vector<2> { return pre; }
 
 auto step(SPHState&& pre) -> SPHState {
   SPHState post;
@@ -46,7 +50,8 @@ static Matrix<double, 3, 3> world_to_screen{
 static Matrix<double, 3, 3> screen_to_world{
     {{{0.1, 0.0, -32.0}, {0.0, 0.1, -24.0}, {0.0, 0.0, 1.0}}}};
 
-auto kernel(const Vector<2>& a, const Vector<2>& b, double r) -> double {
+auto kernel(const Vector<2>& a, const Vector<2>& b, double r,
+            double scale) -> double {
   auto diff = a - b;
   auto d2 = diff * diff;
   if (d2 > r * r) {
@@ -54,7 +59,7 @@ auto kernel(const Vector<2>& a, const Vector<2>& b, double r) -> double {
   }
 
   auto c = r * r - d2;
-  auto numerator = 4.0 * c * c * c;
+  auto numerator = 4.0 * c * c * c * scale;
   auto denominator = std::numbers::pi * std::pow(r, 8.0);
   return numerator / denominator;
 }
@@ -66,8 +71,8 @@ auto render_circle(const Vector<2>& center, const Bbox<int, 2>& bounds,
       auto p_screen = homogenize(cast_double(std::array<int, 2>{i, j}));
       auto p_world = screen_to_world * p_screen;
       auto dehom = dehomogenize(p_world);
-      buffer[i][j] += (Blue * kernel(center, dehom, OUTER_R));
-      buffer[i][j] += (White * kernel(center, dehom, INNER_R));
+      buffer[i][j] += (Blue * kernel(center, dehom, OUTER_R, 3.0));
+      buffer[i][j] += (White * kernel(center, dehom, INNER_R, 1.0));
     }
   }
 }
