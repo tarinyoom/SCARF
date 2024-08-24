@@ -66,15 +66,39 @@ auto kernel(const Vector<2>& a, const Vector<2>& b, double r,
   return numerator / denominator;
 }
 
+auto get_light(const std::array<double, 2>& p,
+               const std::array<double, 2>& center) -> Color {
+  auto p_screen = homogenize(p);
+  auto p_world = screen_to_world * p_screen;
+  auto dehom = dehomogenize(p_world);
+  return Blue * kernel(center, dehom, OUTER_R, 3.0) +
+         White * kernel(center, dehom, INNER_R, 1.0);
+}
+
+auto clamp(const Color& c) -> Color {
+  return {std::clamp(c.r, 0.0, 1.0), std::clamp(c.g, 0.0, 1.0),
+          std::clamp(c.b, 0.0, 1.0)};
+}
+
 auto render_circle(const Vector<2>& center, const Bbox<int, 2>& bounds,
                    Grid<Color>& buffer) {
   for (auto i = bounds.min[0]; i < bounds.max[0]; i++) {
     for (auto j = bounds.min[1]; j < bounds.max[1]; j++) {
-      auto p_screen = homogenize(cast_double(std::array<int, 2>{i, j}));
-      auto p_world = screen_to_world * p_screen;
-      auto dehom = dehomogenize(p_world);
-      buffer[i][j] += (Blue * kernel(center, dehom, OUTER_R, 3.0));
-      buffer[i][j] += (White * kernel(center, dehom, INNER_R, 1.0));
+      Color c = {0.0, 0.0, 0.0};
+      for (auto di = 0; di < 5; di++) {
+        for (auto dj = 0; dj < 5; dj++) {
+          // Subsampling at -.4, -.2, 0, .2, .4
+          auto i_subsample =
+              static_cast<double>(i) - 0.4 + 0.2 * static_cast<double>(di);
+          auto j_subsample =
+              static_cast<double>(j) - 0.4 + 0.2 * static_cast<double>(dj);
+          Color dc = get_light(std::array<double, 2>{i_subsample, j_subsample},
+                               center) *
+                     (1.0 / 25.0);
+          c += clamp(dc);
+        }
+      }
+      buffer[i][j] += c;
     }
   }
 }

@@ -9,6 +9,10 @@ struct Color {
 
   auto operator*(double f) const -> Color { return {r * f, g * f, b * f}; }
 
+  auto operator+(const Color& other) const -> Color {
+    return {r + other.r, g + other.g, b + other.b};
+  }
+
   double r;
   double g;
   double b;
