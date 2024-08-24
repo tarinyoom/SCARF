@@ -7,6 +7,8 @@ struct Color {
     b += other.b;
   }
 
+  auto operator*(double f) const -> Color { return {r * f, g * f, b * f}; }
+
   double r;
   double g;
   double b;

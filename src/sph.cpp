@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstddef>
 #include <memory>
+#include <numbers>
 
 #include "array.tpp"
 #include "bbox.hpp"
@@ -45,16 +46,26 @@ static Matrix<double, 3, 3> world_to_screen{
 static Matrix<double, 3, 3> screen_to_world{
     {{{0.1, 0.0, -32.0}, {0.0, 0.1, -24.0}, {0.0, 0.0, 1.0}}}};
 
+auto kernel(const Vector<2>& a, const Vector<2>& b) -> double {
+  auto diff = a - b;
+  auto d2 = diff * diff;
+  if (d2 > r2) {
+    return 0.0;
+  }
+
+  auto c = r * r - d2;
+  auto numerator = 4.0 * c * c * c;
+  auto denominator = std::numbers::pi * std::pow(r, 8.0);
+  return numerator / denominator;
+}
+
 auto render_circle(const Vector<2>& center, const Bbox<int, 2>& bounds,
                    Grid<Color>& buffer) {
   for (auto i = bounds.min[0]; i < bounds.max[0]; i++) {
     for (auto j = bounds.min[1]; j < bounds.max[1]; j++) {
       auto p_screen = homogenize(cast_double(std::array<int, 2>{i, j}));
       auto p_world = screen_to_world * p_screen;
-      auto diff = center - dehomogenize(p_world);
-      if (diff * diff < r2) {
-        buffer[i][j] += Blue;
-      }
+      buffer[i][j] += (Blue * kernel(center, dehomogenize(p_world)));
     }
   }
 }
