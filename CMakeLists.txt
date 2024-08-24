@@ -6,10 +6,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(PkgConfig REQUIRED)
-
 message(STATUS "C++ Standard: ${CMAKE_CXX_STANDARD}")
 message(STATUS "PKG_CONFIG_PATH is set to: $ENV{PKG_CONFIG_PATH}")
+
+find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
     libavdevice
@@ -21,37 +21,15 @@ pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
     libavutil
 )
 
-# Debug: Print FFmpeg package information
-message(STATUS "FFmpeg include dirs: ${FFMPEG_INCLUDE_DIRS}")
-message(STATUS "FFmpeg libraries: ${FFMPEG_LIBRARIES}")
-message(STATUS "FFmpeg cflags: ${FFMPEG_CFLAGS_OTHER}")
-message(STATUS "FFmpeg ldflags: ${FFMPEG_LDFLAGS_OTHER}")
+# Add executable target
+add_executable(${PROJECT_NAME})
 
-add_executable(${PROJECT_NAME}
-    src/animation.hpp
-    src/array.tpp
-    src/bbox.hpp
-    src/color.hpp
-    src/grid.hpp
-    src/main.cpp
-    src/mov.hpp
-    src/pixel.hpp
-    src/rendering.tpp
-    src/sph.cpp
-    src/sph.hpp
-)
-
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
-
+# Include FFmpeg headers and link libraries globally
 target_include_directories(${PROJECT_NAME} PRIVATE ${FFMPEG_INCLUDE_DIRS})
-
-# Debug: Print the target include directories
-get_target_property(target_include_dirs ${PROJECT_NAME} INCLUDE_DIRECTORIES)
-# message(STATUS "Target include directories: ${target_include_dirs}")
-
-# Link FFmpeg libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE PkgConfig::FFMPEG)
 
-# Add pkg-config flags
+# Add pkg-config flags globally
 target_compile_options(${PROJECT_NAME} PRIVATE ${FFMPEG_CFLAGS_OTHER})
 target_link_options(${PROJECT_NAME} PRIVATE ${FFMPEG_LDFLAGS_OTHER})
+
+add_subdirectory(src)
