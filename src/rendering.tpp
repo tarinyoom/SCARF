@@ -1,8 +1,8 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
-#include <algorithm>
 
 #include "bbox.hpp"
 
@@ -28,16 +28,16 @@ auto conservative_integral_bounds(const Bbox<double, N>& b) -> Bbox<int, N> {
 
 template <std::size_t N>
 auto homogenize(const std::array<double, N>& v) -> std::array<double, N + 1> {
-    std::array<double, N + 1> result;
-    for (std::size_t i = 0; i < N; ++i) {
-        result[i] = v[i];
-    }
-    result[N] = 1.0;
-    return result;
+  std::array<double, N + 1> result;
+  for (std::size_t i = 0; i < N; ++i) {
+    result[i] = v[i];
+  }
+  result[N] = 1.0;
+  return result;
 }
 
 template <std::size_t N>
-requires (N > 0)
+  requires(N > 0)
 auto dehomogenize(const std::array<double, N>& v) -> std::array<double, N - 1> {
   std::array<double, N - 1> result;
   auto scale = 1.0 / v[N - 1];

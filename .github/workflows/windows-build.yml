@@ -21,7 +21,7 @@ jobs:
       run: clang-format --version
 
     - name: Formatting
-      run: clang-format --style=Google src/*.cpp src/*.hpp -Werror --dry-run
+      run: clang-format --style=Google src/*.cpp src/*.hpp src/*.tpp -Werror --dry-run
 
     - name: Install PkgConfig
       run: choco install pkgconfiglite --version=0.28
