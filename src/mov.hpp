@@ -137,6 +137,9 @@ auto make_mov(Animation<State> anim) -> int {
     uint8_t* rgb_data[1] = {new uint8_t[width * height * 3]};
     int rgb_linesize[1] = {3 * width};
     fill_gradient(rgb_data[0], rgb_linesize[0], s, anim.render);
+    static int frame_number = 1;
+    std::cout << "Generating frame " << frame_number++ << " of "
+              << duration * fps << std::endl;
     s = anim.step(std::move(s));
 
     sws_scale(sws_context, rgb_data, rgb_linesize, 0, height, frame->data,
