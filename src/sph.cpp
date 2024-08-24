@@ -7,6 +7,7 @@
 
 #include "array.tpp"
 #include "bbox.hpp"
+#include "color.hpp"
 #include "grid.hpp"
 #include "matrix.hpp"
 #include "pixel.hpp"
@@ -45,7 +46,7 @@ static Matrix<double, 3, 3> screen_to_world{
     {{{0.1, 0.0, -32.0}, {0.0, 0.1, -24.0}, {0.0, 0.0, 1.0}}}};
 
 auto render_circle(const Vector<2>& center, const Bbox<int, 2>& bounds,
-                   Grid<Pixel>& buffer) {
+                   Grid<Color>& buffer) {
   for (auto i = bounds.min[0]; i < bounds.max[0]; i++) {
     for (auto j = bounds.min[1]; j < bounds.max[1]; j++) {
       auto p_screen = homogenize(cast_double(std::array<int, 2>{i, j}));
@@ -58,8 +59,30 @@ auto render_circle(const Vector<2>& center, const Bbox<int, 2>& bounds,
   }
 }
 
+auto quantize(double v) -> std::uint8_t {
+  auto clamped = std::clamp(v, 0.0, 1.0);
+  auto rounded = std::round(clamped * 255.0);
+  auto result = static_cast<std::uint8_t>(rounded);
+  return result;
+}
+
+auto finalize(Grid<Color>&& buffer) -> Grid<Pixel> {
+  auto [m, n] = buffer.size();
+  Grid<Pixel> result(m, n, {0, 0, 0});
+  for (auto i = 0; i < m; i++) {
+    for (auto j = 0; j < n; j++) {
+      auto& color = buffer[i][j];
+      auto r = quantize(color.r);
+      auto g = quantize(color.g);
+      auto b = quantize(color.b);
+      result[i][j] = {r, g, b};
+    }
+  }
+  return result;
+}
+
 auto render(const SPHState& s) -> Grid<Pixel> {
-  Grid<Pixel> buffer(640, 480, Black);
+  Grid<Color> buffer(640, 480, Black);
   auto buffer_bounds = buffer.bounds();
 
   // For each position, render a circle
@@ -78,7 +101,7 @@ auto render(const SPHState& s) -> Grid<Pixel> {
     // Render circle into buffer
     render_circle(pos, clipped_bounds, buffer);
   }
-  return buffer;
+  return finalize(std::move(buffer));
 }
 
 Animation<SPHState> sph_animation = {init, step, render};

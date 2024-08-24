@@ -31,6 +31,7 @@ add_executable(${PROJECT_NAME}
     src/animation.hpp
     src/array.tpp
     src/bbox.hpp
+    src/color.hpp
     src/grid.hpp
     src/main.cpp
     src/mov.hpp

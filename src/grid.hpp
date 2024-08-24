@@ -13,7 +13,9 @@ struct Grid {
 
   auto operator[](int i) -> std::vector<T>& { return data_[i]; }
 
-  auto bounds() -> Bbox<int, 2> { return {{0, 0}, {m_, n_}}; }
+  auto size() const -> std::array<int, 2> { return {m_, n_}; }
+
+  auto bounds() const -> Bbox<int, 2> { return {{0, 0}, {m_, n_}}; }
 
  private:
   int m_;
