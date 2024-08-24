@@ -9,7 +9,7 @@
 const int width = 640;
 const int height = 480;
 const int fps = 30;
-const int duration = 5;  // seconds
+const int duration = 10;  // seconds
 
 #include <iostream>
 
@@ -44,7 +44,7 @@ auto make_mov(Animation<State> anim) -> int {
   AVPacket packet;
 
   avformat_alloc_output_context2(&format_context, nullptr, "mov",
-                                 "gradient.mov");
+                                 "simulation.mov");
   if (!format_context) {
     std::cerr << "Could not create output context" << std::endl;
     return 1;
@@ -98,7 +98,7 @@ auto make_mov(Animation<State> anim) -> int {
   }
 
   if (!(output_format->flags & AVFMT_NOFILE)) {
-    if (avio_open(&format_context->pb, "gradient.mov", AVIO_FLAG_WRITE) < 0) {
+    if (avio_open(&format_context->pb, "simulation.mov", AVIO_FLAG_WRITE) < 0) {
       std::cerr << "Could not open output file" << std::endl;
       return 1;
     }
