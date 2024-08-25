@@ -12,11 +12,8 @@ message(STATUS "PKG_CONFIG_PATH is set to: $ENV{PKG_CONFIG_PATH}")
 find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
-    libavdevice
-    libavfilter
     libavformat
     libavcodec
-    libswresample
     libswscale
     libavutil
 )
