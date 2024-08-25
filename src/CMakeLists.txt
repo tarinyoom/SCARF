@@ -21,6 +21,7 @@ target_sources(scarf PRIVATE
     color.hpp
     grid.hpp
     main.cpp
+    mov.cpp
     mov.hpp
     pixel.hpp
     rendering.tpp
