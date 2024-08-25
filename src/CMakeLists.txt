@@ -1,3 +1,7 @@
+# Define the static library target
+add_library(scarflib STATIC)
+
+# Find and link FFmpeg libraries
 pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
     libavformat
     libavcodec
@@ -5,15 +9,15 @@ pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
     libavutil
 )
 
-# Include FFmpeg headers and link libraries globally
+# Include FFmpeg headers and link libraries scarflib
 target_include_directories(scarflib PRIVATE ${FFMPEG_INCLUDE_DIRS})
 target_link_libraries(scarflib PRIVATE PkgConfig::FFMPEG)
 
-# Add pkg-config flags globally
+# Add pkg-config flags
 target_compile_options(scarflib PRIVATE ${FFMPEG_CFLAGS_OTHER})
 target_link_options(scarflib PRIVATE ${FFMPEG_LDFLAGS_OTHER})
 
-# Set the source files for the library
+# Set the source files for the scarflib library
 set(SRC_FILES
     animation.hpp
     array.tpp
@@ -31,5 +35,5 @@ set(SRC_FILES
 # Add the source files to the scarflib target
 target_sources(scarflib PRIVATE ${SRC_FILES})
 
-# Include directories for the library
+# Set the include directories for scarflib
 target_include_directories(scarflib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
