@@ -6,21 +6,20 @@ pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
 )
 
 # Include FFmpeg headers and link libraries globally
-target_include_directories(scarf PRIVATE ${FFMPEG_INCLUDE_DIRS})
-target_link_libraries(scarf PRIVATE PkgConfig::FFMPEG)
+target_include_directories(scarflib PRIVATE ${FFMPEG_INCLUDE_DIRS})
+target_link_libraries(scarflib PRIVATE PkgConfig::FFMPEG)
 
 # Add pkg-config flags globally
-target_compile_options(scarf PRIVATE ${FFMPEG_CFLAGS_OTHER})
-target_link_options(scarf PRIVATE ${FFMPEG_LDFLAGS_OTHER})
+target_compile_options(scarflib PRIVATE ${FFMPEG_CFLAGS_OTHER})
+target_link_options(scarflib PRIVATE ${FFMPEG_LDFLAGS_OTHER})
 
-# Define the executable and list of source files
-target_sources(scarf PRIVATE
+# Set the source files for the library
+set(SRC_FILES
     animation.hpp
     array.tpp
     bbox.hpp
     color.hpp
     grid.hpp
-    main.cpp
     mov.cpp
     mov.hpp
     pixel.hpp
@@ -28,3 +27,9 @@ target_sources(scarf PRIVATE
     sph.cpp
     sph.hpp
 )
+
+# Add the source files to the scarflib target
+target_sources(scarflib PRIVATE ${SRC_FILES})
+
+# Include directories for the library
+target_include_directories(scarflib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

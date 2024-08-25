@@ -11,7 +11,11 @@ message(STATUS "PKG_CONFIG_PATH is set to: $ENV{PKG_CONFIG_PATH}")
 
 find_package(PkgConfig REQUIRED)
 
+# Add static library target
+add_library(scarflib STATIC)
+
 # Add executable target
 add_executable(scarf)
 
 add_subdirectory(src)
+add_subdirectory(tools)
