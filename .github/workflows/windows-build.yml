@@ -13,11 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Formatting Version
-      run: clang-format --version
-
     - name: Formatting
-      run: clang-format --style=Google lib/*.cpp lib/*.hpp lib/*.tpp -Werror --dry-run
+      run: .\format.ps1 -Werror --dry-run
 
     - name: Install PkgConfig
       run: choco install pkgconfiglite --version=0.28

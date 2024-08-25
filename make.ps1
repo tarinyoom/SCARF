@@ -1,10 +1,7 @@
 $buildDirectory = Join-Path -Path $PSScriptRoot -ChildPath "build"
+$formatScript = Join-Path -Path $PSScriptRoot -ChildPath "format.ps1"
 
-# Format source files in library
-$files = Get-ChildItem -Path "lib" -Recurse -File | Where-Object { $_.Extension -in (".hpp", ".tpp", ".cpp") }
-foreach ($file in $files) {
-	& clang-format --style=Google -i $file.FullName
-}
+& $formatScript -i
 
 if (-Not (Test-Path -Path $buildDirectory)) {
     New-Item -ItemType Directory -Path $buildDirectory
