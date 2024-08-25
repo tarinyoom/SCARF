@@ -11,5 +11,5 @@ message(STATUS "PKG_CONFIG_PATH is set to: $ENV{PKG_CONFIG_PATH}")
 
 find_package(PkgConfig REQUIRED)
 
-add_subdirectory(src)
+add_subdirectory(lib)
 add_subdirectory(tools)
