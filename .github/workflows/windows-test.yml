@@ -1,4 +1,4 @@
-name: Windows Conan Build
+name: Windows Test
 
 on:
   push:
@@ -27,3 +27,6 @@ jobs:
 
     - name: Build Project
       run: .\make.ps1
+
+    - name: Run Tests
+      run: .\test.ps1
