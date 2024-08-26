@@ -13,3 +13,4 @@ find_package(PkgConfig REQUIRED)
 
 add_subdirectory(lib)
 add_subdirectory(tools)
+add_subdirectory(tests)

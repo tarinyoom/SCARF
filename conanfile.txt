@@ -1,5 +1,6 @@
 [requires]
 ffmpeg/6.1
+gtest/1.13.0
 
 [generators]
 PkgConfigDeps
