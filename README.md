@@ -1,38 +1,20 @@
-# Loopie
-This is a test of the FFMPEG library in generating .mov files.
+# SCARF
+A second crack at rendering fluids.
+This project is a first-principles view of simulating and rendering fluids.
+It has only one dependency, which is FFMPEG, for taking pixel values and converting them to an output .mov file.
 
 # Building and Running
+This project has the following requirements:
+- cmake >= 3.17
+- pkgconfiglite >= 0.28
+- conan >= 2.4.1
 
-First, ensure that conan, cmake, and PkgConfig are installed.
+To build the project, use:
 
-Then, install dependencies using:
-```
-conan install . --output-folder=build --build=missing
-```
+```.\make.ps1```
 
-Then, set the build directory as the `PKG_CONFIG_PATH` environment variable.
+To run the project, use:
 
-Then, navigate to the build directory:
-```
-cd build
-```
+```.\run.ps1```
 
-and generate build scripts:
-```
-cmake ..
-```
-
-and execute the build itself:
-```
-cmake --build . --config Release
-```
-
-Finally, navigate back to the root and run the program!
-```
-cd ..
-./build/Release/Loopie.exe
-```
-
-This will generate a .mov file to your root directory.
-
-The build steps described here are also implemented in the `.github/workflows/` folder.
+See the `.github/workflows/windows-build.yaml` file for an example of building this project on a github actions runner.
