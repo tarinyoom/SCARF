@@ -97,16 +97,17 @@ auto render_circle(const Vector<2>& center, const Bbox<int, 2>& bounds,
   for (auto i = bounds.min[0]; i < bounds.max[0]; i++) {
     for (auto j = bounds.min[1]; j < bounds.max[1]; j++) {
       Color c = {0.0, 0.0, 0.0};
-      for (auto di = 0; di < 5; di++) {
-        for (auto dj = 0; dj < 5; dj++) {
+      constexpr auto ss_d = 1.0 / static_cast<double>(MSAA_LINEAR_DENSITY);
+      for (auto di = 0; di < MSAA_LINEAR_DENSITY; di++) {
+        for (auto dj = 0; dj < MSAA_LINEAR_DENSITY; dj++) {
           // Subsampling at -.4, -.2, 0, .2, .4
-          auto i_subsample =
-              static_cast<double>(i) - 0.4 + 0.2 * static_cast<double>(di);
+          auto i_subsample = static_cast<double>(i) - -0.5 +
+                             ss_d * (0.5 + static_cast<double>(di));
           auto j_subsample =
               static_cast<double>(j) - 0.4 + 0.2 * static_cast<double>(dj);
           Color dc = get_light(std::array<double, 2>{i_subsample, j_subsample},
                                center) *
-                     (1.0 / 25.0);
+                     (1.0 / MSAA_LINEAR_DENSITY * MSAA_LINEAR_DENSITY);
           c += clamp(dc);
         }
       }
