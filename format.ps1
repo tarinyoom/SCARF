@@ -1,7 +1,14 @@
 clang-format --version
 
-# Recursively format all .hpp, .tpp, and .cpp files in the 'lib' directory.
-$files = Get-ChildItem -Path "lib" -Recurse -File | Where-Object { $_.Extension -in (".hpp", ".tpp", ".cpp") }
+# Define the directories to search
+$directories = @("lib", "tests", "tools")
+
+# Get all files with the specified extensions in the defined directories
+$files = $directories | ForEach-Object {
+    Get-ChildItem -Path $_ -Recurse -File | Where-Object { $_.Extension -in (".hpp", ".tpp", ".cpp") }
+}
+
+# Format each file using clang-format
 foreach ($file in $files) {
-	& clang-format --style=Google $file.FullName $args
+    & clang-format --style=Google $file.FullName $args
 }
