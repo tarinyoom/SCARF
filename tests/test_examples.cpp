@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 // Example test case for the MOV module
 TEST(MOVTest, BasicFunctionality) { EXPECT_EQ(1, 1); }
