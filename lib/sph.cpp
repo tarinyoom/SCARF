@@ -94,8 +94,9 @@ auto clamp(const Color& c) -> Color {
 
 auto render_circle(const Vector<2>& center, const Bbox<int, 2>& bounds,
                    Grid<Color>& buffer) {
-  for (auto i = bounds.min[0]; i < bounds.max[0]; i++) {
-    for (auto j = bounds.min[1]; j < bounds.max[1]; j++) {
+  Bbox<int, 2> clipped_bounds = bounds * buffer.bounds();
+  for (auto i = clipped_bounds.min[0]; i < clipped_bounds.max[0]; i++) {
+    for (auto j = clipped_bounds.min[1]; j < clipped_bounds.max[1]; j++) {
       Color c = {0.0, 0.0, 0.0};
       constexpr auto ss_d = 1.0 / static_cast<double>(MSAA_LINEAR_DENSITY);
       for (auto di = 0; di < MSAA_LINEAR_DENSITY; di++) {
@@ -140,7 +141,6 @@ auto finalize(Grid<Color>&& buffer) -> Grid<Pixel> {
 
 auto render(const SPHState& s) -> Grid<Pixel> {
   Grid<Color> buffer(640, 480, Black);
-  auto buffer_bounds = buffer.bounds();
 
   // For each position, render a circle
   for (auto& pos : s.positions) {
@@ -153,10 +153,9 @@ auto render(const SPHState& s) -> Grid<Pixel> {
     // Convert bounding box to pixel space
     auto bounds_s = bounds_w.transform(world_to_screen);
     auto bounds_p = conservative_integral_bounds(dehomogenize(bounds_s));
-    auto clipped_bounds = bounds_p * buffer_bounds;
 
     // Render circle into buffer
-    render_circle(pos, clipped_bounds, buffer);
+    render_circle(pos, bounds_p, buffer);
   }
   return finalize(std::move(buffer));
 }
