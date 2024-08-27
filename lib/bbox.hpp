@@ -11,7 +11,7 @@ template <typename T, std::size_t N>
 struct Bbox {
   Bbox() : min(), max() {}
 
-  Bbox(const std::array<T, N> min, const std::array<T, N>& max)
+  Bbox(const std::array<T, N>& min, const std::array<T, N>& max)
       : min(min), max(max) {}
 
   auto operator*(const Bbox<T, N>& other) const -> Bbox {
