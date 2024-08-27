@@ -107,7 +107,7 @@ auto render_circle(const Vector<2>& center, const Bbox<int, 2>& bounds,
               static_cast<double>(j) - 0.4 + 0.2 * static_cast<double>(dj);
           Color dc = get_light(std::array<double, 2>{i_subsample, j_subsample},
                                center) *
-                     (1.0 / MSAA_LINEAR_DENSITY * MSAA_LINEAR_DENSITY);
+                     (1.0 / MSAA_LINEAR_DENSITY / MSAA_LINEAR_DENSITY);
           c += clamp(dc);
         }
       }
