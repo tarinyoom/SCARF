@@ -18,8 +18,13 @@
 template <std::size_t N>
 using Vector = std::array<double, N>;
 
+SPHState::SPHState(std::size_t n_particles)
+    : n_particles(n_particles),
+      positions(std::vector<std::array<double, 2>>(n_particles, {0.0, 0.0})),
+      velocities(std::vector<std::array<double, 2>>(n_particles, {0.0, 0.0})) {}
+
 auto init() -> SPHState {
-  SPHState state;
+  SPHState state(N_PARTICLES);
   state.boundary = {{-30.0, -22.0}, {30.0, 22.0}};
 
   std::mt19937 gen(0);
@@ -38,7 +43,7 @@ auto init() -> SPHState {
 }
 
 auto step(SPHState&& pre, double h) -> SPHState {
-  SPHState post;
+  SPHState post(pre.n_particles);
   for (auto i = 0; i < pre.positions.size(); i++) {
     post.positions[i] = std::move(pre.positions[i]) + h * pre.velocities[i];
     post.velocities[i] = std::move(pre.velocities[i]);
