@@ -42,6 +42,35 @@ auto init() -> SPHState {
   return state;
 }
 
+auto kernel(const Vector<2>& a, const Vector<2>& b, double r,
+            double scale) -> double {
+  auto diff = a - b;
+  auto d2 = diff * diff;
+  if (d2 > r * r) {
+    return 0.0;
+  }
+
+  auto c = r * r - d2;
+  auto numerator = 4.0 * c * c * c * scale;
+  auto denominator = std::numbers::pi * std::pow(r, 8.0);
+  return numerator / denominator;
+}
+
+auto update_densities(const std::vector<Vector<2>>& positions,
+                      std::vector<double>& densities) -> void {
+  for (auto i = 0; i < positions.size(); i++) {
+    densities[i] = 0.0;
+  }
+
+  for (auto i = 0; i < positions.size(); i++) {
+    for (auto j = 0; j < i; j++) {
+      auto v = kernel(positions[i], positions[j], OUTER_R, 1.0);
+      densities[i] += v;
+      densities[j] += v;
+    }
+  }
+}
+
 auto step(SPHState&& pre, double h) -> SPHState {
   SPHState post(pre.n_particles);
   for (auto i = 0; i < pre.positions.size(); i++) {
@@ -68,20 +97,6 @@ static Matrix<double, 3, 3> world_to_screen{
 
 static Matrix<double, 3, 3> screen_to_world{
     {{{0.1, 0.0, -32.0}, {0.0, 0.1, -24.0}, {0.0, 0.0, 1.0}}}};
-
-auto kernel(const Vector<2>& a, const Vector<2>& b, double r,
-            double scale) -> double {
-  auto diff = a - b;
-  auto d2 = diff * diff;
-  if (d2 > r * r) {
-    return 0.0;
-  }
-
-  auto c = r * r - d2;
-  auto numerator = 4.0 * c * c * c * scale;
-  auto denominator = std::numbers::pi * std::pow(r, 8.0);
-  return numerator / denominator;
-}
 
 auto get_light(const std::array<double, 2>& p,
                const std::array<double, 2>& center) -> Color {

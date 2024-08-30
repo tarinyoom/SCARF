@@ -22,4 +22,7 @@ struct SPHState {
   std::size_t n_particles;
 };
 
+auto update_densities(const std::vector<std::array<double, 2>>& positions,
+                      std::vector<double>& densities) -> void;
+
 extern Animation<SPHState> sph_animation;
