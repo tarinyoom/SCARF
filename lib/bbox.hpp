@@ -3,13 +3,18 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <limits>
 #include <string>
 
 #include "matrix.hpp"
 
 template <typename T, std::size_t N>
+  requires(N > 0)
 struct Bbox {
-  Bbox() : min(), max() {}
+  Bbox() : min(), max() {
+    min.fill(std::numeric_limits<T>::min());
+    max.fill(std::numeric_limits<T>::max());
+  }
 
   Bbox(const std::array<T, N>& min, const std::array<T, N>& max)
       : min(min), max(max) {}
@@ -25,6 +30,14 @@ struct Bbox {
 
   auto transform(const Matrix<T, N, N>& a) const -> Bbox<T, N> {
     return Bbox<T, N>(a * min, a * max);
+  }
+
+  auto volume() -> T {
+    auto vol = max[0] - min[0];  // N > 0
+    for (auto i = 1; i < N; i++) {
+      vol *= max[i] - min[i];
+    }
+    return vol;
   }
 
   std::array<T, N> min;

@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstddef>
+#include <ostream>
 #include <vector>
 
 #include "animation.hpp"
@@ -16,13 +17,13 @@ constexpr auto N_PARTICLES = 32;
 
 struct SPHState {
   SPHState(std::size_t n_particles);
+
   std::vector<std::array<double, 2>> positions;
   std::vector<std::array<double, 2>> velocities;
+  std::vector<double> densities;
+  std::vector<double> pressures;
   Bbox<double, 2> boundary;
   std::size_t n_particles;
 };
-
-auto update_densities(const std::vector<std::array<double, 2>>& positions,
-                      std::vector<double>& densities) -> void;
 
 extern Animation<SPHState> sph_animation;

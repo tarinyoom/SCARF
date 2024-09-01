@@ -21,7 +21,9 @@ using Vector = std::array<double, N>;
 SPHState::SPHState(std::size_t n_particles)
     : n_particles(n_particles),
       positions(std::vector<std::array<double, 2>>(n_particles, {0.0, 0.0})),
-      velocities(std::vector<std::array<double, 2>>(n_particles, {0.0, 0.0})) {}
+      velocities(std::vector<std::array<double, 2>>(n_particles, {0.0, 0.0})),
+      densities(std::vector<double>(n_particles, 0.0)),
+      pressures(std::vector<double>(n_particles, 0.0)) {}
 
 auto init() -> SPHState {
   SPHState state(N_PARTICLES);
@@ -56,17 +58,56 @@ auto kernel(const Vector<2>& a, const Vector<2>& b, double r,
   return numerator / denominator;
 }
 
-auto update_densities(const std::vector<Vector<2>>& positions,
-                      std::vector<double>& densities) -> void {
-  for (auto i = 0; i < positions.size(); i++) {
-    densities[i] = 0.0;
+auto kernel_gradient(const Vector<2>& p, const Vector<2>& c, double r,
+                     double scale) -> std::array<double, 2> {
+  auto diff = p - c;
+  auto d2 = diff * diff;
+  if (d2 > r * r) {
+    return {0.0, 0.0};
   }
 
-  for (auto i = 0; i < positions.size(); i++) {
-    for (auto j = 0; j < i; j++) {
-      auto v = kernel(positions[i], positions[j], OUTER_R, 1.0);
-      densities[i] += v;
-      densities[j] += v;
+  auto v = r * r - d2;
+  auto common_numerator = 24.0 * v * v * scale;
+  auto denominator = std::numbers::pi * std::pow(r, 8.0);
+  auto common = common_numerator / denominator;
+  return {(p[0] - c[0]) * common, (p[1] - c[1]) * common};
+  std::array<double, 2> grad;
+}
+
+auto update_densities(SPHState& s) -> void {
+  for (auto i = 0; i < s.n_particles; i++) {
+    s.densities[i] = 0.0;
+  }
+
+  for (auto i = 0; i < s.positions.size(); i++) {
+    for (auto j = 0; j <= i; j++) {
+      auto v = kernel(s.positions[i], s.positions[j], OUTER_R, 1.0);
+      if (i != j) {  // asymmetric case
+        s.densities[i] += v;
+        s.densities[j] += v;
+      } else {  // symmetric case
+        s.densities[i] += v;
+      }
+    }
+  }
+}
+
+auto update_pressures(SPHState& s) -> void {
+  auto ref_density = s.n_particles / s.boundary.volume();
+  for (auto i = 0; i < s.n_particles; i++) {
+    s.pressures[i] = std::pow(s.densities[i], 7.0) - std::pow(ref_density, 7.0);
+  }
+}
+
+auto update_velocities(SPHState& s, double h) -> void {
+  for (auto i = 0; i < s.n_particles; i++) {
+    for (auto j = 0; j < s.n_particles; j++) {
+      auto grad = kernel_gradient(s.positions[i], s.positions[j], OUTER_R, 1.0);
+      auto l = s.pressures[i] / (s.densities[i] * s.densities[i]);
+      auto r = s.pressures[j] / (s.densities[j] * s.densities[j]);
+      auto acc = h * (l + r) * grad;
+      s.velocities[i] += acc;
+      s.velocities[j] += -1.0 * acc;
     }
   }
 }
@@ -77,6 +118,9 @@ auto step(SPHState&& pre, double h) -> SPHState {
     post.positions[i] = std::move(pre.positions[i]) + h * pre.velocities[i];
     post.velocities[i] = std::move(pre.velocities[i]);
     post.boundary = std::move(pre.boundary);
+    update_densities(post);
+    update_pressures(post);
+    update_velocities(post, h);
 
     for (auto dim = 0; dim < 2; dim++) {
       auto& proj = post.positions[i][dim];

@@ -14,6 +14,13 @@ auto operator+(const std::array<T, N>& u,
 }
 
 template <typename T, std::size_t N>
+auto operator+=(std::array<T, N>& u, const std::array<T, N>& v) -> void {
+  for (auto i = 0; i < N; i++) {
+    u[i] += v[i];
+  }
+}
+
+template <typename T, std::size_t N>
 auto operator-(const std::array<T, N>& u,
                const std::array<T, N>& v) -> std::array<T, N> {
   std::array<T, N> result;

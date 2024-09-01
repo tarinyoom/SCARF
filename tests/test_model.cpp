@@ -1,0 +1,58 @@
+#include <gtest/gtest.h>
+
+#include <algorithm>
+#include <limits>
+#include <utility>
+
+#include "sph.hpp"
+
+TEST(model, density_approximation) {
+  // Assemble a regular grid of points
+  SPHState s(100);
+  for (auto i = 0; i < 10; i++) {
+    for (auto j = 0; j < 10; j++) {
+      s.positions[10 * i + j] = {static_cast<double>(i),
+                                 static_cast<double>(j)};
+    }
+  }
+
+  // Calculate density for grid
+  s = sph_animation.step(std::move(s), 0.1);
+
+  // For points in the interior and boundary of the grid, expect their
+  // densities to closely match the ideal continuously calculated density
+  auto n_interior = 0;
+  auto n_boundary = 0;
+  auto boundary_min = std::numeric_limits<double>::max();
+  auto boundary_max = std::numeric_limits<double>::min();
+  for (auto i = 0; i < 100; i++) {
+    auto pt = s.positions[i];
+
+    // Points in interior should have the ideal continuous density value
+    if (pt[0] > 2.9 && pt[0] < 6.1 && pt[1] > 2.9 && pt[1] < 6.1) {
+      n_interior++;
+      EXPECT_EQ(s.densities[i], 1.0023292559910253);  // within 1%
+    }
+
+    // Points in corners should have roughly a quarter of the ideal continuous
+    // density value
+    if (pt[0] < 0.1 || pt[0] > 8.9 || pt[1] < 0.1 || pt[1] > 8.9) {
+      n_boundary++;
+      boundary_min = std::min(boundary_min, s.densities[i]);
+      boundary_max = std::max(boundary_max, s.densities[i]);
+    }
+  }
+
+  // Boundary min and max will overestimate continuous ideal because of
+  // discretization
+  EXPECT_EQ(boundary_min, 0.48030298326772253);
+  EXPECT_EQ(boundary_max, 0.69551753213394663);
+
+  EXPECT_EQ(n_interior, 16);
+  EXPECT_EQ(n_boundary, 36);
+}
+
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}

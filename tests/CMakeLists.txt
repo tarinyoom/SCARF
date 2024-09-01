@@ -12,7 +12,7 @@ target_link_libraries(scarftest PRIVATE scarflib)
 
 # Set the source files for the scarftest executable
 set(TOOLS_FILES
-    test_examples.cpp
+    test_model.cpp
 )
 
 # Add the source files to the scarftest executable
