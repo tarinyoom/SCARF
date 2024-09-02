@@ -64,6 +64,24 @@ TEST(model, pressure_approximation) {
   }
 }
 
+TEST(model, velocity_approximation) {
+  SPHState s(3);
+  s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
+  s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
+  std::vector<std::array<double, 2>> expected_velocities = {
+      {-9.6713777140284939e-05, -0.00027745395715256748},
+      {-0.00011256252241755728, -8.4817380754338212e-05},
+      {0.0002092762995578422, 0.00036227133790690575}};
+  for (auto i = 0; i < s.n_particles; i++) {
+    EXPECT_EQ(s.velocities[i][0], 0.0);
+    EXPECT_EQ(s.velocities[i][1], 0.0);
+  }
+  s = sph_animation.step(std::move(s), 0.1);
+  for (auto i = 0; i < s.n_particles; i++) {
+    EXPECT_EQ(s.velocities[i], expected_velocities[i]);
+  }
+}
+
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
