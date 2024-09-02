@@ -52,6 +52,18 @@ TEST(model, density_approximation) {
   EXPECT_EQ(n_boundary, 36);
 }
 
+TEST(model, pressure_approximation) {
+  SPHState s(3);
+  s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
+  s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
+  std::vector<double> expected_pressures = {
+      0.001325317583924343, 0.0016213600544636073, 0.00089347448002453694};
+  s = sph_animation.step(std::move(s), 0.1);
+  for (auto i = 0; i < s.n_particles; i++) {
+    EXPECT_EQ(s.pressures[i], expected_pressures[i]);
+  }
+}
+
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
