@@ -57,7 +57,7 @@ TEST(model, pressure_approximation) {
   s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
   std::vector<double> expected_pressures = {
-      0.001325317583924343, 0.0016213600544636073, 0.00089347448002453694};
+      132.53175839243431, 162.13600544636074, 89.347448002453689};
   s = sph_animation.step(std::move(s), 0.1);
   for (auto i = 0; i < s.n_particles; i++) {
     EXPECT_EQ(s.pressures[i], expected_pressures[i]);
@@ -69,9 +69,9 @@ TEST(model, velocity_approximation) {
   s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
   std::vector<std::array<double, 2>> expected_velocities = {
-      {-9.6713777140284939e-05, -0.00027745395715256748},
-      {-0.00011256252241755728, -8.4817380754338212e-05},
-      {0.0002092762995578422, 0.00036227133790690575}};
+      {-4.8356888570142473, -13.272697857628378},
+      {-5.6281261208778641, -3.8408690377169101},
+      {-0.0, -0.0}};
   for (auto i = 0; i < s.n_particles; i++) {
     EXPECT_EQ(s.velocities[i][0], 0.0);
     EXPECT_EQ(s.velocities[i][1], 0.0);

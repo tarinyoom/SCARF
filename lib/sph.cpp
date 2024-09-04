@@ -27,19 +27,17 @@ SPHState::SPHState(std::size_t n_particles)
 
 auto init() -> SPHState {
   SPHState state(N_PARTICLES);
-  state.boundary = {{-30.0, -22.0}, {30.0, 22.0}};
+  state.boundary = {{-20.0, -10.0}, {20.0, 10.0}};
 
   std::mt19937 gen(0);
-  std::uniform_real_distribution<> p_x(state.boundary.min[0],
-                                       state.boundary.max[0]);
-  std::uniform_real_distribution<> p_y(state.boundary.min[1],
-                                       state.boundary.max[1]);
-  std::uniform_real_distribution<> v_x(-30.0, 30.0);
-  std::uniform_real_distribution<> v_y(-30.0, 30.0);
+  std::uniform_real_distribution<> p_x(-20.0, 20.0);
+  std::uniform_real_distribution<> p_y(-10.0, 10.0);
 
   for (auto i = 0; i < state.positions.size(); i++) {
-    state.positions[i] = {p_x(gen), p_y(gen)};
-    state.velocities[i] = {v_x(gen), v_y(gen)};
+    auto x = p_x(gen);
+    auto y = p_y(gen);
+    state.positions[i] = {x, y};
+    state.velocities[i] = {-0.5 * x, -0.5 * y};
   }
   return state;
 }
@@ -71,7 +69,6 @@ auto kernel_gradient(const Vector<2>& p, const Vector<2>& c, double r,
   auto denominator = std::numbers::pi * std::pow(r, 8.0);
   auto common = common_numerator / denominator;
   return {(p[0] - c[0]) * common, (p[1] - c[1]) * common};
-  std::array<double, 2> grad;
 }
 
 auto update_densities(SPHState& s) -> void {
@@ -96,12 +93,13 @@ auto update_pressures(SPHState& s) -> void {
   auto ref_density = s.n_particles / s.boundary.volume();
   for (auto i = 0; i < s.n_particles; i++) {
     s.pressures[i] = std::pow(s.densities[i], 7.0) - std::pow(ref_density, 7.0);
+    s.pressures[i] *= 100000.0;
   }
 }
 
 auto update_velocities(SPHState& s, double h) -> void {
   for (auto i = 0; i < s.n_particles; i++) {
-    for (auto j = 0; j < s.n_particles; j++) {
+    for (auto j = 0; j < i; j++) {
       auto grad = kernel_gradient(s.positions[i], s.positions[j], OUTER_R, 1.0);
       auto l = s.pressures[i] / (s.densities[i] * s.densities[i]);
       auto r = s.pressures[j] / (s.densities[j] * s.densities[j]);
@@ -109,6 +107,7 @@ auto update_velocities(SPHState& s, double h) -> void {
       s.velocities[i] += acc;
       s.velocities[j] += -1.0 * acc;
     }
+    s.velocities[i] += h * std::array<double, 2>{0.0, 2.0};
   }
 }
 
@@ -130,6 +129,10 @@ auto step(SPHState&& pre, double h) -> SPHState {
       } else if (proj > post.boundary.max[dim]) {
         proj = post.boundary.max[dim];
         post.velocities[i][dim] *= -1;
+      }
+      auto& v = post.velocities[i][dim];
+      if (std::abs(v) > 10.0) {
+        v = -1.0 * std::signbit(v) * 10.0;
       }
     }
   }
@@ -221,6 +224,7 @@ auto render(const SPHState& s) -> Grid<Pixel> {
     // Render circle into buffer
     render_circle(pos, bounds_p, buffer);
   }
+
   return finalize(std::move(buffer));
 }
 
