@@ -81,8 +81,3 @@ TEST(model, velocity_approximation) {
     EXPECT_EQ(s.velocities[i], expected_velocities[i]);
   }
 }
-
-int main(int argc, char** argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
