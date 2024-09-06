@@ -35,3 +35,6 @@ target_sources(scarflib PRIVATE ${SRC_FILES})
 target_include_directories(scarflib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(renderer)
+
+# Link the renderer to scarflib
+target_link_libraries(scarflib PRIVATE renderer)

@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "bbox.hpp"
+#include "../bbox.hpp"
 
 namespace scarf::renderer {
 

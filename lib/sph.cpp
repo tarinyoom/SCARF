@@ -9,11 +9,10 @@
 
 #include "array.tpp"
 #include "bbox.hpp"
-#include "renderer/color.hpp"
 #include "renderer/grid.hpp"
-#include "renderer/matrix.hpp"
 #include "renderer/pixel.hpp"
-#include "renderer/rendering.tpp"
+#include "renderer/render.hpp"
+#include "renderer/scene.hpp"
 
 namespace scarf {
 
@@ -44,6 +43,13 @@ auto init() -> SPHState {
   return state;
 }
 
+auto kernel_1d(double r2, double R, double scale) -> double {
+  auto c = R * R - r2;
+  auto numerator = 4.0 * c * c * c * scale;
+  auto denominator = std::numbers::pi * std::pow(R, 8.0);
+  return numerator / denominator;
+}
+
 auto kernel(const Vector<2>& a, const Vector<2>& b, double r,
             double scale) -> double {
   auto diff = a - b;
@@ -52,10 +58,7 @@ auto kernel(const Vector<2>& a, const Vector<2>& b, double r,
     return 0.0;
   }
 
-  auto c = r * r - d2;
-  auto numerator = 4.0 * c * c * c * scale;
-  auto denominator = std::numbers::pi * std::pow(r, 8.0);
-  return numerator / denominator;
+  return kernel_1d(d2, r, scale);
 }
 
 auto kernel_gradient(const Vector<2>& p, const Vector<2>& c, double r,
@@ -141,96 +144,17 @@ auto step(SPHState&& pre, double h) -> SPHState {
   return post;
 }
 
-static renderer::Matrix<double, 3, 3> world_to_screen{
-    {{{10.0, 0.0, 320.0}, {0.0, 10.0, 240.0}, {0.0, 0.0, 1.0}}}};
-
-static renderer::Matrix<double, 3, 3> screen_to_world{
-    {{{0.1, 0.0, -32.0}, {0.0, 0.1, -24.0}, {0.0, 0.0, 1.0}}}};
-
-auto get_light(const std::array<double, 2>& p,
-               const std::array<double, 2>& center) -> renderer::Color {
-  auto p_screen = renderer::homogenize(p);
-  auto p_world = screen_to_world * p_screen;
-  auto dehom = renderer::dehomogenize(p_world);
-  return renderer::Blue * kernel(center, dehom, OUTER_R, 3.0) +
-         renderer::White * kernel(center, dehom, INNER_R, 1.0);
-}
-
-auto clamp(const renderer::Color& c) -> renderer::Color {
-  return {std::clamp(c.r, 0.0, 1.0), std::clamp(c.g, 0.0, 1.0),
-          std::clamp(c.b, 0.0, 1.0)};
-}
-
-auto render_circle(const Vector<2>& center, const Bbox<int, 2>& bounds,
-                   renderer::Grid<renderer::Color>& buffer) {
-  Bbox<int, 2> clipped_bounds = bounds * buffer.bounds();
-  for (auto i = clipped_bounds.min[0]; i < clipped_bounds.max[0]; i++) {
-    for (auto j = clipped_bounds.min[1]; j < clipped_bounds.max[1]; j++) {
-      renderer::Color c = {0.0, 0.0, 0.0};
-      constexpr auto ss_d = 1.0 / static_cast<double>(MSAA_LINEAR_DENSITY);
-      for (auto di = 0; di < MSAA_LINEAR_DENSITY; di++) {
-        for (auto dj = 0; dj < MSAA_LINEAR_DENSITY; dj++) {
-          // Subsampling at -.4, -.2, 0, .2, .4
-          auto i_subsample = static_cast<double>(i) - -0.5 +
-                             ss_d * (0.5 + static_cast<double>(di));
-          auto j_subsample =
-              static_cast<double>(j) - 0.4 + 0.2 * static_cast<double>(dj);
-          renderer::Color dc =
-              get_light(std::array<double, 2>{i_subsample, j_subsample},
-                        center) *
-              (1.0 / MSAA_LINEAR_DENSITY / MSAA_LINEAR_DENSITY);
-          c += clamp(dc);
-        }
-      }
-      buffer[i][j] += c;
-    }
+auto render(const SPHState& state) -> renderer::Grid<renderer::Pixel> {
+  renderer::Scene scene;
+  scene.points.reserve(state.n_particles);
+  for (auto i = 0; i < state.n_particles; i++) {
+    scene.points.push_back(state.positions[i]);
+    scene.falloff = [](double r2) -> double { return kernel_1d(r2, 3.0, 1.0); };
+    scene.outer_radius = 3.0;
+    scene.inner_radius = 0.1;
+    scene.msaa_linear_density = 1;
   }
-}
-
-auto quantize(double v) -> std::uint8_t {
-  auto clamped = std::clamp(v, 0.0, 1.0);
-  auto rounded = std::round(clamped * 255.0);
-  auto result = static_cast<std::uint8_t>(rounded);
-  return result;
-}
-
-auto finalize(renderer::Grid<renderer::Color>&& buffer)
-    -> renderer::Grid<renderer::Pixel> {
-  auto [m, n] = buffer.size();
-  renderer::Grid<renderer::Pixel> result(m, n, {0, 0, 0});
-  for (auto i = 0; i < m; i++) {
-    for (auto j = 0; j < n; j++) {
-      auto& color = buffer[i][j];
-      auto r = quantize(color.r);
-      auto g = quantize(color.g);
-      auto b = quantize(color.b);
-      result[i][j] = {r, g, b};
-    }
-  }
-  return result;
-}
-
-auto render(const SPHState& s) -> renderer::Grid<renderer::Pixel> {
-  renderer::Grid<renderer::Color> buffer(640, 480, renderer::Black);
-
-  // For each position, render a circle
-  for (auto& pos : s.positions) {
-    // Find bounding box in world space
-    auto pos_w = pos;
-    Vector<2> radius_offset = {OUTER_R, OUTER_R};
-    Bbox<double, 3> bounds_w = {renderer::homogenize(pos_w - radius_offset),
-                                renderer::homogenize(pos_w + radius_offset)};
-
-    // Convert bounding box to pixel space
-    auto bounds_s = bounds_w.transform(world_to_screen);
-    auto bounds_p = renderer::conservative_integral_bounds(
-        renderer::dehomogenize(bounds_s));
-
-    // Render circle into buffer
-    render_circle(pos, bounds_p, buffer);
-  }
-
-  return finalize(std::move(buffer));
+  return renderer::render(std::move(scene));
 }
 
 auto build_animation() -> Animation<SPHState> { return {init, step, render}; }

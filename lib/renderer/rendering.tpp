@@ -4,7 +4,7 @@
 #include <array>
 #include <cstddef>
 
-#include "bbox.hpp"
+#include "../bbox.hpp"
 
 namespace scarf::renderer {
 
