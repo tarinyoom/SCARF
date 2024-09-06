@@ -9,11 +9,11 @@
 
 #include "array.tpp"
 #include "bbox.hpp"
-#include "color.hpp"
-#include "grid.hpp"
-#include "matrix.hpp"
-#include "pixel.hpp"
-#include "rendering.tpp"
+#include "renderer/color.hpp"
+#include "renderer/grid.hpp"
+#include "renderer/matrix.hpp"
+#include "renderer/pixel.hpp"
+#include "renderer/rendering.tpp"
 
 template <std::size_t N>
 using Vector = std::array<double, N>;

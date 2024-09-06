@@ -11,8 +11,8 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
-#include "grid.hpp"
-#include "pixel.hpp"
+#include "renderer/grid.hpp"
+#include "renderer/pixel.hpp"
 
 void fill_gradient(uint8_t* data, int linesize, const SPHState& s,
                    std::function<Grid<Pixel>(const SPHState&)> f) {

@@ -22,12 +22,8 @@ set(SRC_FILES
     animation.hpp
     array.tpp
     bbox.hpp
-    color.hpp
-    grid.hpp
     mov.cpp
     mov.hpp
-    pixel.hpp
-    rendering.tpp
     sph.cpp
     sph.hpp
 )
@@ -37,3 +33,5 @@ target_sources(scarflib PRIVATE ${SRC_FILES})
 
 # Set the include directories for scarflib
 target_include_directories(scarflib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_subdirectory(renderer)

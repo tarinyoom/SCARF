@@ -2,8 +2,8 @@
 
 #include <functional>
 
-#include "grid.hpp"
-#include "pixel.hpp"
+#include "renderer/grid.hpp"
+#include "renderer/pixel.hpp"
 
 template <typename State>
 struct Animation {
