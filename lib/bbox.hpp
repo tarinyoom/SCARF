@@ -8,6 +8,8 @@
 
 #include "matrix.hpp"
 
+namespace scarf {
+
 template <typename T, std::size_t N>
   requires(N > 0)
 struct Bbox {
@@ -28,7 +30,7 @@ struct Bbox {
     return result;
   }
 
-  auto transform(const Matrix<T, N, N>& a) const -> Bbox<T, N> {
+  auto transform(const renderer::Matrix<T, N, N>& a) const -> Bbox<T, N> {
     return Bbox<T, N>(a * min, a * max);
   }
 
@@ -43,3 +45,5 @@ struct Bbox {
   std::array<T, N> min;
   std::array<T, N> max;
 };
+
+}  // namespace scarf

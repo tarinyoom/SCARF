@@ -6,6 +6,8 @@
 
 #include "bbox.hpp"
 
+namespace scarf::renderer {
+
 template <std::size_t N>
 auto cast_double(const std::array<int, N>& v) -> std::array<double, N> {
   std::array<double, N> result;
@@ -53,3 +55,5 @@ auto dehomogenize(const Bbox<double, N>& b) -> const Bbox<double, N - 1> {
   auto new_max = dehomogenize(b.max);
   return {new_min, new_max};
 }
+
+}  // namespace scarf::renderer

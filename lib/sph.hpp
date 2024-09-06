@@ -8,6 +8,8 @@
 #include "animation.hpp"
 #include "bbox.hpp"
 
+namespace scarf {
+
 constexpr auto OUTER_R = 3.0;
 constexpr auto OUTER_R2 = OUTER_R * OUTER_R;
 constexpr auto INNER_R = 0.1;
@@ -27,3 +29,5 @@ struct SPHState {
 };
 
 auto build_animation() -> Animation<SPHState>;
+
+}  // namespace scarf

@@ -2,6 +2,8 @@
 
 #include <cstddef>
 
+namespace scarf::renderer {
+
 template <typename T, std::size_t M, std::size_t N>
   requires(M > 0 && N > 0)
 struct Matrix {
@@ -22,3 +24,5 @@ struct Matrix {
  private:
   std::array<std::array<T, N>, M> data_;
 };
+
+}  // namespace scarf::renderer

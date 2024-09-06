@@ -14,8 +14,11 @@ extern "C" {
 #include "renderer/grid.hpp"
 #include "renderer/pixel.hpp"
 
-void fill_gradient(uint8_t* data, int linesize, const SPHState& s,
-                   std::function<Grid<Pixel>(const SPHState&)> f) {
+namespace scarf {
+
+void fill_gradient(
+    uint8_t* data, int linesize, const SPHState& s,
+    std::function<renderer::Grid<renderer::Pixel>(const SPHState&)> f) {
   auto rendering = f(s);
   for (int y = 0; y < height; ++y) {
     for (int x = 0; x < width; ++x) {
@@ -182,3 +185,5 @@ auto make_mov(Animation<SPHState> anim) -> int {
 
   return 0;
 }
+
+}  // namespace scarf

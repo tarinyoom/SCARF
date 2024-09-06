@@ -6,6 +6,8 @@
 
 #include "sph.hpp"
 
+using namespace scarf;
+
 TEST(model, density_approximation) {
   auto sph_animation = build_animation();
 

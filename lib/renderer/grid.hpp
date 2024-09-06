@@ -4,6 +4,8 @@
 
 #include "bbox.hpp"
 
+namespace scarf::renderer {
+
 template <typename T>
 struct Grid {
   Grid(int m, int n, const T& val)
@@ -22,3 +24,5 @@ struct Grid {
   int n_;
   std::vector<std::vector<T>> data_;
 };
+
+}  // namespace scarf::renderer

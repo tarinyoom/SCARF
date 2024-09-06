@@ -3,6 +3,8 @@
 #include <array>
 #include <cstddef>
 
+namespace scarf {
+
 template <typename T, std::size_t N>
 auto operator+(const std::array<T, N>& u,
                const std::array<T, N>& v) -> std::array<T, N> {
@@ -61,3 +63,5 @@ auto operator/(const std::array<T, N>& v, const T& f) -> std::array<T, N> {
   }
   return result;
 }
+
+}  // namespace scarf
