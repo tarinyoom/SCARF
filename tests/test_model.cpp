@@ -7,6 +7,8 @@
 #include "sph.hpp"
 
 TEST(model, density_approximation) {
+  auto sph_animation = build_animation();
+
   // Assemble a regular grid of points
   SPHState s(100);
   for (auto i = 0; i < 10; i++) {
@@ -53,6 +55,8 @@ TEST(model, density_approximation) {
 }
 
 TEST(model, pressure_approximation) {
+  auto sph_animation = build_animation();
+
   SPHState s(3);
   s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
@@ -65,6 +69,8 @@ TEST(model, pressure_approximation) {
 }
 
 TEST(model, velocity_approximation) {
+  auto sph_animation = build_animation();
+
   SPHState s(3);
   s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};

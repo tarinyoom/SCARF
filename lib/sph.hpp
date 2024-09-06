@@ -26,4 +26,4 @@ struct SPHState {
   std::size_t n_particles;
 };
 
-extern Animation<SPHState> sph_animation;
+auto build_animation() -> Animation<SPHState>;

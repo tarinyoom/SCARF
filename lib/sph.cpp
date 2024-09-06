@@ -228,4 +228,4 @@ auto render(const SPHState& s) -> Grid<Pixel> {
   return finalize(std::move(buffer));
 }
 
-Animation<SPHState> sph_animation = {init, step, render};
+auto build_animation() -> Animation<SPHState> { return {init, step, render}; }
