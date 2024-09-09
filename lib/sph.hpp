@@ -20,8 +20,8 @@ constexpr auto N_PARTICLES = 64;
 struct SPHState {
   SPHState(std::size_t n_particles);
 
-  std::vector<std::array<double, 2>> positions;
-  std::vector<std::array<double, 2>> velocities;
+  std::vector<Vector<double, 2>> positions;
+  std::vector<Vector<double, 2>> velocities;
   std::vector<double> densities;
   std::vector<double> pressures;
   Bbox<double, 2> boundary;

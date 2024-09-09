@@ -17,7 +17,11 @@ struct Grid {
 
   auto size() const -> std::array<int, 2> { return {m_, n_}; }
 
-  auto bounds() const -> Bbox<int, 2> { return {{0, 0}, {m_, n_}}; }
+  auto bounds() const -> Bbox<int, 2> {
+    Vector<int, 2> min(0, 0);
+    Vector<int, 2> max(m_, n_);
+    return Bbox<int, 2>(min, max);
+  }
 
  private:
   int m_;

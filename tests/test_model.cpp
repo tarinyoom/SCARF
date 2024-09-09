@@ -76,7 +76,7 @@ TEST(model, velocity_approximation) {
   SPHState s(3);
   s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
-  std::vector<std::array<double, 2>> expected_velocities = {
+  std::vector<Vector<double, 2>> expected_velocities = {
       {-4.8356888570142473, -13.272697857628378},
       {-5.6281261208778641, -3.8408690377169101},
       {-0.0, -0.0}};

@@ -2,15 +2,12 @@
 
 #include <array>
 
-#include "array.tpp"
+#include "../vector.hpp"
 #include "color.hpp"
 #include "matrix.hpp"
 #include "rendering.tpp"
 
 namespace scarf::renderer {
-
-template <std::size_t N>
-using Vector = std::array<double, N>;
 
 static Matrix<double, 3, 3> world_to_screen{
     {{{10.0, 0.0, 320.0}, {0.0, 10.0, 240.0}, {0.0, 0.0, 1.0}}}};
@@ -18,13 +15,13 @@ static Matrix<double, 3, 3> world_to_screen{
 static Matrix<double, 3, 3> screen_to_world{
     {{{0.1, 0.0, -32.0}, {0.0, 0.1, -24.0}, {0.0, 0.0, 1.0}}}};
 
-auto get_light(const std::array<double, 2>& p,
-               const std::array<double, 2>& center, const Scene& s) -> Color {
+auto get_light(const Vector<double, 2>& p, const Vector<double, 2>& center,
+               const Scene& s) -> Color {
   auto p_screen = homogenize(p);
   auto p_world = screen_to_world * p_screen;
   auto dehom = dehomogenize(p_world);
-  std::array<double, 2> diff = {p[0] - center[0], p[1] - center[1]};
-  auto r2 = diff[0] * diff[0] + diff[1] * diff[1];
+  auto diff = p - center;
+  auto r2 = diff * diff;
   if (r2 <= 0.01) {
     return White;
   } else {
@@ -38,7 +35,7 @@ auto clamp(const Color& c) -> Color {
 }
 
 // Center and bounds passed in pixel space
-auto render_circle(const Vector<2>& center, const Bbox<int, 2>& bounds,
+auto render_circle(const Vector<double, 2>& center, const Bbox<int, 2>& bounds,
                    Grid<Color>& buffer, const Scene& s) {
   Bbox<int, 2> clipped_bounds = bounds * buffer.bounds();
   for (auto i = clipped_bounds.min[0]; i < clipped_bounds.max[0]; i++) {
@@ -52,8 +49,8 @@ auto render_circle(const Vector<2>& center, const Bbox<int, 2>& bounds,
                              ss_d * (0.5 + static_cast<double>(di));
           auto j_subsample =
               static_cast<double>(j) - 0.4 + 0.2 * static_cast<double>(dj);
-          auto c_w = screen_to_world * homogenize(std::array<double, 2>{
-                                           i_subsample, j_subsample});
+          Vector<double, 2> subsample(i_subsample, j_subsample);
+          auto c_w = screen_to_world * homogenize(subsample);
           Color dc = get_light(dehomogenize(c_w), center, s) *
                      (1.0 / s.msaa_linear_density / s.msaa_linear_density);
           c += clamp(dc);
@@ -93,12 +90,9 @@ auto render(Scene&& s) -> Grid<Pixel> {
   for (auto& pos : s.points) {
     // Find bounding box in world space
     auto pos_w = pos;
-    Vector<2> radius_offset = {s.outer_radius, s.outer_radius};
-    Bbox<double, 3> bounds_w = {
-        homogenize(std::array<double, 2>{pos_w[0] - radius_offset[0],
-                                         pos_w[1] - radius_offset[1]}),
-        homogenize(std::array<double, 2>{pos_w[0] + radius_offset[0],
-                                         pos_w[1] + radius_offset[1]})};
+    Vector<double, 2> radius_offset = {s.outer_radius, s.outer_radius};
+    Bbox<double, 3> bounds_w = {homogenize(pos_w - radius_offset),
+                                homogenize(pos_w + radius_offset)};
 
     // Convert bounding box to pixel space
     auto bounds_s = bounds_w.transform(world_to_screen);

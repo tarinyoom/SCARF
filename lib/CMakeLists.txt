@@ -20,12 +20,12 @@ target_link_options(scarflib PRIVATE ${FFMPEG_LDFLAGS_OTHER})
 # Set the source files for the scarflib library
 set(SRC_FILES
     animation.hpp
-    array.tpp
     bbox.hpp
     mov.cpp
     mov.hpp
     sph.cpp
     sph.hpp
+    vector.hpp
 )
 
 # Add the source files to the scarflib target

@@ -7,22 +7,19 @@
 #include <numbers>
 #include <random>
 
-#include "array.tpp"
 #include "bbox.hpp"
 #include "renderer/grid.hpp"
 #include "renderer/pixel.hpp"
 #include "renderer/render.hpp"
 #include "renderer/scene.hpp"
+#include "vector.hpp"
 
 namespace scarf {
 
-template <std::size_t N>
-using Vector = std::array<double, N>;
-
 SPHState::SPHState(std::size_t n_particles)
     : n_particles(n_particles),
-      positions(std::vector<std::array<double, 2>>(n_particles, {0.0, 0.0})),
-      velocities(std::vector<std::array<double, 2>>(n_particles, {0.0, 0.0})),
+      positions(std::vector<Vector<double, 2>>(n_particles, {0.0, 0.0})),
+      velocities(std::vector<Vector<double, 2>>(n_particles, {0.0, 0.0})),
       densities(std::vector<double>(n_particles, 0.0)),
       pressures(std::vector<double>(n_particles, 0.0)) {}
 
@@ -50,7 +47,7 @@ auto kernel_1d(double r2, double R, double scale) -> double {
   return numerator / denominator;
 }
 
-auto kernel(const Vector<2>& a, const Vector<2>& b, double r,
+auto kernel(const Vector<double, 2>& a, const Vector<double, 2>& b, double r,
             double scale) -> double {
   auto diff = a - b;
   auto d2 = diff * diff;
@@ -61,8 +58,8 @@ auto kernel(const Vector<2>& a, const Vector<2>& b, double r,
   return kernel_1d(d2, r, scale);
 }
 
-auto kernel_gradient(const Vector<2>& p, const Vector<2>& c, double r,
-                     double scale) -> std::array<double, 2> {
+auto kernel_gradient(const Vector<double, 2>& p, const Vector<double, 2>& c,
+                     double r, double scale) -> Vector<double, 2> {
   auto diff = p - c;
   auto d2 = diff * diff;
   if (d2 > r * r) {
@@ -73,7 +70,7 @@ auto kernel_gradient(const Vector<2>& p, const Vector<2>& c, double r,
   auto common_numerator = 24.0 * v * v * scale;
   auto denominator = std::numbers::pi * std::pow(r, 8.0);
   auto common = common_numerator / denominator;
-  return {(p[0] - c[0]) * common, (p[1] - c[1]) * common};
+  return (p - c) * common;
 }
 
 auto update_densities(SPHState& s) -> void {
@@ -112,7 +109,7 @@ auto update_velocities(SPHState& s, double h) -> void {
       s.velocities[i] += acc;
       s.velocities[j] += -1.0 * acc;
     }
-    s.velocities[i] += h * std::array<double, 2>{0.0, 2.0};
+    s.velocities[i] += h * Vector<double, 2>(0.0, 2.0);
   }
 }
 

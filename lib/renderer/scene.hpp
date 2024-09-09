@@ -3,11 +3,13 @@
 #include <functional>
 #include <vector>
 
+#include "../vector.hpp"
+
 namespace scarf::renderer {
 
 struct Scene {
   // Points present in scene
-  std::vector<std::array<double, 2>> points;
+  std::vector<Vector<double, 2>> points;
 
   // Rendered luminosity, given a passed *SQUARED* radius
   std::function<double(double)> falloff;

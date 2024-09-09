@@ -5,6 +5,7 @@
 #include <cstddef>
 
 #include "../bbox.hpp"
+#include "../vector.hpp"
 
 namespace scarf::renderer {
 
@@ -19,8 +20,8 @@ auto cast_double(const std::array<int, N>& v) -> std::array<double, N> {
 
 template <std::size_t N>
 auto conservative_integral_bounds(const Bbox<double, N>& b) -> Bbox<int, N> {
-  std::array<int, N> new_min;
-  std::array<int, N> new_max;
+  Vector<int, N> new_min;
+  Vector<int, N> new_max;
   for (auto i = 0; i < N; i++) {
     new_min[i] = static_cast<int>(std::floor(b.min[i]));
     new_max[i] = static_cast<int>(std::floor(b.max[i]));
@@ -28,20 +29,20 @@ auto conservative_integral_bounds(const Bbox<double, N>& b) -> Bbox<int, N> {
   return {new_min, new_max};
 }
 
-template <std::size_t N>
-auto homogenize(const std::array<double, N>& v) -> std::array<double, N + 1> {
-  std::array<double, N + 1> result;
+template <typename T, std::size_t N>
+auto homogenize(const Vector<T, N>& v) -> Vector<T, N + 1> {
+  Vector<T, N + 1> result;
   for (std::size_t i = 0; i < N; ++i) {
-    result[i] = v[i];
+    result.value[i] = v.value[i];
   }
-  result[N] = 1.0;
+  result.value[N] = 1.0;
   return result;
 }
 
-template <std::size_t N>
+template <typename T, std::size_t N>
   requires(N > 0)
-auto dehomogenize(const std::array<double, N>& v) -> std::array<double, N - 1> {
-  std::array<double, N - 1> result;
+auto dehomogenize(const Vector<T, N>& v) -> Vector<T, N - 1> {
+  Vector<T, N - 1> result;
   auto scale = 1.0 / v[N - 1];
   for (auto i = 0; i < N - 1; i++) {
     result[i] = v[i] * scale;

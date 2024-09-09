@@ -3,7 +3,6 @@ add_library(renderer STATIC)
 
 # Set the source files for the renderer library
 set(RENDERER_SRC_FILES
-    array.tpp
     color.hpp
     grid.hpp
 	matrix.hpp

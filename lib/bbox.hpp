@@ -6,7 +6,8 @@
 #include <limits>
 #include <string>
 
-#include "matrix.hpp"
+#include "renderer/matrix.hpp"
+#include "vector.hpp"
 
 namespace scarf {
 
@@ -14,12 +15,11 @@ template <typename T, std::size_t N>
   requires(N > 0)
 struct Bbox {
   Bbox() : min(), max() {
-    min.fill(std::numeric_limits<T>::min());
-    max.fill(std::numeric_limits<T>::max());
+    min.value.fill(std::numeric_limits<T>::min());
+    max.value.fill(std::numeric_limits<T>::max());
   }
 
-  Bbox(const std::array<T, N>& min, const std::array<T, N>& max)
-      : min(min), max(max) {}
+  Bbox(const Vector<T, N>& min, const Vector<T, N>& max) : min(min), max(max) {}
 
   auto operator*(const Bbox<T, N>& other) const -> Bbox {
     Bbox<T, N> result;
@@ -42,8 +42,8 @@ struct Bbox {
     return vol;
   }
 
-  std::array<T, N> min;
-  std::array<T, N> max;
+  Vector<T, N> min;
+  Vector<T, N> max;
 };
 
 }  // namespace scarf
