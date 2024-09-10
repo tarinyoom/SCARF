@@ -17,8 +17,8 @@ extern "C" {
 namespace scarf {
 
 void fill_gradient(
-    uint8_t* data, int linesize, const SPHState& s,
-    std::function<renderer::Grid<renderer::Pixel>(const SPHState&)> f) {
+    uint8_t* data, int linesize, const model::SPHState& s,
+    std::function<renderer::Grid<renderer::Pixel>(const model::SPHState&)> f) {
   auto rendering = f(s);
   for (int y = 0; y < height; ++y) {
     for (int x = 0; x < width; ++x) {
@@ -30,7 +30,7 @@ void fill_gradient(
   }
 }
 
-auto make_mov(Animation<SPHState> anim) -> int {
+auto make_mov(Animation<model::SPHState> anim) -> int {
   AVFormatContext* format_context = nullptr;
   AVStream* video_stream = nullptr;
   AVCodecContext* codec_context = nullptr;

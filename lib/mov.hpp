@@ -1,7 +1,7 @@
 #pragma once
 
 #include "animation.hpp"
-#include "sph.hpp"
+#include "model/state.hpp"
 
 namespace scarf {
 
@@ -11,6 +11,6 @@ const int fps = 60;
 const int duration = 5;  // seconds
 constexpr auto h = 1.0 / static_cast<double>(fps);
 
-auto make_mov(Animation<SPHState> anim) -> int;
+auto make_mov(Animation<model::SPHState> anim) -> int;
 
 }  // namespace scarf
