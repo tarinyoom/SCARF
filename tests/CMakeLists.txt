@@ -11,7 +11,7 @@ target_include_directories(scarftest PRIVATE ${GTEST_INCLUDE_DIRS})
 target_link_libraries(scarftest PRIVATE
     ${GTEST_LIBRARY_DIRS}/gtest_main.lib
     ${GTEST_LIBRARY_DIRS}/gtest.lib
-    scarflib)
+    scarflib common)
 
 # Set the source files for the scarftest executable
 set(TOOLS_FILES

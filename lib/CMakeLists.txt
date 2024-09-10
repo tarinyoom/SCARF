@@ -20,12 +20,10 @@ target_link_options(scarflib PRIVATE ${FFMPEG_LDFLAGS_OTHER})
 # Set the source files for the scarflib library
 set(SRC_FILES
     animation.hpp
-    bbox.hpp
     mov.cpp
     mov.hpp
     sph.cpp
     sph.hpp
-    vector.hpp
 )
 
 # Add the source files to the scarflib target
@@ -34,7 +32,10 @@ target_sources(scarflib PRIVATE ${SRC_FILES})
 # Set the include directories for scarflib
 target_include_directories(scarflib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
+add_subdirectory(common)
 add_subdirectory(renderer)
 
+set(common_dir ${CMAKE_CURRENT_SOURCE_DIR}/common)
+
 # Link the renderer to scarflib
-target_link_libraries(scarflib PRIVATE renderer)
+target_link_libraries(scarflib PRIVATE renderer common)

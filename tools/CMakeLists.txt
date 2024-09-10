@@ -10,4 +10,4 @@ set(TOOLS_FILES
 target_sources(scarf PRIVATE ${TOOLS_FILES})
 
 # Link the executable against the scarflib library
-target_link_libraries(scarf PRIVATE scarflib)
+target_link_libraries(scarf PRIVATE scarflib common)

@@ -6,7 +6,6 @@
 #include <limits>
 #include <string>
 
-#include "renderer/matrix.hpp"
 #include "vector.hpp"
 
 namespace scarf {
@@ -28,10 +27,6 @@ struct Bbox {
       result.max[i] = std::min(max[i], other.max[i]);
     }
     return result;
-  }
-
-  auto transform(const renderer::Matrix<T, N, N>& a) const -> Bbox<T, N> {
-    return Bbox<T, N>(a * min, a * max);
   }
 
   auto volume() -> T {

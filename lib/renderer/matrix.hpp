@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-#include "../vector.hpp"
+#include "vector.hpp"
 
 namespace scarf::renderer {
 

@@ -17,4 +17,6 @@ set(RENDERER_SRC_FILES
 target_sources(renderer PRIVATE ${RENDERER_SRC_FILES})
 
 # Set the include directories for renderer
-target_include_directories(renderer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(renderer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} common_dir)
+
+target_link_libraries(renderer PRIVATE common)

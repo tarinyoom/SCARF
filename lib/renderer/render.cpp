@@ -2,10 +2,11 @@
 
 #include <array>
 
-#include "../vector.hpp"
+#include "bbox.hpp"
 #include "color.hpp"
 #include "matrix.hpp"
 #include "rendering.tpp"
+#include "vector.hpp"
 
 namespace scarf::renderer {
 
@@ -95,7 +96,8 @@ auto render(Scene&& s) -> Grid<Pixel> {
                                 homogenize(pos_w + radius_offset)};
 
     // Convert bounding box to pixel space
-    auto bounds_s = bounds_w.transform(world_to_screen);
+    auto bounds_s = Bbox<double, 3>(world_to_screen * bounds_w.min,
+                                    world_to_screen * bounds_w.max);
     auto bounds_p = conservative_integral_bounds(dehomogenize(bounds_s));
 
     // Render circle into buffer

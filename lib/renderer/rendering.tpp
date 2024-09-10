@@ -4,8 +4,8 @@
 #include <array>
 #include <cstddef>
 
-#include "../bbox.hpp"
-#include "../vector.hpp"
+#include "bbox.hpp"
+#include "vector.hpp"
 
 namespace scarf::renderer {
 
