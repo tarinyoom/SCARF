@@ -2,16 +2,16 @@
 
 #include <memory>
 
+#include "grid.hpp"
 #include "kernel.cpp"
 #include "model/step.hpp"
-#include "renderer/grid.hpp"
-#include "renderer/pixel.hpp"
+#include "pixel.hpp"
 #include "renderer/render.hpp"
 #include "renderer/scene.hpp"
 
 namespace scarf {
 
-auto render(const model::SPHState& state) -> renderer::Grid<renderer::Pixel> {
+auto render(const model::SPHState& state) -> Grid<Pixel> {
   renderer::Scene scene;
   scene.points.reserve(state.n_particles);
   for (auto i = 0; i < state.n_particles; i++) {

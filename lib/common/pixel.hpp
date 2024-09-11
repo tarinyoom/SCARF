@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace scarf::renderer {
+namespace scarf {
 
 struct Pixel {
   std::uint8_t r;
@@ -10,4 +10,4 @@ struct Pixel {
   std::uint8_t b;
 };
 
-}  // namespace scarf::renderer
+}  // namespace scarf

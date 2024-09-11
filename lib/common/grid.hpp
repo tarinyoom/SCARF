@@ -4,7 +4,7 @@
 
 #include "bbox.hpp"
 
-namespace scarf::renderer {
+namespace scarf {
 
 template <typename T>
 struct Grid {
@@ -29,4 +29,4 @@ struct Grid {
   std::vector<std::vector<T>> data_;
 };
 
-}  // namespace scarf::renderer
+}  // namespace scarf

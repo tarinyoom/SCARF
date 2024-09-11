@@ -4,8 +4,10 @@ add_library(common STATIC)
 # Set the source files for the common library
 set(COMMON_SRC_FILES
     bbox.hpp
+    grid.hpp
     kernel.cpp
     kernel.hpp
+    pixel.hpp
     vector.hpp
 )
 

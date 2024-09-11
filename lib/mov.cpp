@@ -11,14 +11,13 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
-#include "renderer/grid.hpp"
-#include "renderer/pixel.hpp"
+#include "grid.hpp"
+#include "pixel.hpp"
 
 namespace scarf {
 
-void fill_gradient(
-    uint8_t* data, int linesize, const model::SPHState& s,
-    std::function<renderer::Grid<renderer::Pixel>(const model::SPHState&)> f) {
+void fill_gradient(uint8_t* data, int linesize, const model::SPHState& s,
+                   std::function<Grid<Pixel>(const model::SPHState&)> f) {
   auto rendering = f(s);
   for (int y = 0; y < height; ++y) {
     for (int x = 0; x < width; ++x) {
