@@ -13,7 +13,7 @@ using namespace scarf;
 
 TEST(model, density_approximation) {
   // Assemble a regular grid of points
-  model::SPHState s(100);
+  model::State s(100);
   for (auto i = 0; i < 10; i++) {
     for (auto j = 0; j < 10; j++) {
       s.positions[10 * i + j] = {static_cast<double>(i),
@@ -58,7 +58,7 @@ TEST(model, density_approximation) {
 }
 
 TEST(model, pressure_approximation) {
-  model::SPHState s(3);
+  model::State s(3);
   s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
   std::vector<double> expected_pressures = {
@@ -70,7 +70,7 @@ TEST(model, pressure_approximation) {
 }
 
 TEST(model, velocity_approximation) {
-  model::SPHState s(3);
+  model::State s(3);
   s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
   std::vector<Vector<double, 2>> expected_velocities = {

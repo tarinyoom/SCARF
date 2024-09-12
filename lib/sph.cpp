@@ -14,7 +14,7 @@
 
 namespace scarf {
 
-auto render(const model::SPHState& state) -> Grid<Pixel> {
+auto render(const model::State& state) -> Grid<Pixel> {
   renderer::Scene scene;
   scene.points.reserve(state.n_particles);
   for (auto i = 0; i < state.n_particles; i++) {
@@ -29,7 +29,7 @@ auto render(const model::SPHState& state) -> Grid<Pixel> {
 
 auto build_animation(int n_subsamples) -> dispatch::Animation {
   auto alt =
-      std::make_shared<Alternator<model::SPHState>>(model::init(), model::step);
+      std::make_shared<Alternator<model::State>>(model::init(), model::step);
   return dispatch::Animation{[=](double h) -> Grid<Pixel> {
     auto substep = h / static_cast<double>(n_subsamples);
     for (int i = 1; i < n_subsamples; i++) {

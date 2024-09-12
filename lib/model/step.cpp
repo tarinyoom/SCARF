@@ -6,7 +6,7 @@
 
 namespace scarf::model {
 
-auto update_densities(SPHState& s) -> void {
+auto update_densities(State& s) -> void {
   for (auto i = 0; i < s.n_particles; i++) {
     s.densities[i] = 0.0;
   }
@@ -24,7 +24,7 @@ auto update_densities(SPHState& s) -> void {
   }
 }
 
-auto update_pressures(SPHState& s) -> void {
+auto update_pressures(State& s) -> void {
   auto ref_density = s.n_particles / s.boundary.volume();
   for (auto i = 0; i < s.n_particles; i++) {
     s.pressures[i] = std::pow(s.densities[i], 7.0) - std::pow(ref_density, 7.0);
@@ -32,7 +32,7 @@ auto update_pressures(SPHState& s) -> void {
   }
 }
 
-auto update_velocities(SPHState& s, double h) -> void {
+auto update_velocities(State& s, double h) -> void {
   for (auto i = 0; i < s.n_particles; i++) {
     for (auto j = 0; j < i; j++) {
       auto grad = kernel_gradient(s.positions[i], s.positions[j], OUTER_R, 1.0);
@@ -46,8 +46,8 @@ auto update_velocities(SPHState& s, double h) -> void {
   }
 }
 
-auto step(const SPHState& pre, double h) -> SPHState {
-  SPHState post(pre.n_particles);
+auto step(const State& pre, double h) -> State {
+  State post(pre.n_particles);
   for (auto i = 0; i < pre.positions.size(); i++) {
     post.positions[i] = pre.positions[i] + h * pre.velocities[i];
     post.velocities[i] = pre.velocities[i];

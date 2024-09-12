@@ -15,9 +15,9 @@ constexpr auto INNER_R2 = INNER_R * INNER_R;
 constexpr auto MSAA_LINEAR_DENSITY = 1;
 constexpr auto N_PARTICLES = 64;
 
-struct SPHState {
-  SPHState() = default;
-  SPHState(std::size_t n_particles);
+struct State {
+  State() = default;
+  State(std::size_t n_particles);
 
   std::vector<Vector<double, 2>> positions;
   std::vector<Vector<double, 2>> velocities;
@@ -27,6 +27,6 @@ struct SPHState {
   std::size_t n_particles;
 };
 
-auto init() -> SPHState;
+auto init() -> State;
 
 }  // namespace scarf::model
