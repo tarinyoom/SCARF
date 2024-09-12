@@ -4,6 +4,6 @@
 
 namespace scarf::model {
 
-auto step(SPHState&& pre, double h) -> SPHState;
+auto step(const SPHState& pre, double h) -> SPHState;
 
 }

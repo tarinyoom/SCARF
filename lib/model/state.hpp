@@ -16,6 +16,7 @@ constexpr auto MSAA_LINEAR_DENSITY = 1;
 constexpr auto N_PARTICLES = 64;
 
 struct SPHState {
+  SPHState() = default;
   SPHState(std::size_t n_particles);
 
   std::vector<Vector<double, 2>> positions;

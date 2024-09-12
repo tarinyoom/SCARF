@@ -19,6 +19,7 @@ target_link_options(scarflib PRIVATE ${FFMPEG_LDFLAGS_OTHER})
 
 # Set the source files for the scarflib library
 set(SRC_FILES
+    alternator.hpp
     animation.hpp
     mov.cpp
     mov.hpp

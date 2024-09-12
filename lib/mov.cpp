@@ -11,14 +11,18 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
+#include "alternator.hpp"
 #include "grid.hpp"
+#include "model/state.hpp"
 #include "pixel.hpp"
 
 namespace scarf {
 
-void fill_gradient(uint8_t* data, int linesize, const model::SPHState& s,
+void fill_gradient(uint8_t* data, int linesize,
+                   Alternator<model::SPHState>& alt,
                    std::function<Grid<Pixel>(const model::SPHState&)> f) {
-  auto rendering = f(s);
+  auto s = alt.next();
+  auto rendering = f(*s);
   for (int y = 0; y < height; ++y) {
     for (int x = 0; x < width; ++x) {
       auto px = rendering[x][y];
@@ -120,7 +124,8 @@ auto make_mov(Animation<model::SPHState> anim) -> int {
       width, height, AV_PIX_FMT_RGB24, width, height, codec_context->pix_fmt,
       SWS_BICUBIC, nullptr, nullptr, nullptr);
 
-  auto s = anim.init();
+  auto alt = Alternator<model::SPHState>(
+      anim.init(), [&](const model::SPHState& s) { return anim.step(s, h); });
   for (int i = 0; i < fps * duration; ++i) {
     if (av_frame_make_writable(frame) < 0) {
       std::cerr << "Frame not writable" << std::endl;
@@ -129,11 +134,10 @@ auto make_mov(Animation<model::SPHState> anim) -> int {
 
     uint8_t* rgb_data[1] = {new uint8_t[width * height * 3]};
     int rgb_linesize[1] = {3 * width};
-    fill_gradient(rgb_data[0], rgb_linesize[0], s, anim.render);
+    fill_gradient(rgb_data[0], rgb_linesize[0], alt, anim.render);
     static int frame_number = 1;
     std::cout << "Generating frame " << frame_number++ << " of "
               << duration * fps << std::endl;
-    s = anim.step(std::move(s), h);
 
     sws_scale(sws_context, rgb_data, rgb_linesize, 0, height, frame->data,
               frame->linesize);

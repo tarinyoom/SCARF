@@ -46,12 +46,12 @@ auto update_velocities(SPHState& s, double h) -> void {
   }
 }
 
-auto step(SPHState&& pre, double h) -> SPHState {
+auto step(const SPHState& pre, double h) -> SPHState {
   SPHState post(pre.n_particles);
   for (auto i = 0; i < pre.positions.size(); i++) {
-    post.positions[i] = std::move(pre.positions[i]) + h * pre.velocities[i];
-    post.velocities[i] = std::move(pre.velocities[i]);
-    post.boundary = std::move(pre.boundary);
+    post.positions[i] = pre.positions[i] + h * pre.velocities[i];
+    post.velocities[i] = pre.velocities[i];
+    post.boundary = pre.boundary;
     update_densities(post);
     update_pressures(post);
     update_velocities(post, h);

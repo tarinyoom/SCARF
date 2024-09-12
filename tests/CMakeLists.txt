@@ -16,6 +16,7 @@ target_link_libraries(scarftest PRIVATE
 # Set the source files for the scarftest executable
 set(TOOLS_FILES
     test_model.cpp
+    test_dispatch.cpp
 )
 
 # Add the source files to the scarftest executable
