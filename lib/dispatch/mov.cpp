@@ -11,12 +11,10 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
-#include "alternator.hpp"
 #include "grid.hpp"
-#include "model/state.hpp"
 #include "pixel.hpp"
 
-namespace scarf {
+namespace scarf::dispatch {
 
 void fill_gradient(uint8_t* data, int linesize, Animation& anim) {
   auto rendering = anim.next(TIMESTEP);
@@ -184,4 +182,4 @@ auto make_mov(Animation anim) -> int {
   return 0;
 }
 
-}  // namespace scarf
+}  // namespace scarf::dispatch

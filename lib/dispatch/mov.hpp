@@ -1,9 +1,8 @@
 #pragma once
 
 #include "animation.hpp"
-#include "model/state.hpp"
 
-namespace scarf {
+namespace scarf::dispatch {
 
 const int width = 640;
 const int height = 480;
@@ -13,4 +12,4 @@ constexpr auto TIMESTEP = 1.0 / static_cast<double>(fps);
 
 auto make_mov(Animation anim) -> int;
 
-}  // namespace scarf
+}  // namespace scarf::dispatch

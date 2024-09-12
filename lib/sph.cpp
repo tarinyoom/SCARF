@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "alternator.hpp"
+#include "dispatch/mov.hpp"
 #include "grid.hpp"
 #include "kernel.cpp"
 #include "model/state.hpp"
@@ -26,11 +27,13 @@ auto render(const model::SPHState& state) -> Grid<Pixel> {
   return renderer::render(std::move(scene));
 }
 
-auto build_animation() -> Animation {
+auto build_animation() -> dispatch::Animation {
   auto alt =
       std::make_shared<Alternator<model::SPHState>>(model::init(), model::step);
-  return Animation{
+  return dispatch::Animation{
       [=](double h) -> Grid<Pixel> { return render(*alt->next(h)); }};
 }
+
+auto run() -> int { return dispatch::make_mov(build_animation()); }
 
 }  // namespace scarf
