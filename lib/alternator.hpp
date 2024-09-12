@@ -10,7 +10,7 @@ namespace scarf {
 // Uses a two-sided buffer to reduce memory waste.
 template <typename T>
 struct Alternator {
-  using Transformation = std::function<T(const T&)>;
+  using Transformation = std::function<T(const T&, double)>;
 
   Alternator(T init, Transformation transformation)
       : state(0), transformation(std::move(transformation)) {
@@ -20,8 +20,8 @@ struct Alternator {
         std::make_shared<T>();  // Default-initialize the second buffer element
   }
 
-  auto next() -> std::shared_ptr<T> {
-    *buffer[!state] = transformation(*buffer[state]);
+  auto next(double h) -> std::shared_ptr<T> {
+    *buffer[!state] = transformation(*buffer[state], h);
     state = !state;
     return buffer[state];
   }

@@ -21,7 +21,7 @@ namespace scarf {
 void fill_gradient(uint8_t* data, int linesize,
                    Alternator<model::SPHState>& alt,
                    std::function<Grid<Pixel>(const model::SPHState&)> f) {
-  auto s = alt.next();
+  auto s = alt.next(TIMESTEP);
   auto rendering = f(*s);
   for (int y = 0; y < height; ++y) {
     for (int x = 0; x < width; ++x) {
@@ -125,7 +125,8 @@ auto make_mov(Animation<model::SPHState> anim) -> int {
       SWS_BICUBIC, nullptr, nullptr, nullptr);
 
   auto alt = Alternator<model::SPHState>(
-      anim.init(), [&](const model::SPHState& s) { return anim.step(s, h); });
+      anim.init(),
+      [&](const model::SPHState& s, double h) { return anim.step(s, h); });
   for (int i = 0; i < fps * duration; ++i) {
     if (av_frame_make_writable(frame) < 0) {
       std::cerr << "Frame not writable" << std::endl;
