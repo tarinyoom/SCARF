@@ -6,13 +6,12 @@
 #include <vector>
 
 #include "model/state.hpp"
+#include "model/step.hpp"
 #include "sph.hpp"
 
 using namespace scarf;
 
 TEST(model, density_approximation) {
-  auto sph_animation = build_animation();
-
   // Assemble a regular grid of points
   model::SPHState s(100);
   for (auto i = 0; i < 10; i++) {
@@ -23,7 +22,7 @@ TEST(model, density_approximation) {
   }
 
   // Calculate density for grid
-  s = sph_animation.step(std::move(s), 0.1);
+  s = model::step(std::move(s), 0.1);
 
   // For points in the interior and boundary of the grid, expect their
   // densities to closely match the ideal continuously calculated density
@@ -59,22 +58,18 @@ TEST(model, density_approximation) {
 }
 
 TEST(model, pressure_approximation) {
-  auto sph_animation = build_animation();
-
   model::SPHState s(3);
   s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
   std::vector<double> expected_pressures = {
       132.53175839243431, 162.13600544636074, 89.347448002453689};
-  s = sph_animation.step(std::move(s), 0.1);
+  s = model::step(std::move(s), 0.1);
   for (auto i = 0; i < s.n_particles; i++) {
     EXPECT_EQ(s.pressures[i], expected_pressures[i]);
   }
 }
 
 TEST(model, velocity_approximation) {
-  auto sph_animation = build_animation();
-
   model::SPHState s(3);
   s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
@@ -86,7 +81,7 @@ TEST(model, velocity_approximation) {
     EXPECT_EQ(s.velocities[i][0], 0.0);
     EXPECT_EQ(s.velocities[i][1], 0.0);
   }
-  s = sph_animation.step(std::move(s), 0.1);
+  s = model::step(std::move(s), 0.1);
   for (auto i = 0; i < s.n_particles; i++) {
     EXPECT_EQ(s.velocities[i], expected_velocities[i]);
   }

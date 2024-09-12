@@ -11,6 +11,6 @@ const int fps = 60;
 const int duration = 5;  // seconds
 constexpr auto TIMESTEP = 1.0 / static_cast<double>(fps);
 
-auto make_mov(Animation<model::SPHState> anim) -> int;
+auto make_mov(Animation anim) -> int;
 
 }  // namespace scarf
