@@ -27,13 +27,18 @@ auto render(const model::SPHState& state) -> Grid<Pixel> {
   return renderer::render(std::move(scene));
 }
 
-auto build_animation() -> dispatch::Animation {
+auto build_animation(int n_subsamples) -> dispatch::Animation {
   auto alt =
       std::make_shared<Alternator<model::SPHState>>(model::init(), model::step);
-  return dispatch::Animation{
-      [=](double h) -> Grid<Pixel> { return render(*alt->next(h)); }};
+  return dispatch::Animation{[=](double h) -> Grid<Pixel> {
+    auto substep = h / static_cast<double>(n_subsamples);
+    for (int i = 1; i < n_subsamples; i++) {
+      alt->next(substep);
+    }
+    return render(*alt->next(substep));
+  }};
 }
 
-auto run() -> int { return dispatch::make_mov(build_animation()); }
+auto run() -> int { return dispatch::make_mov(build_animation(10)); }
 
 }  // namespace scarf
