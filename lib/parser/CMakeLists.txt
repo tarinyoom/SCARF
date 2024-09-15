@@ -2,7 +2,7 @@
 add_library(model STATIC)
 
 # Set the source files for the model library
-set(SRC_FILES
+set(MODEL_SRC_FILES
     step.hpp
 	step.cpp
 	state.cpp
@@ -10,7 +10,7 @@ set(SRC_FILES
 )
 
 # Add the source files to the model target
-target_sources(model PRIVATE ${SRC_FILES})
+target_sources(model PRIVATE ${MODEL_SRC_FILES})
 
 # Set the include directories for model
 target_include_directories(model PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} common_dir)

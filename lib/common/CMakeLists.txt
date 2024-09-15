@@ -2,7 +2,7 @@
 add_library(common STATIC)
 
 # Set the source files for the common library
-set(COMMON_SRC_FILES
+set(SRC_FILES
     bbox.hpp
     grid.hpp
     kernel.cpp
@@ -12,7 +12,7 @@ set(COMMON_SRC_FILES
 )
 
 # Add the source files to the common target
-target_sources(common PRIVATE ${COMMON_SRC_FILES})
+target_sources(common PRIVATE ${SRC_FILES})
 
 # Set the include directories for common
 target_include_directories(common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -2,7 +2,7 @@
 add_library(renderer STATIC)
 
 # Set the source files for the renderer library
-set(RENDERER_SRC_FILES
+set(SRC_FILES
     color.hpp
 	matrix.hpp
     render.cpp
@@ -12,7 +12,7 @@ set(RENDERER_SRC_FILES
 )
 
 # Add the source files to the renderer target
-target_sources(renderer PRIVATE ${RENDERER_SRC_FILES})
+target_sources(renderer PRIVATE ${SRC_FILES})
 
 # Set the include directories for renderer
 target_include_directories(renderer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} common_dir)

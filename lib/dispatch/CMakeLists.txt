@@ -18,14 +18,14 @@ target_compile_options(dispatch PRIVATE ${FFMPEG_CFLAGS_OTHER})
 target_link_options(dispatch PRIVATE ${FFMPEG_LDFLAGS_OTHER})
 
 # Set the source files for the dispatch library
-set(DISPATCH_SRC_FILES
+set(SRC_FILES
     animation.hpp
 	mov.cpp
 	mov.hpp
 )
 
 # Add the source files to the dispatch target
-target_sources(dispatch PRIVATE ${DISPATCH_SRC_FILES})
+target_sources(dispatch PRIVATE ${SRC_FILES})
 
 # Set the include directories for dispatch
 target_include_directories(dispatch PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} common_dir)
