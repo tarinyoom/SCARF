@@ -14,7 +14,7 @@
 
 namespace scarf {
 
-auto render(const model::State& state) -> Grid<Pixel> {
+auto lift(const model::State& state) -> renderer::Scene {
   renderer::Scene scene;
   scene.points.reserve(state.n_particles);
   for (auto i = 0; i < state.n_particles; i++) {
@@ -24,7 +24,11 @@ auto render(const model::State& state) -> Grid<Pixel> {
     scene.inner_radius = 0.1;
     scene.msaa_linear_density = 1;
   }
-  return renderer::render(std::move(scene));
+  return scene;
+}
+
+auto render(const model::State& state) -> Grid<Pixel> {
+  return renderer::render(lift(state));
 }
 
 auto build_animation(int n_subsamples) -> dispatch::Animation {
