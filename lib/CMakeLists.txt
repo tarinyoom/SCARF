@@ -10,9 +10,15 @@ target_include_directories(scarflib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(common)
 add_subdirectory(dispatch)
 add_subdirectory(model)
+add_subdirectory(parser)
 add_subdirectory(renderer)
 
 set(common_dir ${CMAKE_CURRENT_SOURCE_DIR}/common)
 
 # Link the renderer to scarflib
-target_link_libraries(scarflib PRIVATE dispatch model renderer common)
+target_link_libraries(scarflib PRIVATE
+    dispatch
+	model
+	parser
+	renderer
+	common)

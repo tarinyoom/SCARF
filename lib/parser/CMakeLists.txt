@@ -1,18 +1,16 @@
-# Define the model static library target
-add_library(model STATIC)
+# Define the parser static library target
+add_library(parser STATIC)
 
-# Set the source files for the model library
-set(MODEL_SRC_FILES
-    step.hpp
-	step.cpp
-	state.cpp
-	state.hpp
+# Set the source files for the parser library
+set(SRC_FILES
+    parse.cpp
+    parse.hpp
 )
 
-# Add the source files to the model target
-target_sources(model PRIVATE ${MODEL_SRC_FILES})
+# Add the source files to the parser target
+target_sources(parser PRIVATE ${SRC_FILES})
 
-# Set the include directories for model
-target_include_directories(model PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} common_dir)
+# Set the include directories for parser
+target_include_directories(parser PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} common_dir)
 
-target_link_libraries(model PRIVATE common)
+target_link_libraries(parser PRIVATE common)
