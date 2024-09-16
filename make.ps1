@@ -7,7 +7,7 @@ if (-Not (Test-Path -Path $buildDirectory)) {
     New-Item -ItemType Directory -Path $buildDirectory
 }
 $env:PKG_CONFIG_PATH = $buildDirectory
-conan install . --output-folder=build --build=missing
+conan install . --output-folder=build --build=missing $args
 
 # Perform the cmake build
 $originalDirectory = Get-Location
