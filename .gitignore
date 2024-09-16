@@ -1,0 +1,5 @@
+build
+.vscode
+./*.mov
+CMakeUserPresets.json
+examples/generated.mov
