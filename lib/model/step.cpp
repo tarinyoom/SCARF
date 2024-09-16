@@ -1,10 +1,30 @@
 #include "step.hpp"
 
 #include <cmath>
+#include <functional>
 
 #include "kernel.hpp"
 
 namespace scarf::model {
+
+// Given a state and an index, perform a symmetric action on all neighbors of an
+// index i with index at least i.
+auto act_on_neighbors(State& s, int i,
+                      std::function<void(State&, int, int)> act) -> void {
+  // Act once on self
+  act(s, i, i);
+  for (int j = i + 1; j < s.n_particles; j++) {
+    // Act symmetrically on other
+    act(s, i, j);
+    act(s, j, i);
+  }
+}
+
+// Update the density at index i based on index j's contribution.
+auto update_density(State& s, int i, int j) -> void {
+  auto v = kernel(s.positions[i], s.positions[j], OUTER_R, 1.0);
+  s.densities[i] += v;
+}
 
 auto update_densities(State& s) -> void {
   for (auto i = 0; i < s.n_particles; i++) {
@@ -12,15 +32,7 @@ auto update_densities(State& s) -> void {
   }
 
   for (auto i = 0; i < s.positions.size(); i++) {
-    for (auto j = 0; j <= i; j++) {
-      auto v = kernel(s.positions[i], s.positions[j], OUTER_R, 1.0);
-      if (i != j) {  // asymmetric case
-        s.densities[i] += v;
-        s.densities[j] += v;
-      } else {  // symmetric case
-        s.densities[i] += v;
-      }
-    }
+    act_on_neighbors(s, i, update_density);
   }
 }
 
