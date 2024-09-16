@@ -1,3 +1,3 @@
 #include "sph.hpp"
 
-auto main() -> int { return scarf::run(); }
+auto main(int argc, char *argv[]) -> int { return scarf::run(argc, argv); }

@@ -28,7 +28,7 @@ void fill_gradient(uint8_t* data, int linesize, Animation& anim) {
   }
 }
 
-auto make_mov(Animation anim) -> int {
+auto make_mov(Animation anim, const Config& cfg) -> int {
   AVFormatContext* format_context = nullptr;
   AVStream* video_stream = nullptr;
   AVCodecContext* codec_context = nullptr;

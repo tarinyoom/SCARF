@@ -4,6 +4,6 @@
 
 namespace scarf {
 
-auto run() -> int;
+auto run(int argc, char* argv[]) -> int;
 
 }  // namespace scarf

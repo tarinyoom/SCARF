@@ -8,6 +8,7 @@
 #include "kernel.cpp"
 #include "model/state.hpp"
 #include "model/step.hpp"
+#include "parser/parse.hpp"
 #include "pixel.hpp"
 #include "renderer/render.hpp"
 #include "renderer/scene.hpp"
@@ -43,6 +44,8 @@ auto build_animation(int n_subsamples) -> dispatch::Animation {
   }};
 }
 
-auto run() -> int { return dispatch::make_mov(build_animation(10)); }
+auto run(int argc, char* argv[]) -> int {
+  return dispatch::make_mov(build_animation(10), parser::parse_file(argv[1]));
+}
 
 }  // namespace scarf
