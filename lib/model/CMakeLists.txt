@@ -3,6 +3,8 @@ add_library(model STATIC)
 
 # Set the source files for the model library
 set(SRC_FILES
+    dynamics.cpp
+	dynamics.hpp
     step.hpp
 	step.cpp
 	state.cpp
