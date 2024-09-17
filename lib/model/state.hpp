@@ -22,7 +22,6 @@ struct State {
   std::vector<Vector<double, 2>> positions;
   std::vector<Vector<double, 2>> velocities;
   std::vector<double> densities;
-  std::vector<double> pressures;
   Bbox<double, 2> boundary;
   std::size_t n_particles;
 };

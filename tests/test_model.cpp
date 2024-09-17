@@ -5,6 +5,7 @@
 #include <utility>
 #include <vector>
 
+#include "model/dynamics.hpp"
 #include "model/state.hpp"
 #include "model/step.hpp"
 #include "sph.hpp"
@@ -55,18 +56,6 @@ TEST(model, density_approximation) {
 
   EXPECT_EQ(n_interior, 16);
   EXPECT_EQ(n_boundary, 36);
-}
-
-TEST(model, pressure_approximation) {
-  model::State s(3);
-  s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
-  s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
-  std::vector<double> expected_pressures = {
-      132.53175839243431, 162.13600544636074, 89.347448002453689};
-  s = model::step(std::move(s), 0.1);
-  for (auto i = 0; i < s.n_particles; i++) {
-    EXPECT_EQ(s.pressures[i], expected_pressures[i]);
-  }
 }
 
 TEST(model, velocity_approximation) {
