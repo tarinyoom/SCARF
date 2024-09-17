@@ -36,12 +36,15 @@ auto update_densities(State& s) -> void {
   }
 }
 
-auto update_pressures(State& s) -> void {
+auto compute_pressures(const State& s) -> std::vector<double> {
   auto ref_density = s.n_particles / s.boundary.volume();
+  std::vector<double> pressures;
+  pressures.reserve(s.n_particles);
   for (auto i = 0; i < s.n_particles; i++) {
-    s.pressures[i] = std::pow(s.densities[i], 7.0) - std::pow(ref_density, 7.0);
-    s.pressures[i] *= 100000.0;
+    pressures[i] = std::pow(s.densities[i], 7.0) - std::pow(ref_density, 7.0);
+    pressures[i] *= 100000.0;
   }
+  return pressures;
 }
 
 auto update_velocities(State& s, double h) -> void {
@@ -65,7 +68,7 @@ auto step(const State& pre, double h) -> State {
     post.velocities[i] = pre.velocities[i];
     post.boundary = pre.boundary;
     update_densities(post);
-    update_pressures(post);
+    post.pressures = compute_pressures(post);
     update_velocities(post, h);
 
     for (auto dim = 0; dim < 2; dim++) {

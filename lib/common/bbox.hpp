@@ -29,7 +29,7 @@ struct Bbox {
     return result;
   }
 
-  auto volume() -> T {
+  auto volume() const -> T {
     auto vol = max[0] - min[0];  // N > 0
     for (auto i = 1; i < N; i++) {
       vol *= max[i] - min[i];
