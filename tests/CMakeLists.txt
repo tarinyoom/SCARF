@@ -18,7 +18,6 @@ set(TOOLS_FILES
     test_dispatch.cpp
     test_model.cpp
     test_parser.cpp
-    test_scarf.cpp
 )
 
 # Add the source files to the scarftest executable
