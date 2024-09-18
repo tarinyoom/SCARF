@@ -31,10 +31,6 @@ auto step(const State& pre, double h) -> State {
         proj = post.boundary.max[dim];
         post.velocities[i][dim] *= -1;
       }
-      auto& v = post.velocities[i][dim];
-      if (std::abs(v) > 10.0) {
-        v = -1.0 * std::signbit(v) * 10.0;
-      }
     }
   }
   return post;
