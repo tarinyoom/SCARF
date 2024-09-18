@@ -33,14 +33,15 @@ auto compute_densities(const std::vector<Vector<double, 2>>& positions)
   return densities;
 }
 
-auto compute_pressures(const State& s, const std::vector<double>& densities)
+auto compute_pressures(double reference_density,
+                       const std::vector<double>& densities)
     -> std::vector<double> {
   auto n = densities.size();
-  auto ref_density = n / s.boundary.volume();
   std::vector<double> pressures;
   pressures.reserve(n);
   for (auto i = 0; i < n; i++) {
-    pressures[i] = std::pow(densities[i], 7.0) - std::pow(ref_density, 7.0);
+    pressures[i] =
+        std::pow(densities[i], 7.0) - std::pow(reference_density, 7.0);
     pressures[i] *= 100000.0;
   }
   return pressures;

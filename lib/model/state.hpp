@@ -21,8 +21,10 @@ struct State {
 
   std::vector<Vector<double, 2>> positions;
   std::vector<Vector<double, 2>> velocities;
+
   Bbox<double, 2> boundary;
   std::size_t n_particles;
+  double reference_density;
 };
 
 auto init() -> State;

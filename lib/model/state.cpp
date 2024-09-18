@@ -23,6 +23,10 @@ auto init() -> State {
     state.positions[i] = {x, y};
     state.velocities[i] = {-0.5 * x, -0.5 * y};
   }
+
+  state.reference_density =
+      static_cast<double>(state.n_particles) / state.boundary.volume();
+
   return state;
 }
 

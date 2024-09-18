@@ -62,10 +62,10 @@ TEST(model, pressure_approximation) {
   s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
   std::vector<double> expected_pressures = {
-      132.53175839243431, 162.13600544636074, 89.347448002453689};
+      132.5320808527114, 162.13632790663783, 89.347770462730779};
 
   auto densities = model::compute_densities(s.positions);
-  auto pressures = model::compute_pressures(s, densities);
+  auto pressures = model::compute_pressures(s.reference_density, densities);
   for (auto i = 0; i < s.n_particles; i++) {
     EXPECT_EQ(pressures[i], expected_pressures[i]);
   }
@@ -76,9 +76,9 @@ TEST(model, velocity_approximation) {
   s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
   std::vector<Vector<double, 2>> expected_velocities = {
-      {-4.8356888570142473, -12.216877368600018},
-      {-5.6281261208778641, -3.8966895267452699},
-      {10.463814977892111, 19.113566895345286}};
+      {-4.8357030681993383, -12.216913573292175},
+      {-5.6281409177181496, -3.8967039396837233},
+      {10.463843985917487, 19.1136175129759}};
   for (auto i = 0; i < s.n_particles; i++) {
     EXPECT_EQ(s.velocities[i][0], 0.0);
     EXPECT_EQ(s.velocities[i][1], 0.0);

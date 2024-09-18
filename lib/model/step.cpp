@@ -10,7 +10,7 @@ namespace scarf::model {
 
 auto step(const State& pre, double h) -> State {
   auto densities = compute_densities(pre.positions);
-  auto pressures = compute_pressures(pre, densities);
+  auto pressures = compute_pressures(pre.reference_density, densities);
   auto accelerations =
       compute_accelerations(pre.positions, densities, pressures);
 
@@ -19,6 +19,7 @@ auto step(const State& pre, double h) -> State {
     post.positions[i] = pre.positions[i] + h * pre.velocities[i];
     post.velocities[i] = pre.velocities[i] + h * accelerations[i];
     post.boundary = pre.boundary;
+    post.reference_density = pre.reference_density;
   }
 
   for (auto i = 0; i < pre.positions.size(); i++) {
