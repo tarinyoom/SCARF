@@ -22,8 +22,7 @@ TEST(model, density_approximation) {
     }
   }
 
-  // Calculate density for grid
-  s = model::step(std::move(s), 0.1);
+  auto densities = model::compute_densities(s.positions);
 
   // For points in the interior and boundary of the grid, expect their
   // densities to closely match the ideal continuously calculated density
@@ -37,15 +36,15 @@ TEST(model, density_approximation) {
     // Points in interior should have the ideal continuous density value
     if (pt[0] > 2.9 && pt[0] < 6.1 && pt[1] > 2.9 && pt[1] < 6.1) {
       n_interior++;
-      EXPECT_EQ(s.densities[i], 1.0023292559910253);  // within 1%
+      EXPECT_EQ(densities[i], 1.0023292559910253);  // within 1%
     }
 
     // Points in corners should have roughly a quarter of the ideal continuous
     // density value
     if (pt[0] < 0.1 || pt[0] > 8.9 || pt[1] < 0.1 || pt[1] > 8.9) {
       n_boundary++;
-      boundary_min = std::min(boundary_min, s.densities[i]);
-      boundary_max = std::max(boundary_max, s.densities[i]);
+      boundary_min = std::min(boundary_min, densities[i]);
+      boundary_max = std::max(boundary_max, densities[i]);
     }
   }
 
