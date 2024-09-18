@@ -1,10 +1,6 @@
 #include "step.hpp"
 
-#include <cmath>
-#include <functional>
-
 #include "dynamics.hpp"
-#include "kernel.hpp"
 
 namespace scarf::model {
 
