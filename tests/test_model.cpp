@@ -62,8 +62,8 @@ TEST(model, velocity_approximation) {
   s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
   std::vector<Vector<double, 2>> expected_velocities = {
-      {-4.8356888570142473, -13.272697857628378},
-      {-5.6281261208778641, -3.8408690377169101},
+      {-4.8356888570142473, -10.0},
+      {-5.6281261208778641, -4.6966895267452689},
       {-0.0, -0.0}};
   for (auto i = 0; i < s.n_particles; i++) {
     EXPECT_EQ(s.velocities[i][0], 0.0);
@@ -71,6 +71,7 @@ TEST(model, velocity_approximation) {
   }
   s = model::step(std::move(s), 0.1);
   for (auto i = 0; i < s.n_particles; i++) {
-    EXPECT_EQ(s.velocities[i], expected_velocities[i]);
+    EXPECT_EQ(s.velocities[i][0], expected_velocities[i][0]);
+    EXPECT_EQ(s.velocities[i][1], expected_velocities[i][1]);
   }
 }

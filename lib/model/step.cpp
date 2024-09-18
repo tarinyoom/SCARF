@@ -24,15 +24,19 @@ auto update_velocities(State& s, const std::vector<double>& pressures,
 }
 
 auto step(const State& pre, double h) -> State {
+  auto densities = compute_densities(pre.positions);
+  auto pressures = compute_pressures(pre, densities);
+
   State post(pre.n_particles);
   for (auto i = 0; i < pre.positions.size(); i++) {
     post.positions[i] = pre.positions[i] + h * pre.velocities[i];
     post.velocities[i] = pre.velocities[i];
     post.boundary = pre.boundary;
-    auto densities = compute_densities(post.positions);
-    auto pressures = compute_pressures(post, densities);
-    update_velocities(post, pressures, densities, h);
+  }
 
+  update_velocities(post, pressures, densities, h);
+
+  for (auto i = 0; i < pre.positions.size(); i++) {
     for (auto dim = 0; dim < 2; dim++) {
       auto& proj = post.positions[i][dim];
       if (proj < post.boundary.min[dim]) {
