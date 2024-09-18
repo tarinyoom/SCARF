@@ -2,7 +2,36 @@
 
 #include <cmath>
 
+#include "kernel.hpp"
+
 namespace scarf::model {
+
+auto compute_density(const std::vector<Vector<double, 2>>& positions, int i,
+                     int j) -> double {
+  return kernel(positions[i], positions[j], OUTER_R, 1.0);
+}
+
+auto compute_densities(const std::vector<Vector<double, 2>>& positions)
+    -> std::vector<double> {
+  auto n = positions.size();
+  std::vector<double> densities;
+  densities.reserve(n);
+
+  for (auto i = 0; i < n; i++) {
+    densities[i] = 0.0;
+  }
+
+  for (auto i = 0; i < n; i++) {
+    densities[i] += compute_density(positions, i, i);
+    for (auto j = i + 1; j < n; j++) {
+      auto v = compute_density(positions, i, j);
+      densities[i] += v;
+      densities[j] += v;
+    }
+  }
+
+  return densities;
+}
 
 auto compute_pressures(const State& s) -> std::vector<double> {
   auto ref_density = s.n_particles / s.boundary.volume();

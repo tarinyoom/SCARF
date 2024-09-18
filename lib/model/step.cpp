@@ -8,35 +8,6 @@
 
 namespace scarf::model {
 
-// Given a state and an index, perform a symmetric action on all neighbors of an
-// index i with index at least i.
-auto act_on_neighbors(State& s, int i,
-                      std::function<void(State&, int, int)> act) -> void {
-  // Act once on self
-  act(s, i, i);
-  for (int j = i + 1; j < s.n_particles; j++) {
-    // Act symmetrically on other
-    act(s, i, j);
-    act(s, j, i);
-  }
-}
-
-// Update the density at index i based on index j's contribution.
-auto update_density(State& s, int i, int j) -> void {
-  auto v = kernel(s.positions[i], s.positions[j], OUTER_R, 1.0);
-  s.densities[i] += v;
-}
-
-auto update_densities(State& s) -> void {
-  for (auto i = 0; i < s.n_particles; i++) {
-    s.densities[i] = 0.0;
-  }
-
-  for (auto i = 0; i < s.positions.size(); i++) {
-    act_on_neighbors(s, i, update_density);
-  }
-}
-
 auto update_velocities(State& s, const std::vector<double>& pressures,
                        double h) -> void {
   for (auto i = 0; i < s.n_particles; i++) {
@@ -58,7 +29,7 @@ auto step(const State& pre, double h) -> State {
     post.positions[i] = pre.positions[i] + h * pre.velocities[i];
     post.velocities[i] = pre.velocities[i];
     post.boundary = pre.boundary;
-    update_densities(post);
+    post.densities = compute_densities(post.positions);
     auto pressures = compute_pressures(post);
     update_velocities(post, pressures, h);
 
