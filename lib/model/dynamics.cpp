@@ -45,4 +45,29 @@ auto compute_pressures(const State& s, const std::vector<double>& densities)
   return pressures;
 }
 
+auto compute_accelerations(const std::vector<Vector<double, 2>>& positions,
+                           const std::vector<double>& densities,
+                           const std::vector<double>& pressures)
+    -> std::vector<Vector<double, 2>> {
+  auto n = positions.size();
+  std::vector<Vector<double, 2>> accelerations;
+  accelerations.reserve(n);
+
+  for (auto i = 0; i < n; i++) {
+    accelerations[i] = Vector<double, 2>(0.0, 10.0);
+  }
+
+  for (auto i = 0; i < n; i++) {
+    for (auto j = 0; j < i; j++) {
+      auto grad = kernel_gradient(positions[i], positions[j], OUTER_R, 1.0);
+      auto l = pressures[i] / (densities[i] * densities[i]);
+      auto r = pressures[j] / (densities[j] * densities[j]);
+      auto acc = (l + r) * grad;
+      accelerations[i] += acc;
+      accelerations[j] += -1.0 * acc;
+    }
+  }
+  return accelerations;
+}
+
 }  // namespace scarf::model

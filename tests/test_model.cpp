@@ -63,7 +63,7 @@ TEST(model, velocity_approximation) {
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
   std::vector<Vector<double, 2>> expected_velocities = {
       {-4.8356888570142473, -10.0},
-      {-5.6281261208778641, -4.6966895267452689},
+      {-5.6281261208778641, -3.8966895267452699},
       {-0.0, -0.0}};
   for (auto i = 0; i < s.n_particles; i++) {
     EXPECT_EQ(s.velocities[i][0], 0.0);

@@ -8,33 +8,18 @@
 
 namespace scarf::model {
 
-auto update_velocities(State& s, const std::vector<double>& pressures,
-                       const std::vector<double>& densities, double h) -> void {
-  for (auto i = 0; i < s.n_particles; i++) {
-    for (auto j = 0; j < i; j++) {
-      auto grad = kernel_gradient(s.positions[i], s.positions[j], OUTER_R, 1.0);
-      auto l = pressures[i] / (densities[i] * densities[i]);
-      auto r = pressures[j] / (densities[j] * densities[j]);
-      auto acc = h * (l + r) * grad;
-      s.velocities[i] += acc;
-      s.velocities[j] += -1.0 * acc;
-    }
-    s.velocities[i] += h * Vector<double, 2>(0.0, 2.0);
-  }
-}
-
 auto step(const State& pre, double h) -> State {
   auto densities = compute_densities(pre.positions);
   auto pressures = compute_pressures(pre, densities);
+  auto accelerations =
+      compute_accelerations(pre.positions, densities, pressures);
 
   State post(pre.n_particles);
   for (auto i = 0; i < pre.positions.size(); i++) {
     post.positions[i] = pre.positions[i] + h * pre.velocities[i];
-    post.velocities[i] = pre.velocities[i];
+    post.velocities[i] = pre.velocities[i] + h * accelerations[i];
     post.boundary = pre.boundary;
   }
-
-  update_velocities(post, pressures, densities, h);
 
   for (auto i = 0; i < pre.positions.size(); i++) {
     for (auto dim = 0; dim < 2; dim++) {
