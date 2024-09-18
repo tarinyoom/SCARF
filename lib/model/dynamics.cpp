@@ -18,7 +18,7 @@ auto compute_densities(const std::vector<Vector<double, 2>>& positions)
   densities.reserve(n);
 
   for (auto i = 0; i < n; i++) {
-    densities[i] = 0.0;
+    densities.push_back(0.0);
   }
 
   for (auto i = 0; i < n; i++) {
@@ -35,10 +35,11 @@ auto compute_densities(const std::vector<Vector<double, 2>>& positions)
 
 auto compute_pressures(const State& s, const std::vector<double>& densities)
     -> std::vector<double> {
-  auto ref_density = s.n_particles / s.boundary.volume();
+  auto n = densities.size();
+  auto ref_density = n / s.boundary.volume();
   std::vector<double> pressures;
-  pressures.reserve(s.n_particles);
-  for (auto i = 0; i < s.n_particles; i++) {
+  pressures.reserve(n);
+  for (auto i = 0; i < n; i++) {
     pressures[i] = std::pow(densities[i], 7.0) - std::pow(ref_density, 7.0);
     pressures[i] *= 100000.0;
   }
@@ -54,7 +55,7 @@ auto compute_accelerations(const std::vector<Vector<double, 2>>& positions,
   accelerations.reserve(n);
 
   for (auto i = 0; i < n; i++) {
-    accelerations[i] = Vector<double, 2>(0.0, 10.0);
+    accelerations.push_back(Vector<double, 2>(0.0, 10.0));
   }
 
   for (auto i = 0; i < n; i++) {
