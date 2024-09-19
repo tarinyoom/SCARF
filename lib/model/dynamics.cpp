@@ -14,13 +14,7 @@ auto compute_density(const std::vector<Vector<double, 2>>& positions, int i,
 auto compute_densities(const std::vector<Vector<double, 2>>& positions)
     -> std::vector<double> {
   auto n = positions.size();
-  std::vector<double> densities;
-  densities.reserve(n);
-
-  for (auto i = 0; i < n; i++) {
-    densities.push_back(0.0);
-  }
-
+  std::vector<double> densities(n, 0.0);
   for (auto i = 0; i < n; i++) {
     densities[i] += compute_density(positions, i, i);
     for (auto j = i + 1; j < n; j++) {
@@ -52,13 +46,7 @@ auto compute_accelerations(const std::vector<Vector<double, 2>>& positions,
                            const std::vector<double>& pressures)
     -> std::vector<Vector<double, 2>> {
   auto n = positions.size();
-  std::vector<Vector<double, 2>> accelerations;
-  accelerations.reserve(n);
-
-  for (auto i = 0; i < n; i++) {
-    accelerations.push_back(Vector<double, 2>(0.0, 10.0));
-  }
-
+  std::vector<Vector<double, 2>> accelerations(n, Vector<double, 2>(0.0, 10.0));
   for (auto i = 0; i < n; i++) {
     for (auto j = 0; j < i; j++) {
       auto grad = kernel_gradient(positions[i], positions[j], OUTER_R, 1.0);
