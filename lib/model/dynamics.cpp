@@ -23,7 +23,6 @@ auto compute_densities(const std::vector<Vector<double, 2>>& positions)
       densities[j] += v;
     }
   }
-
   return densities;
 }
 
@@ -39,6 +38,17 @@ auto compute_pressures(double reference_density,
   return pressures;
 }
 
+auto compute_acceleration(const std::vector<Vector<double, 2>>& positions,
+                          const std::vector<double>& densities,
+                          const std::vector<double>& pressures, int i,
+                          int j) -> Vector<double, 2> {
+  auto grad = kernel_gradient(positions[i], positions[j], OUTER_R, 1.0);
+  auto l = pressures[i] / (densities[i] * densities[i]);
+  auto r = pressures[j] / (densities[j] * densities[j]);
+  auto acc = (l + r) * grad;
+  return acc;
+}
+
 auto compute_accelerations(const std::vector<Vector<double, 2>>& positions,
                            const std::vector<double>& densities,
                            const std::vector<double>& pressures)
@@ -46,11 +56,10 @@ auto compute_accelerations(const std::vector<Vector<double, 2>>& positions,
   auto n = positions.size();
   std::vector<Vector<double, 2>> accelerations(n, Vector<double, 2>(0.0, 10.0));
   for (auto i = 0; i < n; i++) {
-    for (auto j = 0; j < i; j++) {
-      auto grad = kernel_gradient(positions[i], positions[j], OUTER_R, 1.0);
-      auto l = pressures[i] / (densities[i] * densities[i]);
-      auto r = pressures[j] / (densities[j] * densities[j]);
-      auto acc = (l + r) * grad;
+    accelerations[i] +=
+        compute_acceleration(positions, densities, pressures, i, i);
+    for (auto j = i + 1; j < n; j++) {
+      auto acc = compute_acceleration(positions, densities, pressures, i, j);
       accelerations[i] += acc;
       accelerations[j] += -1.0 * acc;
     }
