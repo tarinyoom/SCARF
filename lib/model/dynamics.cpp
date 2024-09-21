@@ -40,8 +40,8 @@ auto compute_pressures(double reference_density,
 
 auto compute_acceleration(const std::vector<Vector<double, 2>>& positions,
                           const std::vector<double>& densities,
-                          const std::vector<double>& pressures, int i,
-                          int j) -> Vector<double, 2> {
+                          const std::vector<double>& pressures, int i, int j)
+    -> Vector<double, 2> {
   auto grad = kernel_gradient(positions[i], positions[j], OUTER_R, 1.0);
   auto l = pressures[i] / (densities[i] * densities[i]);
   auto r = pressures[j] / (densities[j] * densities[j]);

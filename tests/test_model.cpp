@@ -6,11 +6,27 @@
 #include <vector>
 
 #include "model/dynamics.hpp"
+#include "model/hash.hpp"
 #include "model/state.hpp"
 #include "model/step.hpp"
 #include "sph.hpp"
+#include "vector.hpp"
 
 using namespace scarf;
+
+TEST(model, build_hash) {
+  auto anchor = Vector<double, 2>(0.0, 0.0);
+  auto cell_counts = Vector<int, 2>(3, 2);
+  auto cell_sizes = Vector<double, 2>(0.6, 0.6);
+  auto hash = model::build_hash(anchor, cell_counts, cell_sizes);
+
+  EXPECT_EQ(hash({0.3, 0.3}), 0);
+  EXPECT_EQ(hash({0.9, 0.3}), 2);
+  EXPECT_EQ(hash({1.5, 0.3}), 4);
+  EXPECT_EQ(hash({0.3, 0.9}), 1);
+  EXPECT_EQ(hash({0.9, 0.9}), 3);
+  EXPECT_EQ(hash({1.5, 0.9}), 5);
+}
 
 TEST(model, density_approximation) {
   // Assemble a regular grid of points

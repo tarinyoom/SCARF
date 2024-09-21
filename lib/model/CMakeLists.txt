@@ -5,6 +5,8 @@ add_library(model STATIC)
 set(SRC_FILES
     dynamics.cpp
 	dynamics.hpp
+	hash.cpp
+	hash.hpp
     step.hpp
 	step.cpp
 	state.cpp
