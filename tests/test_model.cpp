@@ -14,6 +14,16 @@
 
 using namespace scarf;
 
+TEST(model, hash_ints) {
+  auto cell_counts = Vector<int, 2>(5, 5);
+
+  EXPECT_EQ(model::hash({0, 0}, cell_counts), 0);
+  EXPECT_EQ(model::hash({0, 4}, cell_counts), 4);
+  EXPECT_EQ(model::hash({4, 0}, cell_counts), 20);
+  EXPECT_EQ(model::hash({4, 4}, cell_counts), 24);
+  EXPECT_EQ(model::hash({2, 2}, cell_counts), 12);
+}
+
 TEST(model, build_hash) {
   auto anchor = Vector<double, 2>(0.0, 0.0);
   auto cell_counts = Vector<int, 2>(3, 2);
