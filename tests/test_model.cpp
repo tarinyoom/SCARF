@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -68,7 +69,17 @@ TEST(model, grid_neighbors) {
   for (auto i = 0; i < positions.size(); i++) {
     auto neighbors = map(i);
 
-    // TODO: verify that all potential neighbors are correctly captured
+    std::unordered_set<int> neighbor_set;
+    for (auto& n : neighbors) {
+      neighbor_set.insert(n);
+    }
+
+    for (auto j = 0; j < positions.size(); j++) {
+      auto diff = positions[i] - positions[j];
+      if (diff * diff < model::OUTER_R * model::OUTER_R) {
+        EXPECT_TRUE(neighbor_set.contains(j));
+      }
+    }
 
     for (auto& n : neighbors) {
       auto diff = positions[i] - positions[n];
