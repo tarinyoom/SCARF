@@ -97,8 +97,10 @@ TEST(model, density_approximation) {
                                  static_cast<double>(j)};
     }
   }
+  s.boundary = Bbox<double, 2>({0.0, 0.0}, {10.0, 10.0});
 
-  auto densities = model::compute_densities(s.positions);
+  auto neighbor_map = model::map_neighbors(s.positions, s.boundary);
+  auto densities = model::compute_densities(neighbor_map, s.positions);
 
   // For points in the interior and boundary of the grid, expect their
   // densities to closely match the ideal continuously calculated density
@@ -139,8 +141,8 @@ TEST(model, pressure_approximation) {
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
   std::vector<double> expected_pressures = {
       132.5320808527114, 162.13632790663783, 89.347770462730779};
-
-  auto densities = model::compute_densities(s.positions);
+  auto neighbor_map = model::map_neighbors(s.positions, s.boundary);
+  auto densities = model::compute_densities(neighbor_map, s.positions);
   auto pressures = model::compute_pressures(s.reference_density, densities);
   for (auto i = 0; i < s.n_particles; i++) {
     EXPECT_EQ(pressures[i], expected_pressures[i]);

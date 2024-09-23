@@ -1,14 +1,16 @@
 #include "step.hpp"
 
 #include "dynamics.hpp"
+#include "hash.hpp"
 
 namespace scarf::model {
 
 auto step(const State& pre, double h) -> State {
-  auto densities = compute_densities(pre.positions);
+  auto neighbor_map = map_neighbors(pre.positions, pre.boundary);
+  auto densities = compute_densities(neighbor_map, pre.positions);
   auto pressures = compute_pressures(pre.reference_density, densities);
   auto accelerations =
-      compute_accelerations(pre.positions, densities, pressures);
+      compute_accelerations(neighbor_map, pre.positions, densities, pressures);
 
   State post(pre.n_particles);
   for (auto i = 0; i < pre.positions.size(); i++) {
