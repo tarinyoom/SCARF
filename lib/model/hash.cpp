@@ -35,8 +35,22 @@ auto map_neighbors(const std::vector<Vector<double, 2>>& positions,
   }
 
   return [=](int i) -> std::vector<int> {
-    auto cell_idx = hash(positions[i]);
-    return cell_contents[cell_idx];
+    std::vector<int> neighbors;
+    auto p =
+        detail::discretize_coords(positions[i], grid_bounds.min, cell_sizes);
+    for (auto i = -1; i <= 1; i++) {
+      for (auto j = -1; j <= 1; j++) {
+        auto n = p + Vector<int, 2>(i, j);
+        if (n[0] >= 0 && n[1] >= 0 && n[0] < cell_counts[0] &&
+            n[1] < cell_counts[1]) {
+          auto n_idx = detail::hash_coords(n, cell_counts);
+          for (auto& elem : cell_contents[n_idx]) {
+            neighbors.push_back(elem);
+          }
+        }
+      }
+    }
+    return neighbors;
   };
 }
 
