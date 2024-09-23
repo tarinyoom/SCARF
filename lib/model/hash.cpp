@@ -52,15 +52,23 @@ auto hash_coords(const Vector<int, 2>& coords,
   return idx;
 }
 
+auto discretize_coords(const Vector<double, 2>& point,
+                       const Vector<double, 2>& anchor,
+                       const Vector<double, 2>& cell_sizes) -> Vector<int, 2> {
+  Vector<int, 2> discretized;
+  for (auto i = 0; i < 2; i++) {
+    auto continuous = (point[i] - anchor[i]) / cell_sizes[i];
+    discretized[i] = static_cast<int>(std::floor(continuous));
+  }
+  return discretized;
+}
+
 auto build_hash(const Vector<double, 2>& anchor,
                 const Vector<int, 2>& cell_counts,
                 const Vector<double, 2>& cell_sizes)
     -> std::function<int(const Vector<double, 2>&)> {
   return [=](const Vector<double, 2>& point) -> int {
-    Vector<int, 2> coords;
-    for (auto i = 0; i < 2; i++) {
-      coords[i] = static_cast<int>((point[i] - anchor[i]) / cell_sizes[i]);
-    }
+    auto coords = discretize_coords(point, anchor, cell_sizes);
     return hash_coords(coords, cell_counts);
   };
 }

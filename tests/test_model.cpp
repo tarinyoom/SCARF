@@ -24,6 +24,22 @@ TEST(model, hash_coords) {
   EXPECT_EQ(model::detail::hash_coords({2, 2}, cell_counts), 12);
 }
 
+TEST(model, discretize_coords) {
+  auto anchor = Vector<double, 2>(-1.0, -1.0);
+  auto cell_sizes = Vector<double, 2>(0.3, 0.4);
+
+  auto expect_discretization = [=](Vector<double, 2> input,
+                                   Vector<int, 2> expected) -> void {
+    auto discretization =
+        model::detail::discretize_coords(input, anchor, cell_sizes);
+    EXPECT_EQ(discretization, expected);
+  };
+
+  expect_discretization({-1.0, -1.0}, {0, 0});
+  expect_discretization({0.2, 0.3}, {4, 3});
+  expect_discretization({0.4, 0.5}, {4, 3});
+}
+
 TEST(model, build_hash) {
   auto anchor = Vector<double, 2>(0.0, 0.0);
   auto cell_counts = Vector<int, 2>(3, 2);

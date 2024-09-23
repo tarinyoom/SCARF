@@ -16,6 +16,10 @@ namespace detail {
 auto hash_coords(const Vector<int, 2>& coords,
                  const Vector<int, 2>& cell_counts) -> int;
 
+auto discretize_coords(const Vector<double, 2>& point,
+                       const Vector<double, 2>& anchor,
+                       const Vector<double, 2>& cell_sizes) -> Vector<int, 2>;
+
 auto build_hash(const Vector<double, 2>& anchor,
                 const Vector<int, 2>& cell_counts,
                 const Vector<double, 2>& cell_sizes)
