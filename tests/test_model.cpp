@@ -14,21 +14,21 @@
 
 using namespace scarf;
 
-TEST(model, hash_ints) {
+TEST(model, hash_coords) {
   auto cell_counts = Vector<int, 2>(5, 5);
 
-  EXPECT_EQ(model::hash({0, 0}, cell_counts), 0);
-  EXPECT_EQ(model::hash({0, 4}, cell_counts), 4);
-  EXPECT_EQ(model::hash({4, 0}, cell_counts), 20);
-  EXPECT_EQ(model::hash({4, 4}, cell_counts), 24);
-  EXPECT_EQ(model::hash({2, 2}, cell_counts), 12);
+  EXPECT_EQ(model::detail::hash_coords({0, 0}, cell_counts), 0);
+  EXPECT_EQ(model::detail::hash_coords({0, 4}, cell_counts), 4);
+  EXPECT_EQ(model::detail::hash_coords({4, 0}, cell_counts), 20);
+  EXPECT_EQ(model::detail::hash_coords({4, 4}, cell_counts), 24);
+  EXPECT_EQ(model::detail::hash_coords({2, 2}, cell_counts), 12);
 }
 
 TEST(model, build_hash) {
   auto anchor = Vector<double, 2>(0.0, 0.0);
   auto cell_counts = Vector<int, 2>(3, 2);
   auto cell_sizes = Vector<double, 2>(0.6, 0.6);
-  auto hash = model::build_hash(anchor, cell_counts, cell_sizes);
+  auto hash = model::detail::build_hash(anchor, cell_counts, cell_sizes);
 
   EXPECT_EQ(hash({0.3, 0.3}), 0);
   EXPECT_EQ(hash({0.9, 0.3}), 2);
@@ -36,6 +36,29 @@ TEST(model, build_hash) {
   EXPECT_EQ(hash({0.3, 0.9}), 1);
   EXPECT_EQ(hash({0.9, 0.9}), 3);
   EXPECT_EQ(hash({1.5, 0.9}), 5);
+}
+
+TEST(model, grid_neighbors) {
+  auto bounds = Bbox<double, 2>({0.0, 0.0}, {10.0, 10.0});
+  std::vector<Vector<double, 2>> positions;
+  positions.push_back({3.1, 3.4});
+  for (auto i = 0; i < 10; i++) {
+    for (auto j = 0; j < 10; j++) {
+      positions.push_back({static_cast<double>(i), static_cast<double>(j)});
+    }
+  }
+
+  auto map = model::map_neighbors(positions, bounds);
+  for (auto i = 0; i < positions.size(); i++) {
+    auto neighbors = map(i);
+
+    // TODO: verify that all potential neighbors are correctly captured
+
+    for (auto& n : neighbors) {
+      auto diff = positions[i] - positions[n];
+      EXPECT_LE(diff * diff, 4 * model::OUTER_R * model::OUTER_R);
+    }
+  }
 }
 
 TEST(model, density_approximation) {
