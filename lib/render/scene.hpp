@@ -5,7 +5,7 @@
 
 #include "vector.hpp"
 
-namespace scarf::renderer {
+namespace scarf::render {
 
 struct Scene {
   // Points present in scene
@@ -23,4 +23,4 @@ struct Scene {
   std::size_t msaa_linear_density;
 };
 
-}  // namespace scarf::renderer
+}  // namespace scarf::render

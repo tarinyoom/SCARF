@@ -8,7 +8,7 @@
 #include "rendering.tpp"
 #include "vector.hpp"
 
-namespace scarf::renderer {
+namespace scarf::render {
 
 static Matrix<double, 3, 3> world_to_screen{
     {{{10.0, 0.0, 320.0}, {0.0, 10.0, 240.0}, {0.0, 0.0, 1.0}}}};
@@ -108,4 +108,4 @@ auto render(Scene&& s) -> Grid<Pixel> {
   return finalize(std::move(buffer));
 }
 
-}  // namespace scarf::renderer
+}  // namespace scarf::render

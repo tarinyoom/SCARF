@@ -8,15 +8,15 @@
 #include "kernel.cpp"
 #include "model/state.hpp"
 #include "model/step.hpp"
-#include "parser/parse.hpp"
+#include "parse/parse.hpp"
 #include "pixel.hpp"
-#include "renderer/render.hpp"
-#include "renderer/scene.hpp"
+#include "render/render.hpp"
+#include "render/scene.hpp"
 
 namespace scarf {
 
-auto lift(const model::State& state) -> renderer::Scene {
-  renderer::Scene scene;
+auto lift(const model::State& state) -> render::Scene {
+  render::Scene scene;
   scene.points.reserve(state.n_particles);
   for (auto i = 0; i < state.n_particles; i++) {
     scene.points.push_back(state.positions[i]);
@@ -28,8 +28,8 @@ auto lift(const model::State& state) -> renderer::Scene {
   return scene;
 }
 
-auto render(const model::State& state) -> Grid<Pixel> {
-  return renderer::render(lift(state));
+auto render_state(const model::State& state) -> Grid<Pixel> {
+  return render::render(lift(state));
 }
 
 auto build_animation(int n_subsamples) -> dispatch::Animation {
@@ -40,12 +40,12 @@ auto build_animation(int n_subsamples) -> dispatch::Animation {
     for (int i = 1; i < n_subsamples; i++) {
       alt->next(substep);
     }
-    return render(*alt->next(substep));
+    return render_state(*alt->next(substep));
   }};
 }
 
 auto run(int argc, char* argv[]) -> int {
-  return dispatch::make_mov(build_animation(10), parser::parse_file(argv[1]));
+  return dispatch::make_mov(build_animation(10), parse::parse_file(argv[1]));
 }
 
 }  // namespace scarf

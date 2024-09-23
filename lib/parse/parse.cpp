@@ -4,7 +4,7 @@
 #include <sstream>
 #include <stdexcept>
 
-namespace scarf::parser {
+namespace scarf::parse {
 
 auto parse_file(const std::filesystem::path& relative_path) -> Config {
   auto cwd = std::filesystem::current_path();
@@ -24,4 +24,4 @@ auto parse_file(const std::filesystem::path& relative_path) -> Config {
 
   return Config{.output_file = content.str()};
 }
-}  // namespace scarf::parser
+}  // namespace scarf::parse

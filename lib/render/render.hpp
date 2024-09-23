@@ -4,7 +4,7 @@
 #include "pixel.hpp"
 #include "scene.hpp"
 
-namespace scarf::renderer {
+namespace scarf::render {
 
 auto render(Scene&&) -> Grid<Pixel>;
 

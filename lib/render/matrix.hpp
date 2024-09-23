@@ -4,7 +4,7 @@
 
 #include "vector.hpp"
 
-namespace scarf::renderer {
+namespace scarf::render {
 
 template <typename T, std::size_t M, std::size_t N>
   requires(M > 0 && N > 0)
@@ -27,4 +27,4 @@ struct Matrix {
   std::array<std::array<T, N>, M> data_;
 };
 
-}  // namespace scarf::renderer
+}  // namespace scarf::render

@@ -4,7 +4,7 @@
 
 #include "config.hpp"
 
-namespace scarf::parser {
+namespace scarf::parse {
 
 auto parse_file(const std::filesystem::path&) -> Config;
 

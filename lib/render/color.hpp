@@ -1,6 +1,6 @@
 #pragma once
 
-namespace scarf::renderer {
+namespace scarf::render {
 
 struct Color {
   auto operator+=(const Color& other) -> void {
@@ -24,4 +24,4 @@ static const Color Black = {0.0, 0.0, 0.0};
 static const Color Blue = {0.2, 0.4, 0.8};
 static const Color White = {1.0, 1.0, 1.0};
 
-}  // namespace scarf::renderer
+}  // namespace scarf::render
