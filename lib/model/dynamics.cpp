@@ -17,11 +17,11 @@ auto compute_densities(std::function<std::vector<int>(int)> neighbor_map,
   auto n = positions.size();
   std::vector<double> densities(n, 0.0);
   for (auto i = 0; i < n; i++) {
-    densities[i] += compute_density(positions, i, i);
+    densities[i] += PARTICLE_MASS * compute_density(positions, i, i);
     auto neighbors = neighbor_map(i);
     for (auto j : neighbors) {
       if (i < j) {
-        auto v = compute_density(positions, i, j);
+        auto v = PARTICLE_MASS * compute_density(positions, i, j);
         densities[i] += v;
         densities[j] += v;
       }
@@ -49,7 +49,7 @@ auto compute_acceleration(const std::vector<Vector<double, 2>>& positions,
   auto grad = kernel_gradient(positions[i], positions[j], OUTER_R, 1.0);
   auto l = pressures[i] / (densities[i] * densities[i]);
   auto r = pressures[j] / (densities[j] * densities[j]);
-  auto acc = (l + r) * grad;
+  auto acc = PARTICLE_MASS * (l + r) * grad;
   return acc;
 }
 

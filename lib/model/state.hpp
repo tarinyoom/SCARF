@@ -14,6 +14,8 @@ constexpr auto INNER_R = 0.1;
 constexpr auto INNER_R2 = INNER_R * INNER_R;
 constexpr auto MSAA_LINEAR_DENSITY = 1;
 constexpr auto N_PARTICLES = 64;
+constexpr auto TOTAL_MASS = 64.0;
+constexpr auto PARTICLE_MASS = TOTAL_MASS / static_cast<double>(N_PARTICLES);
 
 struct State {
   State() = default;
