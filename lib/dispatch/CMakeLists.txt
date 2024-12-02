@@ -20,6 +20,7 @@ target_link_options(dispatch PRIVATE ${FFMPEG_LDFLAGS_OTHER})
 # Set the source files for the dispatch library
 set(SRC_FILES
     animation.hpp
+    engine.hpp
 	mov.cpp
 	mov.hpp
 )
