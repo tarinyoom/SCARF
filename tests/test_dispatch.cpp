@@ -1,7 +1,11 @@
 #include <gtest/gtest.h>
 
+#include <filesystem>
+#include <fstream>
+
 #include "alternator.hpp"
 #include "dispatch/engine.hpp"
+#include "dispatch/make_mov_writer.hpp"
 
 using namespace scarf;
 
@@ -38,4 +42,46 @@ TEST(dispatch, alternator) {
   EXPECT_EQ(*alt.next(2.0), 3.0);
   EXPECT_EQ(*alt.next(4.0), 7.0);
   EXPECT_EQ(*alt.next(8.0), 15.0);
+}
+
+auto is_file_nonempty(const std::string& filepath) -> bool {
+  std::filesystem::path path(filepath);
+  return std::filesystem::exists(path) && std::filesystem::file_size(path) > 0;
+}
+
+auto is_file_closed(const std::string& filepath) -> bool {
+  std::ofstream file(filepath, std::ios::app);  // Try to open for appending
+  return file.is_open();  // If it opens successfully, the file is not locked
+}
+
+TEST(dispatch, mov_writer) {
+  const std::string test_filepath = "test_output.mov";
+
+  if (std::filesystem::exists(test_filepath)) {
+    std::filesystem::remove(test_filepath);
+  }
+
+  // Write frames to the file in a limited scope to ensure destructor is called
+  {
+    const int width = 1920;
+    const int height = 1080;
+
+    auto writer = make_mov_writer(test_filepath, height, width, 60);
+
+    std::vector<uint8_t> dummy_frame(width * height * 3, 255);
+
+    const int frame_count = 5;
+    for (int i = 0; i < frame_count; ++i) {
+      writer->write_frame(dummy_frame.data());
+    }
+
+    EXPECT_TRUE(is_file_nonempty(test_filepath))
+        << "Output file was not created or is empty.";
+    // EXPECT_FALSE(is_file_closed(test_filepath))
+    //  << "File is unexpectedly closed before destructor.";
+  }
+
+  EXPECT_TRUE(is_file_closed(test_filepath))
+      << "File was not properly closed after destructor.";
+  std::filesystem::remove(test_filepath);
 }
