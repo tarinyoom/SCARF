@@ -45,7 +45,8 @@ auto build_animation(int n_subsamples) -> dispatch::Animation {
 }
 
 auto run(int argc, char* argv[]) -> int {
-  return dispatch::make_mov(build_animation(10), parse::parse_file(argv[1]));
+  dispatch::ProtoMovWriter writer;
+  return writer.make_mov(build_animation(10), parse::parse_file(argv[1]));
 }
 
 }  // namespace scarf

@@ -28,7 +28,7 @@ void fill_gradient(uint8_t* data, int linesize, Animation& anim) {
   }
 }
 
-auto make_mov(Animation anim, const Config& cfg) -> int {
+auto ProtoMovWriter::make_mov(Animation anim, const Config& cfg) -> int {
   // Convert the path to a string
   std::string path_str = cfg.output_file.string();
 
