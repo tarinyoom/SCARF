@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <iostream>
+#include <stdexcept>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -33,34 +34,30 @@ ProtoMovWriter::ProtoMovWriter(std::string_view output_path)
       format_context(nullptr),
       video_stream(nullptr),
       codec_context(nullptr),
-      frame(nullptr) {}
-
-auto ProtoMovWriter::make_mov(Animation anim) -> int {
+      frame(nullptr),
+      output_format(nullptr),
+      sws_context(nullptr) {
   avformat_alloc_output_context2(&format_context, nullptr, "mov",
                                  output_path_.c_str());
   if (!format_context) {
-    std::cerr << "Could not create output context" << std::endl;
-    return 1;
+    throw std::runtime_error("Could not create output context");
   }
 
-  const AVOutputFormat* output_format = format_context->oformat;
+  output_format = format_context->oformat;
 
   const AVCodec* codec = avcodec_find_encoder(AV_CODEC_ID_H264);
   if (!codec) {
-    std::cerr << "Codec not found" << std::endl;
-    return 1;
+    throw std::runtime_error("Codec not found");
   }
 
   video_stream = avformat_new_stream(format_context, codec);
   if (!video_stream) {
-    std::cerr << "Could not create video stream" << std::endl;
-    return 1;
+    throw std::runtime_error("Could not create video stream");
   }
 
   codec_context = avcodec_alloc_context3(codec);
   if (!codec_context) {
-    std::cerr << "Could not allocate video codec context" << std::endl;
-    return 1;
+    throw std::runtime_error("Could not allocate video codec context");
   }
 
   codec_context->codec_id = codec->id;
@@ -78,49 +75,45 @@ auto ProtoMovWriter::make_mov(Animation anim) -> int {
   }
 
   if (avcodec_open2(codec_context, codec, nullptr) < 0) {
-    std::cerr << "Could not open codec" << std::endl;
-    return 1;
+    throw std::runtime_error("Could not open codec");
   }
 
   video_stream->time_base = codec_context->time_base;
 
   if (avcodec_parameters_from_context(video_stream->codecpar, codec_context) <
       0) {
-    std::cerr << "Could not copy codec parameters" << std::endl;
-    return 1;
+    throw std::runtime_error("Could not copy codec parameters");
   }
 
   if (!(output_format->flags & AVFMT_NOFILE)) {
     if (avio_open(&format_context->pb, output_path_.c_str(), AVIO_FLAG_WRITE) <
         0) {
-      std::cerr << "Could not open output file" << std::endl;
-      return 1;
+      throw std::runtime_error("Could not open output file");
     }
   }
 
   if (avformat_write_header(format_context, nullptr) < 0) {
-    std::cerr << "Error occurred when writing header" << std::endl;
-    return 1;
+    throw std::runtime_error("Error occurred when writing header");
   }
 
   frame = av_frame_alloc();
   if (!frame) {
-    std::cerr << "Could not allocate video frame" << std::endl;
-    return 1;
+    throw std::runtime_error("Could not allocate video frame");
   }
   frame->format = codec_context->pix_fmt;
   frame->width = codec_context->width;
   frame->height = codec_context->height;
 
   if (av_frame_get_buffer(frame, 32) < 0) {
-    std::cerr << "Could not allocate frame data" << std::endl;
-    return 1;
+    throw std::runtime_error("Could not allocate frame data");
   }
 
-  struct SwsContext* sws_context = sws_getContext(
-      width, height, AV_PIX_FMT_RGB24, width, height, codec_context->pix_fmt,
-      SWS_BICUBIC, nullptr, nullptr, nullptr);
+  sws_context = sws_getContext(width, height, AV_PIX_FMT_RGB24, width, height,
+                               codec_context->pix_fmt, SWS_BICUBIC, nullptr,
+                               nullptr, nullptr);
+}
 
+auto ProtoMovWriter::make_mov(Animation anim) -> int {
   for (int i = 0; i < fps * duration; ++i) {
     if (av_frame_make_writable(frame) < 0) {
       std::cerr << "Frame not writable" << std::endl;
