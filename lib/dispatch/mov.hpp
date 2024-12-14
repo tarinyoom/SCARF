@@ -36,6 +36,7 @@ class ProtoMovWriter {
 
  public:
   ProtoMovWriter(std::string_view output_path);
+  ~ProtoMovWriter();
   auto make_mov(Animation) -> int;
 };
 

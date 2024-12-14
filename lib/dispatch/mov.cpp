@@ -163,9 +163,10 @@ auto ProtoMovWriter::make_mov(Animation anim) -> int {
     av_packet_unref(&packet);
     delete[] rgb_data[0];
   }
+}
 
+ProtoMovWriter::~ProtoMovWriter() {
   av_write_trailer(format_context);
-
   avcodec_free_context(&codec_context);
   av_frame_free(&frame);
   sws_freeContext(sws_context);
@@ -173,8 +174,6 @@ auto ProtoMovWriter::make_mov(Animation anim) -> int {
     avio_closep(&format_context->pb);
   }
   avformat_free_context(format_context);
-
-  return 0;
 }
 
 }  // namespace scarf::dispatch
