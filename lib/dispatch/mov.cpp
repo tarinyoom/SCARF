@@ -140,7 +140,9 @@ void ProtoMovWriter::write_frame(scarf::Grid<scarf::Pixel>& rendering) {
   }
 
   ret = avcodec_receive_packet(codec_context, &packet);
-  if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF || ret < 0) {
+  if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
+    return;
+  } else if (ret < 0) {
     std::cerr << "Error during encoding" << std::endl;
   }
 
