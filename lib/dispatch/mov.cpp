@@ -28,22 +28,18 @@ void fill_gradient(uint8_t* data, int linesize, Animation& anim) {
   }
 }
 
-auto ProtoMovWriter::make_mov(Animation anim, const Config& cfg) -> int {
-  // Convert the path to a string
-  std::string path_str = cfg.output_file.string();
+ProtoMovWriter::ProtoMovWriter(std::string_view output_path)
+    : output_path_(output_path) {}
 
-  // Allocate memory for the char* and copy the string into it
-  char* path_cstr =
-      new char[path_str.size() + 1];  // +1 for the null terminator
-  std::strcpy(path_cstr, path_str.c_str());
-
+auto ProtoMovWriter::make_mov(Animation anim) -> int {
   AVFormatContext* format_context = nullptr;
   AVStream* video_stream = nullptr;
   AVCodecContext* codec_context = nullptr;
   AVFrame* frame = nullptr;
   AVPacket packet;
 
-  avformat_alloc_output_context2(&format_context, nullptr, "mov", path_cstr);
+  avformat_alloc_output_context2(&format_context, nullptr, "mov",
+                                 output_path_.c_str());
   if (!format_context) {
     std::cerr << "Could not create output context" << std::endl;
     return 1;
@@ -97,7 +93,8 @@ auto ProtoMovWriter::make_mov(Animation anim, const Config& cfg) -> int {
   }
 
   if (!(output_format->flags & AVFMT_NOFILE)) {
-    if (avio_open(&format_context->pb, path_cstr, AVIO_FLAG_WRITE) < 0) {
+    if (avio_open(&format_context->pb, output_path_.c_str(), AVIO_FLAG_WRITE) <
+        0) {
       std::cerr << "Could not open output file" << std::endl;
       return 1;
     }
@@ -185,8 +182,6 @@ auto ProtoMovWriter::make_mov(Animation anim, const Config& cfg) -> int {
     avio_closep(&format_context->pb);
   }
   avformat_free_context(format_context);
-
-  delete[] path_cstr;
 
   return 0;
 }
