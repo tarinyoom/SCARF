@@ -12,6 +12,8 @@ extern "C" {
 
 #include "animation.hpp"
 #include "config.hpp"
+#include "grid.hpp"
+#include "pixel.hpp"
 
 namespace scarf::dispatch {
 
@@ -34,10 +36,12 @@ class ProtoMovWriter {
   struct SwsContext* sws_context;
   AVPacket packet;
 
+  int frame_number;
+
  public:
   ProtoMovWriter(std::string_view output_path);
   ~ProtoMovWriter();
-  auto make_mov(Animation) -> int;
+  void write_frame(scarf::Grid<scarf::Pixel>& rendering);
 };
 
 }  // namespace scarf::dispatch

@@ -45,7 +45,12 @@ auto build_animation(int n_subsamples) -> dispatch::Animation {
 
 auto run(int argc, char* argv[]) -> int {
   dispatch::ProtoMovWriter writer("examples/generated.mov");
-  return writer.make_mov(build_animation(10));
+  auto anim = build_animation(10);
+  for (auto i = 0; i < dispatch::fps * dispatch::duration; i++) {
+    auto frame_data = anim.next(dispatch::TIMESTEP);
+    writer.write_frame(frame_data);
+  }
+  return 0;
 }
 
 }  // namespace scarf

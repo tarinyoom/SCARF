@@ -36,7 +36,8 @@ ProtoMovWriter::ProtoMovWriter(std::string_view output_path)
       codec_context(nullptr),
       frame(nullptr),
       output_format(nullptr),
-      sws_context(nullptr) {
+      sws_context(nullptr),
+      frame_number(0) {
   avformat_alloc_output_context2(&format_context, nullptr, "mov",
                                  output_path_.c_str());
   if (!format_context) {
@@ -113,57 +114,47 @@ ProtoMovWriter::ProtoMovWriter(std::string_view output_path)
                                nullptr, nullptr);
 }
 
-auto ProtoMovWriter::make_mov(Animation anim) -> int {
-  for (int i = 0; i < fps * duration; ++i) {
-    if (av_frame_make_writable(frame) < 0) {
-      std::cerr << "Frame not writable" << std::endl;
-      break;
-    }
-
-    uint8_t* rgb_data[1] = {new uint8_t[width * height * 3]};
-    int rgb_linesize[1] = {3 * width};
-    auto rendering = anim.next(TIMESTEP);
-    fill_gradient(rgb_data[0], rgb_linesize[0], rendering);
-    static int frame_number = 1;
-    std::cout << "Generating frame " << frame_number++ << " of "
-              << duration * fps << std::endl;
-
-    sws_scale(sws_context, rgb_data, rgb_linesize, 0, height, frame->data,
-              frame->linesize);
-
-    frame->pts = i;
-
-    av_init_packet(&packet);
-    packet.data = nullptr;
-    packet.size = 0;
-
-    int ret = avcodec_send_frame(codec_context, frame);
-    if (ret < 0) {
-      std::cerr << "Error sending frame to codec context" << std::endl;
-      break;
-    }
-
-    ret = avcodec_receive_packet(codec_context, &packet);
-    if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF) {
-      continue;
-    } else if (ret < 0) {
-      std::cerr << "Error during encoding" << std::endl;
-      break;
-    }
-
-    av_packet_rescale_ts(&packet, codec_context->time_base,
-                         video_stream->time_base);
-    packet.stream_index = video_stream->index;
-
-    ret = av_interleaved_write_frame(format_context, &packet);
-    if (ret < 0) {
-      std::cerr << "Error while writing video frame" << std::endl;
-      break;
-    }
-
-    av_packet_unref(&packet);
-    delete[] rgb_data[0];
+void ProtoMovWriter::write_frame(scarf::Grid<scarf::Pixel>& rendering) {
+  if (av_frame_make_writable(frame) < 0) {
+    std::cerr << "Frame not writable" << std::endl;
   }
+
+  uint8_t* rgb_data[1] = {new uint8_t[width * height * 3]};
+  int rgb_linesize[1] = {3 * width};
+  fill_gradient(rgb_data[0], rgb_linesize[0], rendering);
+  std::cout << "Generating frame " << frame_number++ << " of " << duration * fps
+            << std::endl;
+
+  sws_scale(sws_context, rgb_data, rgb_linesize, 0, height, frame->data,
+            frame->linesize);
+
+  frame->pts = frame_number;
+
+  av_init_packet(&packet);
+  packet.data = nullptr;
+  packet.size = 0;
+
+  int ret = avcodec_send_frame(codec_context, frame);
+  if (ret < 0) {
+    std::cerr << "Error sending frame to codec context" << std::endl;
+  }
+
+  ret = avcodec_receive_packet(codec_context, &packet);
+  if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF || ret < 0) {
+    std::cerr << "Error during encoding" << std::endl;
+  }
+
+  av_packet_rescale_ts(&packet, codec_context->time_base,
+                       video_stream->time_base);
+  packet.stream_index = video_stream->index;
+
+  ret = av_interleaved_write_frame(format_context, &packet);
+  if (ret < 0) {
+    std::cerr << "Error while writing video frame" << std::endl;
+  }
+
+  av_packet_unref(&packet);
+  delete[] rgb_data[0];
 }
 
 ProtoMovWriter::~ProtoMovWriter() {
