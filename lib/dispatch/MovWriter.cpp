@@ -1,4 +1,4 @@
-#include "mov.hpp"
+#include "MovWriter.hpp"
 
 #include <functional>
 #include <iostream>
@@ -29,7 +29,7 @@ void fill_gradient(uint8_t* data, int linesize,
   }
 }
 
-ProtoMovWriter::ProtoMovWriter(std::string_view output_path)
+MovWriter::MovWriter(std::string_view output_path)
     : output_path_(output_path),
       format_context(nullptr),
       video_stream(nullptr),
@@ -114,7 +114,7 @@ ProtoMovWriter::ProtoMovWriter(std::string_view output_path)
                                nullptr, nullptr);
 }
 
-void ProtoMovWriter::write_frame(scarf::Grid<scarf::Pixel>& rendering) {
+void MovWriter::write_frame(scarf::Grid<scarf::Pixel>& rendering) {
   if (av_frame_make_writable(frame) < 0) {
     std::cerr << "Frame not writable" << std::endl;
   }
@@ -159,7 +159,7 @@ void ProtoMovWriter::write_frame(scarf::Grid<scarf::Pixel>& rendering) {
   delete[] rgb_data[0];
 }
 
-ProtoMovWriter::~ProtoMovWriter() {
+MovWriter::~MovWriter() {
   av_write_trailer(format_context);
   avcodec_free_context(&codec_context);
   av_frame_free(&frame);

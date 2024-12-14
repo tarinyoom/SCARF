@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "alternator.hpp"
-#include "dispatch/mov.hpp"
+#include "dispatch/MovWriter.hpp"
 #include "grid.hpp"
 #include "kernel.cpp"
 #include "model/state.hpp"
@@ -44,7 +44,7 @@ auto build_animation(int n_subsamples) -> dispatch::Animation {
 }
 
 auto run(int argc, char* argv[]) -> int {
-  dispatch::ProtoMovWriter writer("examples/generated.mov");
+  dispatch::MovWriter writer("examples/generated.mov");
   auto anim = build_animation(10);
   for (auto i = 0; i < dispatch::fps * dispatch::duration; i++) {
     auto frame_data = anim.next(dispatch::TIMESTEP);

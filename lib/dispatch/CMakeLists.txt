@@ -21,9 +21,9 @@ target_link_options(dispatch PRIVATE ${FFMPEG_LDFLAGS_OTHER})
 set(SRC_FILES
     animation.hpp
     engine.hpp
-	mov.cpp
+	MovWriter.cpp
+	MovWriter.hpp
     IVideoWriter.hpp
-	mov.hpp
 )
 
 # Add the source files to the dispatch target

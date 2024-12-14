@@ -24,7 +24,7 @@ const int fps = 60;
 const int duration = 5;  // seconds
 constexpr auto TIMESTEP = 1.0 / static_cast<double>(fps);
 
-class ProtoMovWriter : public IVideoWriter {
+class MovWriter : public IVideoWriter {
   std::string output_path_;
 
   AVFormatContext* format_context;
@@ -40,8 +40,8 @@ class ProtoMovWriter : public IVideoWriter {
   int frame_number;
 
  public:
-  ProtoMovWriter(std::string_view output_path);
-  ~ProtoMovWriter();
+  MovWriter(std::string_view output_path);
+  ~MovWriter();
   void write_frame(scarf::Grid<scarf::Pixel>& rendering);
 };
 
