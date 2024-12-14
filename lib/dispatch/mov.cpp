@@ -17,8 +17,8 @@ extern "C" {
 
 namespace scarf::dispatch {
 
-void fill_gradient(uint8_t* data, int linesize, Animation& anim) {
-  auto rendering = anim.next(TIMESTEP);
+void fill_gradient(uint8_t* data, int linesize,
+                   scarf::Grid<scarf::Pixel>& rendering) {
   for (int y = 0; y < height; ++y) {
     for (int x = 0; x < width; ++x) {
       auto px = rendering[x][y];
@@ -122,7 +122,8 @@ auto ProtoMovWriter::make_mov(Animation anim) -> int {
 
     uint8_t* rgb_data[1] = {new uint8_t[width * height * 3]};
     int rgb_linesize[1] = {3 * width};
-    fill_gradient(rgb_data[0], rgb_linesize[0], anim);
+    auto rendering = anim.next(TIMESTEP);
+    fill_gradient(rgb_data[0], rgb_linesize[0], rendering);
     static int frame_number = 1;
     std::cout << "Generating frame " << frame_number++ << " of "
               << duration * fps << std::endl;
