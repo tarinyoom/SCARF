@@ -8,7 +8,6 @@
 #include "kernel.cpp"
 #include "model/state.hpp"
 #include "model/step.hpp"
-#include "parse/parse.hpp"
 #include "pixel.hpp"
 #include "render/render.hpp"
 #include "render/scene.hpp"
@@ -45,8 +44,7 @@ auto build_animation(int n_subsamples) -> dispatch::Animation {
 }
 
 auto run(int argc, char* argv[]) -> int {
-  auto config = parse::parse_file(argv[1]);
-  dispatch::ProtoMovWriter writer(config.output_file.string());
+  dispatch::ProtoMovWriter writer("examples/generated.mov");
   return writer.make_mov(build_animation(10));
 }
 

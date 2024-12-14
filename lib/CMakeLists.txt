@@ -10,7 +10,6 @@ target_include_directories(scarflib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(common)
 add_subdirectory(dispatch)
 add_subdirectory(model)
-add_subdirectory(parse)
 add_subdirectory(render)
 
 set(common_dir ${CMAKE_CURRENT_SOURCE_DIR}/common)
@@ -18,6 +17,5 @@ set(common_dir ${CMAKE_CURRENT_SOURCE_DIR}/common)
 target_link_libraries(scarflib PRIVATE
     dispatch
 	model
-	parse
 	render
 	common)
