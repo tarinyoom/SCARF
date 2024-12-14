@@ -21,8 +21,10 @@ target_link_options(dispatch PRIVATE ${FFMPEG_LDFLAGS_OTHER})
 set(SRC_FILES
     animation.hpp
     engine.hpp
-	MovWriter.cpp
-	MovWriter.hpp
+    make_video_writer.hpp
+    make_video_writer.cpp
+    MovWriter.cpp
+    MovWriter.hpp
     IVideoWriter.hpp
 )
 
