@@ -2,11 +2,14 @@
 
 #include <cstdint>
 
+#include "grid.hpp"
+#include "pixel.hpp"
+
 /*
  * A simple video writer interface. Assumes RAII style initialization and
  * finalization.
  */
 struct IVideoWriter {
-  virtual void write_frame(const uint8_t* rgb_data) = 0;
+  virtual void write_frame(scarf::Grid<scarf::Pixel>& rendering) = 0;
   virtual ~IVideoWriter() = default;
 };

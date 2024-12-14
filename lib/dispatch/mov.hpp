@@ -10,6 +10,7 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
+#include "IVideoWriter.hpp"
 #include "animation.hpp"
 #include "config.hpp"
 #include "grid.hpp"
@@ -23,7 +24,7 @@ const int fps = 60;
 const int duration = 5;  // seconds
 constexpr auto TIMESTEP = 1.0 / static_cast<double>(fps);
 
-class ProtoMovWriter {
+class ProtoMovWriter : public IVideoWriter {
   std::string output_path_;
 
   AVFormatContext* format_context;
