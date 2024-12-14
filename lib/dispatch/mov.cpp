@@ -29,15 +29,13 @@ void fill_gradient(uint8_t* data, int linesize, Animation& anim) {
 }
 
 ProtoMovWriter::ProtoMovWriter(std::string_view output_path)
-    : output_path_(output_path) {}
+    : output_path_(output_path),
+      format_context(nullptr),
+      video_stream(nullptr),
+      codec_context(nullptr),
+      frame(nullptr) {}
 
 auto ProtoMovWriter::make_mov(Animation anim) -> int {
-  AVFormatContext* format_context = nullptr;
-  AVStream* video_stream = nullptr;
-  AVCodecContext* codec_context = nullptr;
-  AVFrame* frame = nullptr;
-  AVPacket packet;
-
   avformat_alloc_output_context2(&format_context, nullptr, "mov",
                                  output_path_.c_str());
   if (!format_context) {

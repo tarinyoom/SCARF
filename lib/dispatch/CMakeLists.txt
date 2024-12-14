@@ -10,7 +10,7 @@ pkg_check_modules(FFMPEG REQUIRED IMPORTED_TARGET
 )
 
 # Include FFmpeg headers and link libraries dispatch
-target_include_directories(dispatch PRIVATE ${FFMPEG_INCLUDE_DIRS})
+target_include_directories(dispatch PUBLIC ${FFMPEG_INCLUDE_DIRS})
 target_link_libraries(dispatch PRIVATE PkgConfig::FFMPEG)
 
 # Add pkg-config flags
