@@ -23,8 +23,6 @@ set(SRC_FILES
     engine.hpp
 	mov.cpp
     IVideoWriter.hpp
-    make_mov_writer.cpp
-    make_mov_writer.hpp
 	mov.hpp
 )
 
