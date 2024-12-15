@@ -2,7 +2,6 @@
 
 #include <memory>
 
-#include "alternator.hpp"
 #include "dispatch/MovWriter.hpp"
 #include "dispatch/engine.hpp"
 #include "grid.hpp"
@@ -30,18 +29,6 @@ auto lift(const model::State& state) -> render::Scene {
 
 auto render_state(const model::State& state) -> Grid<Pixel> {
   return render::render(lift(state));
-}
-
-auto build_animation(int n_subsamples) -> dispatch::Animation {
-  auto alt =
-      std::make_shared<Alternator<model::State>>(model::init(), model::step);
-  return dispatch::Animation{[=](double h) -> Grid<Pixel> {
-    auto substep = h / static_cast<double>(n_subsamples);
-    for (int i = 1; i < n_subsamples; i++) {
-      alt->next(substep);
-    }
-    return render_state(*alt->next(substep));
-  }};
 }
 
 auto run(int argc, char* argv[]) -> int {

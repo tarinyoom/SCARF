@@ -3,7 +3,6 @@
 #include <filesystem>
 #include <fstream>
 
-#include "alternator.hpp"
 #include "dispatch/engine.hpp"
 #include "dispatch/make_video_writer.hpp"
 
@@ -37,14 +36,6 @@ TEST(dispatch, run) {
       << "Observer should track all state updates";
 }
 
-TEST(dispatch, alternator) {
-  auto alt = Alternator<double>(0.0, [](double n, double h) { return n + h; });
-  EXPECT_EQ(*alt.next(1.0), 1.0);
-  EXPECT_EQ(*alt.next(2.0), 3.0);
-  EXPECT_EQ(*alt.next(4.0), 7.0);
-  EXPECT_EQ(*alt.next(8.0), 15.0);
-}
-
 TEST(dispatch, mov_writer) {
   const std::string test_filepath = "test_output.mov";
 
@@ -72,7 +63,7 @@ TEST(dispatch, mov_writer) {
   EXPECT_TRUE(std::filesystem::exists(path));
 
   auto sz = std::filesystem::file_size(path);
-  EXPECT_GE(sz, 2000); // conservative lower bound
+  EXPECT_GE(sz, 2000);  // conservative lower bound
 
   // Verify that file can be opened
   std::ofstream file(path);
