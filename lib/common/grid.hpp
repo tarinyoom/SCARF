@@ -1,5 +1,6 @@
 #pragma once
 
+#include <span>
 #include <vector>
 
 #include "bbox.hpp"
@@ -8,25 +9,29 @@ namespace scarf {
 
 template <typename T>
 struct Grid {
-  Grid(int m, int n, const T& val)
-      : m_(m),
-        n_(n),
-        data_(std::vector<std::vector<T>>(m, std::vector<T>(n, val))) {}
+  Grid(size_t rows, size_t cols, const T& default_value = T())
+      : data_(rows * cols, default_value), rows_(rows), cols_(cols) {}
 
-  auto operator[](int i) -> std::vector<T>& { return data_[i]; }
+  std::span<T> operator[](size_t row) {
+    return std::span<T>(&data_[row * cols_], cols_);
+  }
 
-  auto size() const -> std::array<int, 2> { return {m_, n_}; }
+  std::span<const T> operator[](size_t row) const {
+    return std::span<const T>(&data_[row * cols_], cols_);
+  }
+
+  auto size() const -> std::array<int, 2> { return {rows_, cols_}; }
 
   auto bounds() const -> Bbox<int, 2> {
     Vector<int, 2> min(0, 0);
-    Vector<int, 2> max(m_, n_);
+    Vector<int, 2> max(rows_, cols_);
     return Bbox<int, 2>(min, max);
   }
 
  private:
-  int m_;
-  int n_;
-  std::vector<std::vector<T>> data_;
+  std::vector<T> data_;  // Linear storage
+  int rows_;
+  int cols_;
 };
 
 }  // namespace scarf
