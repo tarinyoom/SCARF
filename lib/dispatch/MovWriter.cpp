@@ -122,7 +122,7 @@ void MovWriter::write_frame(scarf::Grid<scarf::Pixel>& rendering) {
   uint8_t* rgb_data[1] = {new uint8_t[width * height * 3]};
   int rgb_linesize[1] = {3 * width};
   fill_gradient(rgb_data[0], rgb_linesize[0], rendering);
-  std::cout << "Generating frame " << frame_number++ << " of " << duration * fps
+  std::cout << "Generating frame " << ++frame_number << " of " << duration * fps
             << std::endl;
 
   sws_scale(sws_context, rgb_data, rgb_linesize, 0, height, frame->data,

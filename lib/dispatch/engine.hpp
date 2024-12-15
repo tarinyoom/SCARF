@@ -8,12 +8,13 @@ namespace scarf::engine {
 
 template <typename State>
 struct Engine {
-  std::function<State(const State&)> step;
+  std::function<State(const State&, double h)> step;
   std::vector<std::function<void(const State&)>> observers;
 };
 
 template <typename State>
-auto run(const Engine<State>& engine, int n_steps, State&& state) -> State {
+auto run(const Engine<State>& engine, int n_steps, double h, State&& state)
+    -> State {
   // Initialize two-sided buffer
   std::array<State, 2> buffer;
   buffer[0] = std::move(state);
@@ -23,7 +24,7 @@ auto run(const Engine<State>& engine, int n_steps, State&& state) -> State {
     const auto& pre = buffer[i % 2];
     auto& post = buffer[(i + 1) % 2];
 
-    post = engine.step(pre);
+    post = engine.step(pre, h);
 
     // Update observers
     for (const auto& obs : engine.observers) {

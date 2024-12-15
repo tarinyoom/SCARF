@@ -12,7 +12,7 @@ using namespace scarf;
 TEST(dispatch, run) {
   // Step 1: Set up the engine with an `int` as the state
   engine::Engine<int> engine;
-  engine.step = [](int state) -> int {
+  engine.step = [](int state, auto) -> int {
     return state + 1;  // Increment state
   };
 
@@ -24,7 +24,8 @@ TEST(dispatch, run) {
   // Step 3: Run the engine
   int initial_state = 0;
   int n_steps = 5;
-  int final_state = engine::run<int>(engine, n_steps, std::move(initial_state));
+  int final_state =
+      engine::run<int>(engine, n_steps, 0.0, std::move(initial_state));
 
   // Step 4: Validate the final state value
   EXPECT_EQ(final_state, 5)

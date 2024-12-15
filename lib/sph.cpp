@@ -4,6 +4,7 @@
 
 #include "alternator.hpp"
 #include "dispatch/MovWriter.hpp"
+#include "dispatch/engine.hpp"
 #include "grid.hpp"
 #include "kernel.cpp"
 #include "model/state.hpp"
@@ -45,11 +46,22 @@ auto build_animation(int n_subsamples) -> dispatch::Animation {
 
 auto run(int argc, char* argv[]) -> int {
   dispatch::MovWriter writer("examples/generated.mov");
-  auto anim = build_animation(10);
-  for (auto i = 0; i < dispatch::fps * dispatch::duration; i++) {
-    auto frame_data = anim.next(dispatch::TIMESTEP);
-    writer.write_frame(frame_data);
-  }
+  int i;
+
+  std::function<void(const model::State& state)> render_callback =
+      [&](const auto& state) {
+        if (i++ % 10 == 0) {
+          auto image = render_state(state);
+          writer.write_frame(image);
+        }
+      };
+
+  engine::Engine<model::State> engine{.step = model::step,
+                                      .observers = {render_callback}};
+
+  auto initial_state = model::init();
+
+  engine::run<model::State>(engine, 3000, 0.001, std::move(initial_state));
   return 0;
 }
 
