@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "dispatch/Engine.hpp"
-#include "dispatch/MovWriter.hpp"
+#include "dispatch/make_video_writer.hpp"
 #include "dispatch/run_engine.hpp"
 #include "grid.hpp"
 #include "kernel.cpp"
@@ -33,14 +33,14 @@ auto render_state(const model::State& state) -> Grid<Pixel> {
 }
 
 auto run(int argc, char* argv[]) -> int {
-  dispatch::MovWriter writer("examples/generated.mov");
+  auto writer = dispatch::make_video_writer("mov", "examples/generated.mov");
   int i;
 
   std::function<void(const model::State& state)> render_callback =
       [&](const auto& state) {
         if (i++ % 10 == 0) {
           auto image = render_state(state);
-          writer.write_frame(image);
+          writer->write_frame(image);
         }
       };
 
