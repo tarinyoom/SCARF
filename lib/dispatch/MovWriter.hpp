@@ -11,8 +11,6 @@ extern "C" {
 }
 
 #include "IVideoWriter.hpp"
-#include "animation.hpp"
-#include "config.hpp"
 #include "grid.hpp"
 #include "pixel.hpp"
 

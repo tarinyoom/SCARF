@@ -4,7 +4,6 @@ add_library(common STATIC)
 # Set the source files for the common library
 set(SRC_FILES
     bbox.hpp
-    config.hpp
     grid.hpp
     kernel.cpp
     kernel.hpp
