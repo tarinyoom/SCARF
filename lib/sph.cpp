@@ -2,8 +2,9 @@
 
 #include <memory>
 
+#include "dispatch/Engine.hpp"
 #include "dispatch/MovWriter.hpp"
-#include "dispatch/engine.hpp"
+#include "dispatch/run_engine.hpp"
 #include "grid.hpp"
 #include "kernel.cpp"
 #include "model/state.hpp"
@@ -43,12 +44,12 @@ auto run(int argc, char* argv[]) -> int {
         }
       };
 
-  engine::Engine<model::State> engine{.step = model::step,
-                                      .observers = {render_callback}};
+  dispatch::Engine<model::State> engine{.step = model::step,
+                                        .observers = {render_callback}};
 
   auto initial_state = model::init();
 
-  engine::run<model::State>(engine, 3000, 0.001, std::move(initial_state));
+  dispatch::run<model::State>(engine, 3000, 0.001, std::move(initial_state));
   return 0;
 }
 
