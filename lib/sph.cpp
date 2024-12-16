@@ -1,5 +1,6 @@
 #include "sph.hpp"
 
+#include <iostream>
 #include <memory>
 
 #include "dispatch/Engine.hpp"
@@ -34,13 +35,14 @@ auto render_state(const model::State& state) -> Grid<Pixel> {
 
 auto run(int argc, char* argv[]) -> int {
   auto writer = dispatch::make_video_writer("mov", "examples/generated.mov");
-  int i;
+  int i = 0;
 
   std::function<void(const model::State& state)> render_callback =
       [&](const auto& state) {
         if (i++ % 10 == 0) {
           auto image = render_state(state);
           writer->write_frame(image);
+          std::cout << "Generating frame " << i / 10 + 1 << std::endl;
         }
       };
 
