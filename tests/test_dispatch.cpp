@@ -9,7 +9,7 @@
 
 using namespace scarf;
 
-TEST(dispatch, run) {
+TEST(dispatch, run_engine) {
   // Step 1: Set up the engine with an `int` as the state
   dispatch::Engine<int> engine;
   engine.step = [](int state, auto) -> int {
@@ -25,7 +25,7 @@ TEST(dispatch, run) {
   int initial_state = 0;
   int n_steps = 5;
   int final_state =
-      dispatch::run<int>(engine, n_steps, 0.0, std::move(initial_state));
+      dispatch::run_engine<int>(engine, n_steps, 0.0, std::move(initial_state));
 
   // Step 4: Validate the final state value
   EXPECT_EQ(final_state, 5)

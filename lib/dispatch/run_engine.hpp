@@ -8,8 +8,8 @@
 namespace scarf::dispatch {
 
 template <typename State>
-auto run(const Engine<State>& engine, int n_steps, double h, State&& state)
-    -> State {
+auto run_engine(const Engine<State>& engine, int n_steps, double h,
+                State&& state) -> State {
   std::array<State, 2> buffer;
   buffer[0] = std::move(state);
 

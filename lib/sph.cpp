@@ -51,7 +51,8 @@ auto run(int argc, char* argv[]) -> int {
 
   auto initial_state = model::init();
 
-  dispatch::run<model::State>(engine, 3000, 0.001, std::move(initial_state));
+  dispatch::run_engine<model::State>(engine, 3000, 0.001,
+                                     std::move(initial_state));
   return 0;
 }
 
