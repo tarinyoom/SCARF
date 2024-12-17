@@ -5,7 +5,7 @@
 
 #include "Engine.hpp"
 
-namespace scarf::dispatch {
+namespace scarf {
 
 template <typename State>
 auto run_engine(const Engine<State>& engine, int n_steps, double h,
@@ -27,4 +27,4 @@ auto run_engine(const Engine<State>& engine, int n_steps, double h,
   return std::move(buffer[n_steps % 2]);
 }
 
-}  // namespace scarf::dispatch
+}  // namespace scarf

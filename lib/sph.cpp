@@ -3,9 +3,8 @@
 #include <iostream>
 #include <memory>
 
-#include "dispatch/Engine.hpp"
+#include "Engine.hpp"
 #include "dispatch/make_video_writer.hpp"
-#include "dispatch/run_engine.hpp"
 #include "grid.hpp"
 #include "kernel.cpp"
 #include "model/state.hpp"
@@ -13,6 +12,7 @@
 #include "pixel.hpp"
 #include "render/render.hpp"
 #include "render/scene.hpp"
+#include "run_engine.hpp"
 
 namespace scarf {
 
@@ -46,13 +46,12 @@ auto run(int argc, char* argv[]) -> int {
         }
       };
 
-  dispatch::Engine<model::State> engine{.step = model::step,
-                                        .observers = {render_callback}};
+  Engine<model::State> engine{.step = model::step,
+                              .observers = {render_callback}};
 
   auto initial_state = model::init();
 
-  dispatch::run_engine<model::State>(engine, 3000, 0.001,
-                                     std::move(initial_state));
+  run_engine<model::State>(engine, 3000, 0.001, std::move(initial_state));
   return 0;
 }
 

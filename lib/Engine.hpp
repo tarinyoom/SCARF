@@ -3,7 +3,7 @@
 #include <functional>
 #include <vector>
 
-namespace scarf::dispatch {
+namespace scarf {
 
 template <typename State>
 struct Engine {
@@ -11,4 +11,4 @@ struct Engine {
   std::vector<std::function<void(const State&)>> observers;
 };
 
-}  // namespace scarf::dispatch
+}  // namespace scarf
