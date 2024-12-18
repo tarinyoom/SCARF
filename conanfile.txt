@@ -1,6 +1,9 @@
 [requires]
 ffmpeg/6.1
+glm/cci.20230113
 gtest/1.13.0
 
 [generators]
 PkgConfigDeps
+CMakeDeps
+CMakeToolchain
