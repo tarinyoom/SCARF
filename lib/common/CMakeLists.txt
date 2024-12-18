@@ -15,4 +15,4 @@ set(SRC_FILES
 target_sources(common PRIVATE ${SRC_FILES})
 
 # Set the include directories for common
-target_include_directories(common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(common PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_INCLUDE_PATH})
