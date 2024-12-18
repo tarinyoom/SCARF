@@ -11,8 +11,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 message(STATUS "C++ Standard: ${CMAKE_CXX_STANDARD}")
 message(STATUS "PKG_CONFIG_PATH is set to: $ENV{PKG_CONFIG_PATH}")
 
-#get_property(dirs DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-
 find_package(PkgConfig REQUIRED)
 
 add_subdirectory(lib)
