@@ -1,13 +1,14 @@
 #pragma once
 
 #include <cstddef>
+#include <glm/glm.hpp>
 
 #include "vector.hpp"
 
 namespace scarf::render {
 
 struct Matrix {
-  Matrix(std::array<std::array<double, 3>, 3>&& data) : data_(data) {}
+  Matrix(glm::dmat3&& data) : data_(data) {}
 
   // Matrix-vector multiplication
   auto operator*(const Vector<double, 3>& v) const -> Vector<double, 3> {
@@ -22,7 +23,7 @@ struct Matrix {
   }
 
  private:
-  std::array<std::array<double, 3>, 3> data_;
+  glm::dmat3 data_;
 };
 
 }  // namespace scarf::render
