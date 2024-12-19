@@ -6,17 +6,15 @@
 
 namespace scarf::render {
 
-template <typename T, std::size_t M, std::size_t N>
-  requires(M > 0 && N > 0)
 struct Matrix {
-  Matrix(std::array<std::array<T, N>, M>&& data) : data_(data) {}
+  Matrix(std::array<std::array<double, 3>, 3>&& data) : data_(data) {}
 
   // Matrix-vector multiplication
-  auto operator*(const Vector<T, N>& v) const -> Vector<T, M> {
-    Vector<T, M> result;
-    for (auto i = 0; i < M; i++) {
+  auto operator*(const Vector<double, 3>& v) const -> Vector<double, 3> {
+    Vector<double, 3> result;
+    for (auto i = 0; i < 3; i++) {
       result[i] = data_[i][0] * v[0];
-      for (auto j = 1; j < N; j++) {
+      for (auto j = 1; j < 3; j++) {
         result[i] += data_[i][j] * v[j];
       }
     }
@@ -24,7 +22,7 @@ struct Matrix {
   }
 
  private:
-  std::array<std::array<T, N>, M> data_;
+  std::array<std::array<double, 3>, 3> data_;
 };
 
 }  // namespace scarf::render
