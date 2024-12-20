@@ -29,29 +29,25 @@ auto conservative_integral_bounds(const Bbox<double, N>& b) -> Bbox<int, N> {
   return {new_min, new_max};
 }
 
-template <typename T, std::size_t N>
-auto homogenize(const Vector<T, N>& v) -> Vector<T, N + 1> {
-  Vector<T, N + 1> result;
-  for (std::size_t i = 0; i < N; ++i) {
+auto homogenize(const Vector<double, 2>& v) -> Vector<double, 3> {
+  Vector<double, 3> result;
+  for (std::size_t i = 0; i < 2; ++i) {
     result.value[i] = v.value[i];
   }
-  result.value[N] = 1.0;
+  result.value[2] = 1.0;
   return result;
 }
 
-template <typename T, std::size_t N>
-  requires(N > 0)
-auto dehomogenize(const Vector<T, N>& v) -> Vector<T, N - 1> {
-  Vector<T, N - 1> result;
-  auto scale = 1.0 / v[N - 1];
-  for (auto i = 0; i < N - 1; i++) {
+auto dehomogenize(const Vector<double, 3>& v) -> Vector<double, 2> {
+  Vector<double, 2> result;
+  auto scale = 1.0 / v[2];
+  for (auto i = 0; i < 2; i++) {
     result[i] = v[i] * scale;
   }
   return result;
 }
 
-template <std::size_t N>
-auto dehomogenize(const Bbox<double, N>& b) -> const Bbox<double, N - 1> {
+auto dehomogenize(const Bbox<double, 3>& b) -> const Bbox<double, 2> {
   auto new_min = dehomogenize(b.min);
   auto new_max = dehomogenize(b.max);
   return {new_min, new_max};
