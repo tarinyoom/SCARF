@@ -93,12 +93,12 @@ auto render(Scene&& s) -> Grid<Pixel> {
     // Find bounding box in world space
     auto pos_w = pos;
     Vector<double, 2> radius_offset = {s.outer_radius, s.outer_radius};
-    Bbox<double, 3> bounds_w = {homogenize(pos_w - radius_offset),
-                                homogenize(pos_w + radius_offset)};
+    std::array<glm::dvec3, 2> bounds_w = {homogenize(pos_w - radius_offset),
+                                          homogenize(pos_w + radius_offset)};
 
     // Convert bounding box to pixel space
-    auto bounds_s = Bbox<double, 3>(world_to_screen * bounds_w.min,
-                                    world_to_screen * bounds_w.max);
+    auto bounds_s = std::array<glm::dvec3, 2>{world_to_screen * bounds_w[0],
+                                              world_to_screen * bounds_w[1]};
     auto bounds_p = conservative_integral_bounds(dehomogenize(bounds_s));
 
     // Render circle into buffer

@@ -11,8 +11,8 @@ struct Matrix {
   Matrix(glm::dmat3&& data) : data_(data) {}
 
   // Matrix-vector multiplication
-  auto operator*(const Vector<double, 3>& v) const -> Vector<double, 3> {
-    Vector<double, 3> result;
+  auto operator*(const glm::dvec3& v) const -> glm::dvec3 {
+    glm::dvec3 result;
     for (auto i = 0; i < 3; i++) {
       result[i] = data_[i][0] * v[0];
       for (auto j = 1; j < 3; j++) {

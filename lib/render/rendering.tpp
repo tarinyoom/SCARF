@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <glm/glm.hpp>
 
 #include "bbox.hpp"
 #include "vector.hpp"
@@ -29,16 +30,16 @@ auto conservative_integral_bounds(const Bbox<double, N>& b) -> Bbox<int, N> {
   return {new_min, new_max};
 }
 
-auto homogenize(const Vector<double, 2>& v) -> Vector<double, 3> {
-  Vector<double, 3> result;
+auto homogenize(const Vector<double, 2>& v) -> glm::dvec3 {
+  glm::dvec3 result;
   for (std::size_t i = 0; i < 2; ++i) {
-    result.value[i] = v.value[i];
+    result[i] = v.value[i];
   }
-  result.value[2] = 1.0;
+  result[2] = 1.0;
   return result;
 }
 
-auto dehomogenize(const Vector<double, 3>& v) -> Vector<double, 2> {
+auto dehomogenize(const glm::dvec3& v) -> Vector<double, 2> {
   Vector<double, 2> result;
   auto scale = 1.0 / v[2];
   for (auto i = 0; i < 2; i++) {
@@ -47,9 +48,9 @@ auto dehomogenize(const Vector<double, 3>& v) -> Vector<double, 2> {
   return result;
 }
 
-auto dehomogenize(const Bbox<double, 3>& b) -> const Bbox<double, 2> {
-  auto new_min = dehomogenize(b.min);
-  auto new_max = dehomogenize(b.max);
+auto dehomogenize(const std::array<glm::dvec3, 2>& b) -> const Bbox<double, 2> {
+  auto new_min = dehomogenize(b[0]);
+  auto new_max = dehomogenize(b[1]);
   return {new_min, new_max};
 }
 
