@@ -8,6 +8,7 @@
 #include "dispatch/make_video_writer.hpp"
 #include "grid.hpp"
 #include "kernel.cpp"
+#include "metrics.hpp"
 #include "model/state.hpp"
 #include "model/step.hpp"
 #include "pixel.hpp"
@@ -38,6 +39,9 @@ auto render_state(const model::State& state) -> Grid<Pixel> {
 auto run(int argc, char* argv[]) -> int {
   auto writer = dispatch::make_video_writer("mov", "examples/generated.mov");
   int i = 0;
+  Metrics m;
+  m["hello"] = 3;
+  m["hi"] = 2.0;
 
   std::function<void(const model::State& state)> render_callback =
       [&](const auto& state) {
@@ -54,6 +58,8 @@ auto run(int argc, char* argv[]) -> int {
   auto initial_state = model::init();
 
   run_engine<model::State>(engine, 3000, 0.001, std::move(initial_state));
+
+  print_metrics(m);
   return 0;
 }
 

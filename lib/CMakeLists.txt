@@ -2,7 +2,7 @@
 add_library(scarflib STATIC)
 
 # Add source files to the scarflib target
-target_sources(scarflib PRIVATE sph.cpp sph.hpp Engine.hpp run_engine.hpp)
+target_sources(scarflib PRIVATE sph.cpp sph.hpp Engine.hpp run_engine.hpp metrics.hpp metrics.cpp)
 
 # Set the include directories for scarflib
 target_include_directories(scarflib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
