@@ -40,20 +40,24 @@ auto run(int argc, char* argv[]) -> int {
   auto writer = dispatch::make_video_writer("mov", "examples/generated.mov");
   int i = 0;
   Metrics m;
-  m["hello"] = 3;
-  m["hi"] = 2.5;
+  m["n_steps"] = 0;
+  m["n_frames"] = 0;
 
-  std::function<void(const model::State& state)> render_callback =
-      [&](const auto& state) {
-        if (i++ % 10 == 0) {
-          auto image = render_state(state);
-          writer->write_frame(image);
-          std::cout << "Generating frame " << i / 10 + 1 << std::endl;
-        }
-      };
+  using Callback = std::function<void(const model::State& state)>;
+
+  Callback start_callback = [&](const auto&) { m["n_steps"]++; };
+
+  Callback render_callback = [&](const auto& state) {
+    if (i++ % 10 == 0) {
+      auto image = render_state(state);
+      writer->write_frame(image);
+      m["n_frames"]++;
+      std::cout << "Generating frame " << i / 10 + 1 << std::endl;
+    }
+  };
 
   Engine<model::State> engine{.step = model::step,
-                              .observers = {render_callback}};
+                              .observers = {start_callback, render_callback}};
 
   auto initial_state = model::init();
 
