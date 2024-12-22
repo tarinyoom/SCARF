@@ -14,7 +14,7 @@ auto conservative_integral_bounds(const std::pair<glm::dvec2, glm::dvec2>& b)
   glm::ivec2 new_max;
   for (auto i = 0; i < 2; i++) {
     new_min[i] = static_cast<int>(std::floor(b.first[i]));
-    new_max[i] = static_cast<int>(std::floor(b.second[i]));
+    new_max[i] = static_cast<int>(std::floor(b.second[i])) + 1;
   }
   return {new_min, new_max};
 }

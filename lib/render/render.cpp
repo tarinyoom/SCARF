@@ -1,7 +1,6 @@
 #include "render.hpp"
 
 #include <glm/glm.hpp>
-#include <iostream>
 #include <utility>
 
 #include "color.hpp"
@@ -9,10 +8,14 @@
 
 namespace scarf::render {
 
-static glm::dmat3 world_to_screen(10.0, 0.0, 320.0, 0.0, 10.0, 240.0, 0.0, 0.0,
+// static glm::dmat3 world_to_screen(10.0, 0.0, 320.0, 0.0, 10.0, 240.0, 0.0,
+// 0.0, 1.0);
+static glm::dmat3 world_to_screen(10.0, 0.0, 0.0, 0.0, 10.0, 0.0, 320.0, 240.0,
                                   1.0);
 
-static glm::dmat3 screen_to_world(0.1, 0.0, -32.0, 0.0, 0.1, -24.0, 0.0, 0.0,
+// static glm::dmat3 screen_to_world(0.1, 0.0, -32.0, 0.0, 0.1, -24.0, 0.0,
+// 0.0, 1.0);
+static glm::dmat3 screen_to_world(0.1, 0.0, 0.0, 0.0, 0.1, 0.0, -32.0, -24.0,
                                   1.0);
 
 auto get_light(const glm::dvec2& p, const glm::dvec2& center, const Scene& s)
@@ -104,7 +107,8 @@ auto render(Scene&& s) -> Grid<Pixel> {
     // Convert bounding box to pixel space
     auto bounds_s = std::pair<glm::dvec3, glm::dvec3>{
         world_to_screen * bounds_w.first, world_to_screen * bounds_w.second};
-    auto bounds_p = conservative_integral_bounds(dehomogenize(bounds_s));
+    auto dehom = dehomogenize(bounds_s);
+    auto bounds_p = conservative_integral_bounds(dehom);
 
     // Render circle into buffer
     render_circle(pos, bounds_p, buffer, s);
