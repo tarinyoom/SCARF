@@ -5,8 +5,6 @@
 #include <utility>
 #include <vector>
 
-#include "bbox.hpp"
-
 namespace scarf {
 
 template <typename T>
@@ -25,8 +23,8 @@ struct Grid {
   auto size() const -> std::array<int, 2> { return {rows_, cols_}; }
 
   auto bounds() const -> Bbox<int, 2> {
-    Vector<int, 2> min(0, 0);
-    Vector<int, 2> max(rows_, cols_);
+    glm::ivec2 min(0, 0);
+    glm::ivec2 max(rows_, cols_);
     return Bbox<int, 2>(min, max);
   }
 

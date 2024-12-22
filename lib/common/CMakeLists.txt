@@ -3,12 +3,10 @@ add_library(common STATIC)
 
 # Set the source files for the common library
 set(SRC_FILES
-    bbox.hpp
     grid.hpp
     kernel.cpp
     kernel.hpp
     pixel.hpp
-    vector.hpp
 )
 
 # Add the source files to the common target

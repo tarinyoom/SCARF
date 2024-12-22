@@ -12,8 +12,8 @@ auto kernel_1d(double r2, double R, double scale) -> double {
   return numerator / denominator;
 }
 
-auto kernel(const Vector<double, 2>& a, const Vector<double, 2>& b, double r,
-            double scale) -> double {
+auto kernel(const glm::dvec2& a, const glm::dvec2& b, double r, double scale)
+    -> double {
   auto diff = a - b;
   auto d2 = diff * diff;
   if (d2 > r * r) {
@@ -23,8 +23,8 @@ auto kernel(const Vector<double, 2>& a, const Vector<double, 2>& b, double r,
   return kernel_1d(d2, r, scale);
 }
 
-auto kernel_gradient(const Vector<double, 2>& p, const Vector<double, 2>& c,
-                     double r, double scale) -> Vector<double, 2> {
+auto kernel_gradient(const glm::dvec2& p, const glm::dvec2& c, double r,
+                     double scale) -> glm::dvec2 {
   auto diff = p - c;
   auto d2 = diff * diff;
   if (d2 > r * r) {

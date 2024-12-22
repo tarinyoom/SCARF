@@ -1,15 +1,15 @@
 #pragma once
 
 #include <functional>
+#include <glm/glm.hpp>
 #include <vector>
 
 #include "state.hpp"
-#include "vector.hpp"
 
 namespace scarf::model {
 
 auto compute_densities(std::function<std::vector<int>(int)> neighbor_map,
-                       const std::vector<Vector<double, 2>>& positions)
+                       const std::vector<glm::dvec2>& positions)
     -> std::vector<double>;
 
 auto compute_pressures(double reference_density,
@@ -17,9 +17,9 @@ auto compute_pressures(double reference_density,
     -> std::vector<double>;
 
 auto compute_accelerations(std::function<std::vector<int>(int)> neighbor_map,
-                           const std::vector<Vector<double, 2>>& positions,
+                           const std::vector<glm::dvec2>& positions,
                            const std::vector<double>& densities,
                            const std::vector<double>& pressures)
-    -> std::vector<Vector<double, 2>>;
+    -> std::vector<glm::dvec2>;
 
 }  // namespace scarf::model

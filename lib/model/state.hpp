@@ -1,10 +1,8 @@
 #pragma once
 
 #include <cstddef>
+#include <glm/glm.hpp>
 #include <vector>
-
-#include "bbox.hpp"
-#include "vector.hpp"
 
 namespace scarf::model {
 
@@ -21,8 +19,8 @@ struct State {
   State() = default;
   State(std::size_t n_particles);
 
-  std::vector<Vector<double, 2>> positions;
-  std::vector<Vector<double, 2>> velocities;
+  std::vector<glm::dvec2> positions;
+  std::vector<glm::dvec2> velocities;
 
   Bbox<double, 2> boundary;
   std::size_t n_particles;

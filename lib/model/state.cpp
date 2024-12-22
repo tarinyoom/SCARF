@@ -6,8 +6,8 @@ namespace scarf::model {
 
 State::State(std::size_t n_particles)
     : n_particles(n_particles),
-      positions(std::vector<Vector<double, 2>>(n_particles, {0.0, 0.0})),
-      velocities(std::vector<Vector<double, 2>>(n_particles, {0.0, 0.0})) {}
+      positions(std::vector<glm::dvec2>(n_particles, {0.0, 0.0})),
+      velocities(std::vector<glm::dvec2>(n_particles, {0.0, 0.0})) {}
 
 auto init() -> State {
   State state(N_PARTICLES);

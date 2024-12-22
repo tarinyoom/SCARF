@@ -6,13 +6,13 @@
 
 namespace scarf::model {
 
-auto compute_density(const std::vector<Vector<double, 2>>& positions, int i,
-                     int j) -> double {
+auto compute_density(const std::vector<glm::dvec2>& positions, int i, int j)
+    -> double {
   return kernel(positions[i], positions[j], OUTER_R, 1.0);
 }
 
 auto compute_densities(std::function<std::vector<int>(int)> neighbor_map,
-                       const std::vector<Vector<double, 2>>& positions)
+                       const std::vector<glm::dvec2>& positions)
     -> std::vector<double> {
   auto n = positions.size();
   std::vector<double> densities(n, 0.0);
@@ -42,10 +42,10 @@ auto compute_pressures(double reference_density,
   return pressures;
 }
 
-auto compute_acceleration(const std::vector<Vector<double, 2>>& positions,
+auto compute_acceleration(const std::vector<glm::dvec2>& positions,
                           const std::vector<double>& densities,
                           const std::vector<double>& pressures, int i, int j)
-    -> Vector<double, 2> {
+    -> glm::dvec2 {
   auto grad = kernel_gradient(positions[i], positions[j], OUTER_R, 1.0);
   auto l = pressures[i] / (densities[i] * densities[i]);
   auto r = pressures[j] / (densities[j] * densities[j]);
@@ -54,12 +54,12 @@ auto compute_acceleration(const std::vector<Vector<double, 2>>& positions,
 }
 
 auto compute_accelerations(std::function<std::vector<int>(int)> neighbor_map,
-                           const std::vector<Vector<double, 2>>& positions,
+                           const std::vector<glm::dvec2>& positions,
                            const std::vector<double>& densities,
                            const std::vector<double>& pressures)
-    -> std::vector<Vector<double, 2>> {
+    -> std::vector<glm::dvec2> {
   auto n = positions.size();
-  std::vector<Vector<double, 2>> accelerations(n, Vector<double, 2>(0.0, 10.0));
+  std::vector<glm::dvec2> accelerations(n, glm::dvec2(0.0, 10.0));
   for (auto i = 0; i < n; i++) {
     accelerations[i] +=
         compute_acceleration(positions, densities, pressures, i, i);

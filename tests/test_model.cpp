@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
+#include <glm/glm.hpp>
 #include <limits>
 #include <unordered_set>
 #include <utility>
@@ -11,12 +12,11 @@
 #include "model/state.hpp"
 #include "model/step.hpp"
 #include "sph.hpp"
-#include "vector.hpp"
 
 using namespace scarf;
 
 TEST(model, hash_coords) {
-  auto cell_counts = Vector<int, 2>(5, 5);
+  auto cell_counts = glm::ivec2(5, 5);
 
   EXPECT_EQ(model::detail::hash_coords({0, 0}, cell_counts), 0);
   EXPECT_EQ(model::detail::hash_coords({0, 4}, cell_counts), 4);
@@ -26,11 +26,11 @@ TEST(model, hash_coords) {
 }
 
 TEST(model, discretize_coords) {
-  auto anchor = Vector<double, 2>(-1.0, -1.0);
-  auto cell_sizes = Vector<double, 2>(0.3, 0.4);
+  auto anchor = glm::dvec2(-1.0, -1.0);
+  auto cell_sizes = glm::dvec2(0.3, 0.4);
 
-  auto expect_discretization = [=](Vector<double, 2> input,
-                                   Vector<int, 2> expected) -> void {
+  auto expect_discretization = [=](glm::dvec2 input,
+                                   glm::ivec2 expected) -> void {
     auto discretization =
         model::detail::discretize_coords(input, anchor, cell_sizes);
     EXPECT_EQ(discretization, expected);
@@ -42,9 +42,9 @@ TEST(model, discretize_coords) {
 }
 
 TEST(model, build_hash) {
-  auto anchor = Vector<double, 2>(0.0, 0.0);
-  auto cell_counts = Vector<int, 2>(3, 2);
-  auto cell_sizes = Vector<double, 2>(0.6, 0.6);
+  auto anchor = glm::dvec2(0.0, 0.0);
+  auto cell_counts = glm::ivec2(3, 2);
+  auto cell_sizes = glm::dvec2(0.6, 0.6);
   auto hash = model::detail::build_hash(anchor, cell_counts, cell_sizes);
 
   EXPECT_EQ(hash({0.3, 0.3}), 0);
@@ -57,7 +57,7 @@ TEST(model, build_hash) {
 
 TEST(model, grid_neighbors) {
   auto bounds = Bbox<double, 2>({0.0, 0.0}, {10.0, 10.0});
-  std::vector<Vector<double, 2>> positions;
+  std::vector<glm::dvec2> positions;
   positions.push_back({3.1, 3.4});
   for (auto i = 0; i < 10; i++) {
     for (auto j = 0; j < 10; j++) {
@@ -153,7 +153,7 @@ TEST(model, velocity_approximation) {
   model::State s(3);
   s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
-  std::vector<Vector<double, 2>> expected_velocities = {
+  std::vector<glm::dvec2> expected_velocities = {
       {-4.8357030681993383, -12.216913573292175},
       {-5.6281409177181496, -3.8967039396837233},
       {10.463843985917487, 19.1136175129759}};
