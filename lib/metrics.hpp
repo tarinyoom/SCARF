@@ -2,11 +2,10 @@
 
 #include <map>
 #include <string>
-#include <variant>
 
 namespace scarf {
 
-using Metrics = std::map<std::string, std::variant<int, double>>;
+using Metrics = std::map<std::string, double>;
 auto print_metrics(const Metrics& m) -> void;
 
 }  // namespace scarf
