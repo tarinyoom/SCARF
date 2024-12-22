@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <glm/glm.hpp>
+#include <utility>
 #include <vector>
 
 namespace scarf::model {
@@ -22,7 +23,7 @@ struct State {
   std::vector<glm::dvec2> positions;
   std::vector<glm::dvec2> velocities;
 
-  Bbox<double, 2> boundary;
+  std::pair<glm::dvec2, glm::dvec2> boundary;
   std::size_t n_particles;
   double reference_density;
 };

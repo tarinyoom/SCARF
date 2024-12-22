@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <glm/glm.hpp>
 #include <span>
 #include <utility>
@@ -21,12 +22,6 @@ struct Grid {
   }
 
   auto size() const -> std::array<int, 2> { return {rows_, cols_}; }
-
-  auto bounds() const -> Bbox<int, 2> {
-    glm::ivec2 min(0, 0);
-    glm::ivec2 max(rows_, cols_);
-    return Bbox<int, 2>(min, max);
-  }
 
   auto glm_bounds() const -> std::pair<glm::ivec2, glm::ivec2> {
     glm::ivec2 min(0, 0);

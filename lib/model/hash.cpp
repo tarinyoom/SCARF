@@ -5,12 +5,12 @@
 namespace scarf::model {
 
 auto map_neighbors(const std::vector<glm::dvec2>& positions,
-                   const Bbox<double, 2>& bounds)
+                   const std::pair<glm::dvec2, glm::dvec2>& bounds)
     -> std::function<std::vector<int>(int)> {
   // Construct grid to conservatively cover entire domain
   auto padding = OUTER_R * glm::dvec2(0.5, 0.5);
-  auto grid_bounds =
-      Bbox<double, 2>(bounds.min - padding, bounds.max + padding);
+  auto grid_bounds = std::pair<glm::dvec2, glm::dvec2>(bounds.min - padding,
+                                                       bounds.max + padding);
 
   // Grid cells each have the same dimensions, and must not underestimate the
   // kernel radius

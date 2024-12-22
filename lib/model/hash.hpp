@@ -2,11 +2,12 @@
 
 #include <functional>
 #include <glm/glm.hpp>
+#include <utility>
 
 namespace scarf::model {
 
 auto map_neighbors(const std::vector<glm::dvec2>& positions,
-                   const Bbox<double, 2>& bounds)
+                   const std::pair<glm::dvec2, glm::dvec2>& bounds)
     -> std::function<std::vector<int>(int)>;
 
 namespace detail {

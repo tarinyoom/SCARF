@@ -56,7 +56,7 @@ TEST(model, build_hash) {
 }
 
 TEST(model, grid_neighbors) {
-  auto bounds = Bbox<double, 2>({0.0, 0.0}, {10.0, 10.0});
+  auto bounds = std::pair<glm::dvec2, glm::dvec2>({0.0, 0.0}, {10.0, 10.0});
   std::vector<glm::dvec2> positions;
   positions.push_back({3.1, 3.4});
   for (auto i = 0; i < 10; i++) {
@@ -97,7 +97,7 @@ TEST(model, density_approximation) {
                                  static_cast<double>(j)};
     }
   }
-  s.boundary = Bbox<double, 2>({0.0, 0.0}, {10.0, 10.0});
+  s.boundary = std::pair<glm::dvec2, glm::dvec2>({0.0, 0.0}, {10.0, 10.0});
 
   auto neighbor_map = model::map_neighbors(s.positions, s.boundary);
   auto densities = model::compute_densities(neighbor_map, s.positions);
@@ -137,7 +137,7 @@ TEST(model, density_approximation) {
 
 TEST(model, pressure_approximation) {
   model::State s(3);
-  s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
+  s.boundary = std::pair<glm::dvec2, glm::dvec2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
   std::vector<double> expected_pressures = {
       132.5320808527114, 162.13632790663783, 89.347770462730779};
@@ -151,7 +151,7 @@ TEST(model, pressure_approximation) {
 
 TEST(model, velocity_approximation) {
   model::State s(3);
-  s.boundary = Bbox<double, 2>({0.0, 0.0}, {7.0, 7.0});
+  s.boundary = std::pair<glm::dvec2, glm::dvec2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
   std::vector<glm::dvec2> expected_velocities = {
       {-4.8357030681993383, -12.216913573292175},
