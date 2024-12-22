@@ -41,7 +41,7 @@ auto run(int argc, char* argv[]) -> int {
   int i = 0;
   Metrics m;
   m["hello"] = 3;
-  m["hi"] = 2.0;
+  m["hi"] = 2.5;
 
   std::function<void(const model::State& state)> render_callback =
       [&](const auto& state) {
