@@ -5,17 +5,16 @@
 
 #include "bbox.hpp"
 #include "color.hpp"
-#include "matrix.hpp"
 #include "rendering.tpp"
 #include "vector.hpp"
 
 namespace scarf::render {
 
-static Matrix world_to_screen(glm::dmat3(10.0, 0.0, 320.0, 0.0, 10.0, 240.0,
-                                         0.0, 0.0, 1.0));
+static glm::dmat3 world_to_screen(10.0, 0.0, 320.0, 0.0, 10.0, 240.0, 0.0, 0.0,
+                                  1.0);
 
-static Matrix screen_to_world(glm::dmat3(0.1, 0.0, -32.0, 0.0, 0.1, -24.0, 0.0,
-                                         0.0, 1.0));
+static glm::dmat3 screen_to_world(0.1, 0.0, -32.0, 0.0, 0.1, -24.0, 0.0, 0.0,
+                                  1.0);
 
 auto get_light(const Vector<double, 2>& p, const Vector<double, 2>& center,
                const Scene& s) -> Color {
