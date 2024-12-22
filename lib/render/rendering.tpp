@@ -4,6 +4,7 @@
 #include <array>
 #include <cstddef>
 #include <glm/glm.hpp>
+#include <utility>
 
 #include "bbox.hpp"
 #include "vector.hpp"
@@ -48,9 +49,10 @@ auto dehomogenize(const glm::dvec3& v) -> Vector<double, 2> {
   return result;
 }
 
-auto dehomogenize(const std::array<glm::dvec3, 2>& b) -> const Bbox<double, 2> {
-  auto new_min = dehomogenize(b[0]);
-  auto new_max = dehomogenize(b[1]);
+auto dehomogenize(const std::pair<glm::dvec3, glm::dvec3>& b)
+    -> const Bbox<double, 2> {
+  auto new_min = dehomogenize(b.first);
+  auto new_max = dehomogenize(b.second);
   return {new_min, new_max};
 }
 
