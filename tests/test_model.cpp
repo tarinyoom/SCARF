@@ -76,14 +76,14 @@ TEST(model, grid_neighbors) {
 
     for (auto j = 0; j < positions.size(); j++) {
       auto diff = positions[i] - positions[j];
-      if (diff * diff < model::OUTER_R * model::OUTER_R) {
+      if (glm::dot(diff, diff) < model::OUTER_R * model::OUTER_R) {
         EXPECT_TRUE(neighbor_set.contains(j));
       }
     }
 
     for (auto& n : neighbors) {
       auto diff = positions[i] - positions[n];
-      EXPECT_LE(diff * diff, 4 * model::OUTER_R * model::OUTER_R);
+      EXPECT_LE(glm::dot(diff, diff), 4 * model::OUTER_R * model::OUTER_R);
     }
   }
 }
