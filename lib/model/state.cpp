@@ -24,8 +24,11 @@ auto init() -> State {
     state.velocities[i] = {-0.5 * x, -0.5 * y};
   }
 
-  state.reference_density =
-      static_cast<double>(state.n_particles) / state.boundary.volume();
+  auto& boundary = state.boundary;
+  auto volume = (boundary.second[0] - boundary.first[0]) *
+                (boundary.second[1] - boundary.first[1]);
+
+  state.reference_density = static_cast<double>(state.n_particles) / volume;
 
   return state;
 }
