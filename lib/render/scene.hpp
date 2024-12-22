@@ -1,15 +1,14 @@
 #pragma once
 
 #include <functional>
+#include <glm/glm.hpp>
 #include <vector>
-
-#include "vector.hpp"
 
 namespace scarf::render {
 
 struct Scene {
   // Points present in scene
-  std::vector<Vector<double, 2>> points;
+  std::vector<glm::dvec2> points;
 
   // Rendered luminosity, given a passed *SQUARED* radius
   std::function<double(double)> falloff;

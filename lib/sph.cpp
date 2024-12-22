@@ -1,5 +1,6 @@
 #include "sph.hpp"
 
+#include <glm/glm.hpp>
 #include <iostream>
 #include <memory>
 
@@ -20,7 +21,8 @@ auto lift(const model::State& state) -> render::Scene {
   render::Scene scene;
   scene.points.reserve(state.n_particles);
   for (auto i = 0; i < state.n_particles; i++) {
-    scene.points.push_back(state.positions[i]);
+    scene.points.push_back(
+        glm::vec2(state.positions[i][0], state.positions[i][1]));
     scene.falloff = [](double r2) -> double { return kernel_1d(r2, 3.0, 1.0); };
     scene.outer_radius = 3.0;
     scene.inner_radius = 0.1;

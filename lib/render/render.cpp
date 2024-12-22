@@ -1,12 +1,11 @@
 #include "render.hpp"
 
 #include <glm/glm.hpp>
+#include <iostream>
 #include <utility>
 
-#include "bbox.hpp"
 #include "color.hpp"
 #include "rendering.tpp"
-#include "vector.hpp"
 
 namespace scarf::render {
 
@@ -16,13 +15,13 @@ static glm::dmat3 world_to_screen(10.0, 0.0, 320.0, 0.0, 10.0, 240.0, 0.0, 0.0,
 static glm::dmat3 screen_to_world(0.1, 0.0, -32.0, 0.0, 0.1, -24.0, 0.0, 0.0,
                                   1.0);
 
-auto get_light(const Vector<double, 2>& p, const Vector<double, 2>& center,
-               const Scene& s) -> Color {
+auto get_light(const glm::dvec2& p, const glm::dvec2& center, const Scene& s)
+    -> Color {
   auto p_screen = homogenize(p);
   auto p_world = screen_to_world * p_screen;
   auto dehom = dehomogenize(p_world);
   auto diff = p - center;
-  auto r2 = diff * diff;
+  auto r2 = glm::dot(diff, diff);
   if (r2 <= 0.01) {
     return White;
   } else {
@@ -36,11 +35,18 @@ auto clamp(const Color& c) -> Color {
 }
 
 // Center and bounds passed in pixel space
-auto render_circle(const Vector<double, 2>& center, const Bbox<int, 2>& bounds,
+auto render_circle(const glm::dvec2& center,
+                   const std::pair<glm::ivec2, glm::ivec2>& bounds,
                    Grid<Color>& buffer, const Scene& s) {
-  Bbox<int, 2> clipped_bounds = bounds * buffer.bounds();
-  for (auto i = clipped_bounds.min[0]; i < clipped_bounds.max[0]; i++) {
-    for (auto j = clipped_bounds.min[1]; j < clipped_bounds.max[1]; j++) {
+  std::pair<glm::ivec2, glm::ivec2> clipped_bounds;
+  std::pair<glm::ivec2, glm::ivec2> buffer_bounds = buffer.glm_bounds();
+  for (auto i = 0; i < 2; i++) {
+    clipped_bounds.first[i] = std::max(bounds.first[i], buffer_bounds.first[i]);
+    clipped_bounds.second[i] =
+        std::min(bounds.second[i], buffer_bounds.second[i]);
+  }
+  for (auto i = clipped_bounds.first[0]; i < clipped_bounds.second[0]; i++) {
+    for (auto j = clipped_bounds.first[1]; j < clipped_bounds.second[1]; j++) {
       Color c = {0.0, 0.0, 0.0};
       const auto ss_d = 1.0 / static_cast<double>(s.msaa_linear_density);
       for (auto di = 0; di < s.msaa_linear_density; di++) {
@@ -50,7 +56,7 @@ auto render_circle(const Vector<double, 2>& center, const Bbox<int, 2>& bounds,
                              ss_d * (0.5 + static_cast<double>(di));
           auto j_subsample =
               static_cast<double>(j) - 0.4 + 0.2 * static_cast<double>(dj);
-          Vector<double, 2> subsample(i_subsample, j_subsample);
+          glm::dvec2 subsample(i_subsample, j_subsample);
           auto c_w = screen_to_world * homogenize(subsample);
           Color dc = get_light(dehomogenize(c_w), center, s) *
                      (1.0 / s.msaa_linear_density / s.msaa_linear_density);
@@ -91,7 +97,7 @@ auto render(Scene&& s) -> Grid<Pixel> {
   for (auto& pos : s.points) {
     // Find bounding box in world space
     auto pos_w = pos;
-    Vector<double, 2> radius_offset = {s.outer_radius, s.outer_radius};
+    glm::dvec2 radius_offset = {s.outer_radius, s.outer_radius};
     std::pair<glm::dvec3, glm::dvec3> bounds_w = {
         homogenize(pos_w - radius_offset), homogenize(pos_w + radius_offset)};
 

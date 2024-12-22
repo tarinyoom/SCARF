@@ -1,6 +1,8 @@
 #pragma once
 
+#include <glm/glm.hpp>
 #include <span>
+#include <utility>
 #include <vector>
 
 #include "bbox.hpp"
@@ -26,6 +28,12 @@ struct Grid {
     Vector<int, 2> min(0, 0);
     Vector<int, 2> max(rows_, cols_);
     return Bbox<int, 2>(min, max);
+  }
+
+  auto glm_bounds() const -> std::pair<glm::ivec2, glm::ivec2> {
+    glm::ivec2 min(0, 0);
+    glm::ivec2 max(rows_, cols_);
+    return {min, max};
   }
 
  private:
