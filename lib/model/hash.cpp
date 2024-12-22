@@ -9,20 +9,20 @@ auto map_neighbors(const std::vector<glm::dvec2>& positions,
     -> std::function<std::vector<int>(int)> {
   // Construct grid to conservatively cover entire domain
   auto padding = OUTER_R * glm::dvec2(0.5, 0.5);
-  auto grid_bounds = std::pair<glm::dvec2, glm::dvec2>(bounds.min - padding,
-                                                       bounds.max + padding);
+  auto grid_bounds = std::pair<glm::dvec2, glm::dvec2>(bounds.first - padding,
+                                                       bounds.second + padding);
 
   // Grid cells each have the same dimensions, and must not underestimate the
   // kernel radius
   glm::ivec2 cell_counts;
   glm::dvec2 cell_sizes;
   for (auto i = 0; i < 2; i++) {
-    auto grid_length = grid_bounds.max[i] - grid_bounds.min[i];
+    auto grid_length = grid_bounds.second[i] - grid_bounds.first[i];
     cell_counts[i] = static_cast<int>(std::ceil(grid_length / OUTER_R));
     cell_sizes[i] = grid_length / static_cast<double>(cell_counts[i]);
   }
 
-  auto hash = detail::build_hash(grid_bounds.min, cell_counts, cell_sizes);
+  auto hash = detail::build_hash(grid_bounds.first, cell_counts, cell_sizes);
 
   auto n_cells = cell_counts[0] * cell_counts[1];
   auto cell_contents =
@@ -37,7 +37,7 @@ auto map_neighbors(const std::vector<glm::dvec2>& positions,
   return [=](int i) -> std::vector<int> {
     std::vector<int> neighbors;
     auto p =
-        detail::discretize_coords(positions[i], grid_bounds.min, cell_sizes);
+        detail::discretize_coords(positions[i], grid_bounds.first, cell_sizes);
     for (auto i = -1; i <= 1; i++) {
       for (auto j = -1; j <= 1; j++) {
         auto n = p + glm::ivec2(i, j);

@@ -23,11 +23,11 @@ auto step(const State& pre, double h) -> State {
   for (auto i = 0; i < pre.positions.size(); i++) {
     for (auto dim = 0; dim < 2; dim++) {
       auto& proj = post.positions[i][dim];
-      if (proj < post.boundary.min[dim]) {
-        proj = post.boundary.min[dim];
+      if (proj < post.boundary.first[dim]) {
+        proj = post.boundary.first[dim];
         post.velocities[i][dim] *= -1;
-      } else if (proj > post.boundary.max[dim]) {
-        proj = post.boundary.max[dim];
+      } else if (proj > post.boundary.second[dim]) {
+        proj = post.boundary.second[dim];
         post.velocities[i][dim] *= -1;
       }
     }
