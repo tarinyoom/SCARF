@@ -1,4 +1,5 @@
 [requires]
+entt/3.14.0
 ffmpeg/6.1
 glm/cci.20230113
 gtest/1.13.0

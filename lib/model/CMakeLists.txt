@@ -1,6 +1,8 @@
 # Define the model static library target
 add_library(model STATIC)
 
+find_package(EnTT REQUIRED)
+
 # Set the source files for the model library
 set(SRC_FILES
     dynamics.cpp
@@ -19,4 +21,4 @@ target_sources(model PRIVATE ${SRC_FILES})
 # Set the include directories for model
 target_include_directories(model PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} common_dir)
 
-target_link_libraries(model PRIVATE common)
+target_link_libraries(model PRIVATE EnTT::EnTT common)
