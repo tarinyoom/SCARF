@@ -11,20 +11,10 @@
 
 namespace scarf::render {
 
-template <std::size_t N>
-auto cast_double(const std::array<int, N>& v) -> std::array<double, N> {
-  std::array<double, N> result;
-  for (auto i = 0; i < N; i++) {
-    result[i] = static_cast<double>(v[i]);
-  }
-  return result;
-}
-
-template <std::size_t N>
-auto conservative_integral_bounds(const Bbox<double, N>& b) -> Bbox<int, N> {
-  Vector<int, N> new_min;
-  Vector<int, N> new_max;
-  for (auto i = 0; i < N; i++) {
+auto conservative_integral_bounds(const Bbox<double, 2>& b) -> Bbox<int, 2> {
+  Vector<int, 2> new_min;
+  Vector<int, 2> new_max;
+  for (auto i = 0; i < 2; i++) {
     new_min[i] = static_cast<int>(std::floor(b.min[i]));
     new_max[i] = static_cast<int>(std::floor(b.max[i]));
   }
