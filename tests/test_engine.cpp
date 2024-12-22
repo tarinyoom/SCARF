@@ -8,8 +8,8 @@ using namespace scarf;
 TEST(dispatch, run_engine) {
   // Step 1: Set up the engine with an `int` as the state
   Engine<int> engine;
-  engine.step = [](int state, auto) -> int {
-    return state + 1;  // Increment state
+  engine.step = [](int& state, auto) -> void {
+    state++;  // Increment state
   };
 
   // Step 2: Attach a mock observer to track observed states

@@ -7,7 +7,7 @@ namespace scarf {
 
 template <typename State>
 struct Engine {
-  std::function<State(const State&, double h)> step;
+  std::function<void(State&, double h)> step;
   std::vector<std::function<void(const State&)>> observers;
 };
 

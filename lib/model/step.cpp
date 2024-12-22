@@ -5,7 +5,7 @@
 
 namespace scarf::model {
 
-auto step(const State& pre, double h) -> State {
+auto step(State& pre, double h) -> void {
   auto neighbor_map = map_neighbors(pre.positions, pre.boundary);
   auto densities = compute_densities(neighbor_map, pre.positions);
   auto pressures = compute_pressures(pre.reference_density, densities);
@@ -32,7 +32,7 @@ auto step(const State& pre, double h) -> State {
       }
     }
   }
-  return post;
+  pre = post;
 }
 
 }  // namespace scarf::model

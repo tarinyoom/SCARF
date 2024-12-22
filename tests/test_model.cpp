@@ -161,7 +161,7 @@ TEST(model, velocity_approximation) {
     EXPECT_EQ(s.velocities[i][0], 0.0);
     EXPECT_EQ(s.velocities[i][1], 0.0);
   }
-  s = model::step(std::move(s), 0.1);
+  model::step(s, 0.1);
   for (auto i = 0; i < s.n_particles; i++) {
     EXPECT_EQ(s.velocities[i][0], expected_velocities[i][0]);
     EXPECT_EQ(s.velocities[i][1], expected_velocities[i][1]);
