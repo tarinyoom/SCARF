@@ -15,7 +15,7 @@ auto kernel_1d(double r2, double R, double scale) -> double {
 auto kernel(const glm::dvec2& a, const glm::dvec2& b, double r, double scale)
     -> double {
   auto diff = a - b;
-  auto d2 = diff * diff;
+  auto d2 = glm::dot(diff, diff);
   if (d2 > r * r) {
     return 0.0;
   }
@@ -26,7 +26,7 @@ auto kernel(const glm::dvec2& a, const glm::dvec2& b, double r, double scale)
 auto kernel_gradient(const glm::dvec2& p, const glm::dvec2& c, double r,
                      double scale) -> glm::dvec2 {
   auto diff = p - c;
-  auto d2 = diff * diff;
+  auto d2 = glm::dot(diff, diff);
   if (d2 > r * r) {
     return {0.0, 0.0};
   }
