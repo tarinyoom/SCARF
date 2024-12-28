@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <glm/glm.hpp>
 #include <limits>
+#include <ranges>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -232,4 +233,70 @@ TEST(model, hash_distinct_neighbors) {
 
   ASSERT_EQ(hashes.size(), 4)
       << "Hashes for distinct grid cells should be unique.";
+}
+
+TEST(model, build_reverse_lookup_empty_range) {
+  std::vector<int> empty_input;
+  auto result = build_reverse_lookup(empty_input);
+
+  EXPECT_TRUE(result.empty())
+      << "Reverse lookup table should be empty for an empty input range.";
+}
+
+TEST(model, build_reverse_lookup_single_element) {
+  std::vector<int> single_input = {42};
+  auto result = build_reverse_lookup(single_input);
+
+  ASSERT_EQ(result.size(), 1u)
+      << "Reverse lookup table should have one key for a single input.";
+  EXPECT_EQ(result[42], std::vector<size_t>({0}))
+      << "Index for the single hash value should be 0.";
+}
+
+TEST(model, build_reverse_lookup_multiple_unique_elements) {
+  std::vector<int> unique_input = {10, 20, 30};
+  auto result = build_reverse_lookup(unique_input);
+
+  ASSERT_EQ(result.size(), 3u)
+      << "Reverse lookup table should have three keys for unique input.";
+  EXPECT_EQ(result[10], std::vector<size_t>({0}));
+  EXPECT_EQ(result[20], std::vector<size_t>({1}));
+  EXPECT_EQ(result[30], std::vector<size_t>({2}));
+}
+
+TEST(model, build_reverse_lookup_duplicate_hashes) {
+  std::vector<int> duplicate_input = {100, 200, 100, 300, 200};
+  auto result = build_reverse_lookup(duplicate_input);
+
+  ASSERT_EQ(result.size(), 3u)
+      << "Reverse lookup table should have keys for 100, 200, and 300.";
+
+  EXPECT_EQ(result[100], std::vector<size_t>({0, 2}))
+      << "Indices for hash 100 should be [0, 2].";
+  EXPECT_EQ(result[200], std::vector<size_t>({1, 4}))
+      << "Indices for hash 200 should be [1, 4].";
+  EXPECT_EQ(result[300], std::vector<size_t>({3}))
+      << "Index for hash 300 should be [3].";
+}
+
+TEST(model, build_reverse_lookup_large_input) {
+  constexpr size_t input_size = 1000;
+  std::vector<int> large_input(input_size);
+  for (size_t i = 0; i < input_size; ++i) {
+    large_input[i] =
+        static_cast<int>(i % 10);  // Repeated hashes [0, 1, ..., 9]
+  }
+
+  auto result = build_reverse_lookup(large_input);
+
+  ASSERT_EQ(result.size(), 10u)
+      << "Reverse lookup table should have 10 unique keys.";
+  for (int i = 0; i < 10; ++i) {
+    ASSERT_EQ(result[i].size(), input_size / 10)
+        << "Each hash should map to 100 indices.";
+    for (size_t j = 0; j < input_size / 10; ++j) {
+      EXPECT_EQ(result[i][j], i + j * 10)
+          << "Indices should match expected values for hash.";
+    }
+  }
 }
