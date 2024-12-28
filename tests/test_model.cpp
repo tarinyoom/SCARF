@@ -236,67 +236,86 @@ TEST(model, hash_distinct_neighbors) {
 }
 
 TEST(model, build_reverse_lookup_empty_range) {
-  std::vector<int> empty_input;
-  auto result = build_reverse_lookup(empty_input);
+  std::vector<glm::dvec2> empty_input;
+  double r = 1.0;
+
+  auto result = build_reverse_lookup(empty_input, r);
 
   EXPECT_TRUE(result.empty())
       << "Reverse lookup table should be empty for an empty input range.";
 }
 
 TEST(model, build_reverse_lookup_single_element) {
-  std::vector<int> single_input = {42};
-  auto result = build_reverse_lookup(single_input);
+  std::vector<glm::dvec2> single_input = {glm::dvec2(1.0, 2.0)};
+  double r = 1.0;
+
+  auto result = build_reverse_lookup(single_input, r);
 
   ASSERT_EQ(result.size(), 1u)
       << "Reverse lookup table should have one key for a single input.";
-  EXPECT_EQ(result[42], std::vector<size_t>({0}))
+  int hash = hash_coords(single_input[0], r);
+  EXPECT_EQ(result[hash], std::vector<size_t>({0}))
       << "Index for the single hash value should be 0.";
 }
 
 TEST(model, build_reverse_lookup_multiple_unique_elements) {
-  std::vector<int> unique_input = {10, 20, 30};
-  auto result = build_reverse_lookup(unique_input);
+  std::vector<glm::dvec2> unique_input = {
+      glm::dvec2(1.0, 2.0), glm::dvec2(3.0, 4.0), glm::dvec2(5.0, 6.0)};
+  double r = 1.0;
+
+  auto result = build_reverse_lookup(unique_input, r);
 
   ASSERT_EQ(result.size(), 3u)
       << "Reverse lookup table should have three keys for unique input.";
-  EXPECT_EQ(result[10], std::vector<size_t>({0}));
-  EXPECT_EQ(result[20], std::vector<size_t>({1}));
-  EXPECT_EQ(result[30], std::vector<size_t>({2}));
+  for (size_t i = 0; i < unique_input.size(); ++i) {
+    int hash = hash_coords(unique_input[i], r);
+    EXPECT_EQ(result[hash], std::vector<size_t>({i}))
+        << "Index for hash value should match input index.";
+  }
 }
 
 TEST(model, build_reverse_lookup_duplicate_hashes) {
-  std::vector<int> duplicate_input = {100, 200, 100, 300, 200};
-  auto result = build_reverse_lookup(duplicate_input);
+  std::vector<glm::dvec2> duplicate_input = {
+      glm::dvec2(1.0, 2.0), glm::dvec2(3.0, 4.0),
+      glm::dvec2(1.0, 2.0),                         // Same as first
+      glm::dvec2(5.0, 6.0), glm::dvec2(3.0, 4.0)};  // Same as second
+  double r = 1.0;
+
+  auto result = build_reverse_lookup(duplicate_input, r);
 
   ASSERT_EQ(result.size(), 3u)
-      << "Reverse lookup table should have keys for 100, 200, and 300.";
+      << "Reverse lookup table should have keys for unique hashes.";
+  std::unordered_map<int, std::vector<size_t>> expected{
+      {hash_coords(duplicate_input[0], r), {0, 2}},
+      {hash_coords(duplicate_input[1], r), {1, 4}},
+      {hash_coords(duplicate_input[3], r), {3}}};
 
-  EXPECT_EQ(result[100], std::vector<size_t>({0, 2}))
-      << "Indices for hash 100 should be [0, 2].";
-  EXPECT_EQ(result[200], std::vector<size_t>({1, 4}))
-      << "Indices for hash 200 should be [1, 4].";
-  EXPECT_EQ(result[300], std::vector<size_t>({3}))
-      << "Index for hash 300 should be [3].";
+  for (const auto& [hash, indices] : expected) {
+    EXPECT_EQ(result[hash], indices)
+        << "Indices for hash " << hash << " do not match expected values.";
+  }
 }
 
 TEST(model, build_reverse_lookup_large_input) {
   constexpr size_t input_size = 1000;
-  std::vector<int> large_input(input_size);
+  std::vector<glm::dvec2> large_input(input_size);
+
   for (size_t i = 0; i < input_size; ++i) {
-    large_input[i] =
-        static_cast<int>(i % 10);  // Repeated hashes [0, 1, ..., 9]
+    large_input[i] = glm::dvec2(static_cast<double>(i % 10) / 2.0,
+                                static_cast<double>(i / 10) / 2.0);
   }
 
-  auto result = build_reverse_lookup(large_input);
+  double r = 1.0;
+  auto result = build_reverse_lookup(large_input, r);
 
-  ASSERT_EQ(result.size(), 10u)
-      << "Reverse lookup table should have 10 unique keys.";
-  for (int i = 0; i < 10; ++i) {
-    ASSERT_EQ(result[i].size(), input_size / 10)
-        << "Each hash should map to 100 indices.";
-    for (size_t j = 0; j < input_size / 10; ++j) {
-      EXPECT_EQ(result[i][j], i + j * 10)
-          << "Indices should match expected values for hash.";
-    }
+  ASSERT_EQ(result.size(), 250u)
+      << "Reverse lookup table should have 250 unique keys.";
+  for (size_t i = 0; i < input_size; ++i) {
+    int hash = hash_coords(large_input[i], r);
+    EXPECT_NE(result.find(hash), result.end())
+        << "Hash " << hash << " should exist in the reverse lookup.";
+    EXPECT_NE(std::find(result[hash].begin(), result[hash].end(), i),
+              result[hash].end())
+        << "Index " << i << " should be mapped to hash " << hash << ".";
   }
 }
