@@ -10,8 +10,6 @@ auto map_neighbors(const std::vector<glm::dvec2>& positions,
                    const std::pair<glm::dvec2, glm::dvec2>& bounds)
     -> std::function<std::vector<int>(int)>;
 
-auto hash_coords(const glm::dvec2& coords, double r) -> int;
-
 namespace detail {
 
 auto hash_coords(const glm::ivec2& coords, const glm::ivec2& cell_counts)

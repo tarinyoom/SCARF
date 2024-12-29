@@ -54,18 +54,6 @@ auto map_neighbors(const std::vector<glm::dvec2>& positions,
   };
 }
 
-constexpr glm::ivec2 primes{15485863, 7368787};
-constexpr int offset = 1299709;
-
-auto hash_coords(const glm::dvec2& coords, double r) -> int {
-  // Map coords to grid indices
-  int grid_x = static_cast<int>(std::floor(coords.x / r));
-  int grid_y = static_cast<int>(std::floor(coords.y / r));
-
-  // Compute the spatial hash
-  return (grid_x * primes.x + grid_y * primes.y + offset);
-}
-
 namespace detail {
 
 auto hash_coords(const glm::ivec2& coords, const glm::ivec2& cell_counts)

@@ -13,15 +13,15 @@
 #include "model/step.hpp"
 #include "sph.hpp"
 
-using namespace scarf::model;
+using namespace scarf;
 
 TEST(model, initialization) {
-  auto state = init_entt();
-  auto view = state.registry.view<Position, Velocity>();
+  auto state = model::init_entt();
+  auto view = state.registry.view<model::Position, model::Velocity>();
   auto min_x = std::numeric_limits<double>::max();
   auto max_x = std::numeric_limits<double>::min();
   auto n = 0;
-  view.each([&](const Position& pos, const Velocity& vel) {
+  view.each([&](const model::Position& pos, const model::Velocity& vel) {
     n++;
     min_x = std::min(min_x, pos.value.x);
     max_x = std::max(max_x, pos.value.x);
@@ -33,11 +33,11 @@ TEST(model, initialization) {
 TEST(model, hash_coords) {
   auto cell_counts = glm::ivec2(5, 5);
 
-  EXPECT_EQ(detail::hash_coords({0, 0}, cell_counts), 0);
-  EXPECT_EQ(detail::hash_coords({0, 4}, cell_counts), 4);
-  EXPECT_EQ(detail::hash_coords({4, 0}, cell_counts), 20);
-  EXPECT_EQ(detail::hash_coords({4, 4}, cell_counts), 24);
-  EXPECT_EQ(detail::hash_coords({2, 2}, cell_counts), 12);
+  EXPECT_EQ(model::detail::hash_coords({0, 0}, cell_counts), 0);
+  EXPECT_EQ(model::detail::hash_coords({0, 4}, cell_counts), 4);
+  EXPECT_EQ(model::detail::hash_coords({4, 0}, cell_counts), 20);
+  EXPECT_EQ(model::detail::hash_coords({4, 4}, cell_counts), 24);
+  EXPECT_EQ(model::detail::hash_coords({2, 2}, cell_counts), 12);
 }
 
 TEST(model, discretize_coords) {
@@ -46,7 +46,8 @@ TEST(model, discretize_coords) {
 
   auto expect_discretization = [=](glm::dvec2 input,
                                    glm::ivec2 expected) -> void {
-    auto discretization = detail::discretize_coords(input, anchor, cell_sizes);
+    auto discretization =
+        model::detail::discretize_coords(input, anchor, cell_sizes);
     EXPECT_EQ(discretization, expected);
   };
 
@@ -59,7 +60,7 @@ TEST(model, build_hash) {
   auto anchor = glm::dvec2(0.0, 0.0);
   auto cell_counts = glm::ivec2(3, 2);
   auto cell_sizes = glm::dvec2(0.6, 0.6);
-  auto hash = detail::build_hash(anchor, cell_counts, cell_sizes);
+  auto hash = model::detail::build_hash(anchor, cell_counts, cell_sizes);
 
   EXPECT_EQ(hash({0.3, 0.3}), 0);
   EXPECT_EQ(hash({0.9, 0.3}), 2);
@@ -79,7 +80,7 @@ TEST(model, grid_neighbors) {
     }
   }
 
-  auto map = map_neighbors(positions, bounds);
+  auto map = model::map_neighbors(positions, bounds);
   for (auto i = 0; i < positions.size(); i++) {
     auto neighbors = map(i);
 
@@ -90,21 +91,21 @@ TEST(model, grid_neighbors) {
 
     for (auto j = 0; j < positions.size(); j++) {
       auto diff = positions[i] - positions[j];
-      if (glm::dot(diff, diff) < OUTER_R * OUTER_R) {
+      if (glm::dot(diff, diff) < model::OUTER_R * model::OUTER_R) {
         EXPECT_TRUE(neighbor_set.contains(j));
       }
     }
 
     for (auto& n : neighbors) {
       auto diff = positions[i] - positions[n];
-      EXPECT_LE(glm::dot(diff, diff), 4 * OUTER_R * OUTER_R);
+      EXPECT_LE(glm::dot(diff, diff), 4 * model::OUTER_R * model::OUTER_R);
     }
   }
 }
 
 TEST(model, density_approximation) {
   // Assemble a regular grid of points
-  State s(100);
+  model::State s(100);
   for (auto i = 0; i < 10; i++) {
     for (auto j = 0; j < 10; j++) {
       s.positions[10 * i + j] = {static_cast<double>(i),
@@ -113,8 +114,8 @@ TEST(model, density_approximation) {
   }
   s.boundary = std::pair<glm::dvec2, glm::dvec2>({0.0, 0.0}, {10.0, 10.0});
 
-  auto neighbor_map = map_neighbors(s.positions, s.boundary);
-  auto densities = compute_densities(neighbor_map, s.positions);
+  auto neighbor_map = model::map_neighbors(s.positions, s.boundary);
+  auto densities = model::compute_densities(neighbor_map, s.positions);
 
   // For points in the interior and boundary of the grid, expect their
   // densities to closely match the ideal continuously calculated density
@@ -150,21 +151,21 @@ TEST(model, density_approximation) {
 }
 
 TEST(model, pressure_approximation) {
-  State s(3);
+  model::State s(3);
   s.boundary = std::pair<glm::dvec2, glm::dvec2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
   std::vector<double> expected_pressures = {
       132.5320808527114, 162.13632790663783, 89.347770462730779};
-  auto neighbor_map = map_neighbors(s.positions, s.boundary);
-  auto densities = compute_densities(neighbor_map, s.positions);
-  auto pressures = compute_pressures(s.reference_density, densities);
+  auto neighbor_map = model::map_neighbors(s.positions, s.boundary);
+  auto densities = model::compute_densities(neighbor_map, s.positions);
+  auto pressures = model::compute_pressures(s.reference_density, densities);
   for (auto i = 0; i < s.n_particles; i++) {
     EXPECT_EQ(pressures[i], expected_pressures[i]);
   }
 }
 
 TEST(model, velocity_approximation) {
-  State s(3);
+  model::State s(3);
   s.boundary = std::pair<glm::dvec2, glm::dvec2>({0.0, 0.0}, {7.0, 7.0});
   s.positions = {{3.0, 3.0}, {3.0, 3.2}, {3.4, 3.8}};
   std::vector<glm::dvec2> expected_velocities = {
@@ -175,61 +176,9 @@ TEST(model, velocity_approximation) {
     EXPECT_EQ(s.velocities[i][0], 0.0);
     EXPECT_EQ(s.velocities[i][1], 0.0);
   }
-  step(s, 0.1);
+  model::step(s, 0.1);
   for (auto i = 0; i < s.n_particles; i++) {
     EXPECT_EQ(s.velocities[i][0], expected_velocities[i][0]);
     EXPECT_EQ(s.velocities[i][1], expected_velocities[i][1]);
   }
-}
-
-TEST(model, hash_consistent) {
-  glm::dvec2 coords{12.34, 56.78};
-  double r = 1.0;
-
-  int hash1 = hash_coords(coords, r);
-  int hash2 = hash_coords(coords, r);
-
-  ASSERT_EQ(hash1, hash2) << "Hashes for the same input should match.";
-}
-
-TEST(model, hash_distinct) {
-  glm::dvec2 coords1{12.34, 56.78};
-  glm::dvec2 coords2{13.34, 56.78};
-  double r = 1.0;
-
-  int hash1 = hash_coords(coords1, r);
-  int hash2 = hash_coords(coords2, r);
-
-  ASSERT_NE(hash1, hash2) << "Hashes for different inputs should not match.";
-}
-
-TEST(model, hash_negative) {
-  glm::dvec2 coords{-12.34, -56.78};
-  double r = 1.0;
-
-  int hash = hash_coords(coords, r);
-  // Just verify it executes correctly
-  SUCCEED() << "Hash for negative coordinates computed: " << hash;
-}
-
-TEST(model, hash_boundaries) {
-  glm::dvec2 coords{10.0, 20.0};
-  double r = 1.0;
-
-  int hash = hash_coords(coords, r);
-  // Just verify it executes correctly
-  SUCCEED() << "Hash for boundary coordinates computed: " << hash;
-}
-
-TEST(model, hash_distinct_neighbors) {
-  double r = 1.0;
-  std::unordered_set<int> hashes;
-
-  hashes.insert(hash_coords(glm::dvec2{0.0, 0.0}, r));
-  hashes.insert(hash_coords(glm::dvec2{r, 0.0}, r));
-  hashes.insert(hash_coords(glm::dvec2{0.0, r}, r));
-  hashes.insert(hash_coords(glm::dvec2{r, r}, r));
-
-  ASSERT_EQ(hashes.size(), 4)
-      << "Hashes for distinct grid cells should be unique.";
 }
