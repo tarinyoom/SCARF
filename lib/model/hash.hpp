@@ -16,19 +16,13 @@ auto map_neighbors(const std::vector<glm::dvec2>& positions,
 auto hash_coords(const glm::dvec2& coords, double r) -> int;
 
 template <std::ranges::input_range Range>
-  requires std::same_as<std::ranges::range_value_t<Range>, glm::dvec2>
-auto build_reverse_lookup(const Range& position_range, double r)
+  requires std::same_as<std::ranges::range_value_t<Range>, int>
+auto build_reverse_lookup(const Range& hash_values)
     -> std::unordered_map<int, std::vector<size_t>> {
-  // Create a lazily transformed range of hash values
-  auto hash_view =
-      position_range | std::views::transform([r](const glm::dvec2& coords) {
-        return hash_coords(coords, r);
-      });
-
-  // Build the reverse lookup map using hash values
   std::unordered_map<int, std::vector<size_t>> reverse_lookup;
+
   size_t index = 0;
-  for (const auto& hash : hash_view) {
+  for (const auto& hash : hash_values) {
     reverse_lookup[hash].push_back(index++);
   }
 
