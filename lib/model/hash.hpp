@@ -2,10 +2,7 @@
 
 #include <functional>
 #include <glm/glm.hpp>
-#include <ranges>
-#include <unordered_map>
 #include <utility>
-#include <vector>
 
 namespace scarf::model {
 
@@ -14,20 +11,6 @@ auto map_neighbors(const std::vector<glm::dvec2>& positions,
     -> std::function<std::vector<int>(int)>;
 
 auto hash_coords(const glm::dvec2& coords, double r) -> int;
-
-template <std::ranges::input_range Range>
-  requires std::same_as<std::ranges::range_value_t<Range>, int>
-auto build_reverse_lookup(const Range& hash_values)
-    -> std::unordered_map<int, std::vector<size_t>> {
-  std::unordered_map<int, std::vector<size_t>> reverse_lookup;
-
-  size_t index = 0;
-  for (const auto& hash : hash_values) {
-    reverse_lookup[hash].push_back(index++);
-  }
-
-  return reverse_lookup;
-}
 
 namespace detail {
 
