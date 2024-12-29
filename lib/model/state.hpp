@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstddef>
-#include <entt/entt.hpp>
 #include <glm/glm.hpp>
 #include <utility>
 #include <vector>
@@ -17,14 +16,6 @@ constexpr auto N_PARTICLES = 64;
 constexpr auto TOTAL_MASS = 64.0;
 constexpr auto PARTICLE_MASS = TOTAL_MASS / static_cast<double>(N_PARTICLES);
 
-struct Position {
-  glm::dvec2 value;
-};
-
-struct Velocity {
-  glm::dvec2 value;
-};
-
 struct State {
   State() = default;
   State(std::size_t n_particles);
@@ -37,16 +28,6 @@ struct State {
   double reference_density;
 };
 
-struct EnTTState {
-  entt::registry registry;
-
-  std::pair<glm::dvec2, glm::dvec2> boundary;
-  std::size_t n_particles;
-  double reference_density;
-};
-
 auto init() -> State;
-
-auto init_entt() -> EnTTState;
 
 }  // namespace scarf::model

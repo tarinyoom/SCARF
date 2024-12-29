@@ -15,21 +15,6 @@
 
 using namespace scarf;
 
-TEST(model, initialization) {
-  auto state = model::init_entt();
-  auto view = state.registry.view<model::Position, model::Velocity>();
-  auto min_x = std::numeric_limits<double>::max();
-  auto max_x = std::numeric_limits<double>::min();
-  auto n = 0;
-  view.each([&](const model::Position& pos, const model::Velocity& vel) {
-    n++;
-    min_x = std::min(min_x, pos.value.x);
-    max_x = std::max(max_x, pos.value.x);
-  });
-  EXPECT_EQ(n, 64);               // 64 particles present
-  EXPECT_GT(max_x - min_x, 5.0);  // points are not coincident
-}
-
 TEST(model, hash_coords) {
   auto cell_counts = glm::ivec2(5, 5);
 
