@@ -17,10 +17,7 @@ jobs:
       run: .\format.ps1 -Werror --dry-run
 
     - name: Install PkgConfig
-      run: choco install pkgconfiglite --version=0.28 -y
-
-    - name: Install CUDA
-      run: choco install cuda --version=12.6.3.561 -y
+      run: choco install pkgconfiglite --version=0.28
 
     - name: Install Conan
       run: pip install "conan==2.4.1"
